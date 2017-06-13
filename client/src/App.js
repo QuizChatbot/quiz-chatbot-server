@@ -51,7 +51,7 @@ class App extends Component {
                 <div key={idx} style={{width:"50%"}}>
                   <h2>
                     <div >
-                    #{idx + 1} {user.name} ES6 {user.grade} ( score : {user.score + ""} )
+                    {idx + 1} {user.name} ES6 {user.grade} ( score : {user.score + ""} )
                       <Line percent={user.score} strokeWidth="4" strokeColor="#03a9f4" trailWidth="4" />
                     </div>
                   </h2>
