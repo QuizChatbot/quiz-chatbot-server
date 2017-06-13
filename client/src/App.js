@@ -41,7 +41,7 @@ class App extends Component {
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>Chatbot Quiz - Leaderboard</h2>
+          <h2>Chatbot Quiz - Leaderboard 2017</h2>
         </div>
 
         <div className="wrapper">
