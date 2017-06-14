@@ -6,10 +6,16 @@
     "eslint": "^4.0.0",
     "rc-progress": "^2.1.2",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.5",
+    "react-router-dom": "^4.1.1",
+    "react-router-redux": "next",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "firebase": "^4.1.2",
+    "react-bootstrap": "^0.31.0",
     "react-scripts": "1.0.7"
   },
   "scripts": {
