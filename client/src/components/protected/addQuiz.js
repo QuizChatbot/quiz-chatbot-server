@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import firebase, { ref } from '../config/firebase.js';
+import firebase, { ref } from '../../config/firebase.js';
 
 export class AddQuiz extends Component {
 
@@ -12,7 +12,6 @@ export class AddQuiz extends Component {
       answer: '',
       choice1: '',
       choice2: ''
-
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
