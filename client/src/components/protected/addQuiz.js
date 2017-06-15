@@ -24,7 +24,7 @@ export class AddQuiz extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    createQuiz(this);
+    createQuiz(this).then(this.setState.bind(this));
   }
 
   render() {
