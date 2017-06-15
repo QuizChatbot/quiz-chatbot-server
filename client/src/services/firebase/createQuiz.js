@@ -8,7 +8,9 @@ export const createQuiz = (state) =>
       question: "```"+state.state.question+"```",
       answers: [state.state.answer, state.state.choice1, state.state.choice2],
       skills: "es6",
-      point: 10
+      point: 10,
+      createAt: Date(),
+      lastEditAt: Date()
     }
 
     ref.child('Quests').push(item);
