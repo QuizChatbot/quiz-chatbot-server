@@ -5,7 +5,6 @@ import Leaderboard from './components/leaderboard'
 import { AddQuiz } from './components/addQuiz'
 import firebase, { firebaseAuth } from './config/firebase.js'
 
-import { Navbar, Nav, NavItem, MenuItem, NavDropdown } from 'react-bootstrap'
 import ReactDOM from 'react-dom'
 
 // import { handleLogout } from './helpers/handleLogout'
@@ -17,7 +16,7 @@ export default class App extends Component {
     super();
     this.state = {
       user: null,
-      auth: null
+      auth: false
     }
     this.loginWithFacebook = this.loginWithFacebook.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -80,38 +79,22 @@ export default class App extends Component {
       <Router>
         <div>
         
-          <Navbar inverse collapseOnSelect>
 
-            <Navbar.Header>
-              <Navbar.Brand>
-                <a href="/">Quiz Chatbot</a>
-              </Navbar.Brand>
-            </Navbar.Header>
+          <Link to="/">Leaderboard</Link>
 
-            <Nav>
-              <NavItem href="/">Leaderboard</NavItem>
-
-              {
-                this.state.auth === false ? (
-                  <Nav>
-                    <NavItem onClick={this.loginWithFacebook}>Login with Facebook</NavItem>
-                  </Nav>
-                )
-                :
-                (
-                  <Nav pullRight="true">
-                    <NavItem href="/addQuiz">Add Quiz</NavItem>
-                    <NavDropdown title={this.state.auth && this.state.user.displayName} id="nav-dropdown">
-                      <MenuItem eventKey={3.1}>Profile</MenuItem>
-                      <MenuItem divider />
-                      <MenuItem eventKey={3.2}>Log out</MenuItem>
-                    </NavDropdown>
-                  </Nav>
-                )
-              }
-
-            </Nav>
-          </Navbar>
+          {
+            this.state.auth === false ? (
+          <button onClick={this.loginWithFacebook}>Login</button>
+            )
+              :
+              (
+                <div>
+                  <Link to="/addQuiz">Add Quiz</Link>
+                  <span> name: {this.state.auth && this.state.user.displayName} </span>
+                  <button onClick={this.logOut}>Log out</button>
+                </div>
+              )
+          }
 
           <Route exact path="/" component={Leaderboard} />
           <Route path="/addQuiz" component={AddQuiz} />
