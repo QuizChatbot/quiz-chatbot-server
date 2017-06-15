@@ -1,39 +1,20 @@
 import React, { Component } from 'react';
 import logo from '../logo.svg';
 import '../App.css';
-import { ref } from '../config/firebase.js';
 import { Line } from 'rc-progress';
+import { getDeveloper } from '../services/firebase/getDeveloper'
 
 export default class App extends Component {
 
   constructor() {
     super();
-    this.state = { users: [] }
+    this.state = { 
+      users: [] 
+    }
   }
 
   componentDidMount() {
-    ref.child("Developer").on('value', (snapshot) => {
-      let developer = snapshot.val();
-      let newState = [];
-      for (let user in developer) {
-        newState.push({
-          id: user,
-          name: developer[user].name,
-          score: developer[user].scores,
-          grade: developer[user].grades
-        });
-      }
-
-      var sortByScore = newState.slice(0);
-      sortByScore.sort(function (a, b) {
-        return b.score - a.score;
-      });
-
-      this.setState({
-        users: sortByScore
-      });
-
-    });
+    getDeveloper().then(this.setState.bind(this));
   }
 
   render() {
