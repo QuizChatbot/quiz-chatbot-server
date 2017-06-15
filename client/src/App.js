@@ -5,8 +5,6 @@ import Leaderboard from './components/leaderboard'
 import { AddQuiz } from './components/addQuiz'
 import firebase, { firebaseAuth } from './config/firebase.js'
 
-import ReactDOM from 'react-dom'
-
 // import { handleLogout } from './helpers/handleLogout'
 // import { handleLogin } from './helpers/handleLogin'
 
