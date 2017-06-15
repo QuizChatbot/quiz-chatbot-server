@@ -4,7 +4,7 @@ import '../App.css';
 import { ref } from '../config/firebase.js';
 import { Line } from 'rc-progress';
 
-class App extends Component {
+export default class App extends Component {
 
   constructor() {
     super();
@@ -65,5 +65,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;
