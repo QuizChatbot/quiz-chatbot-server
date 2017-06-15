@@ -4,7 +4,7 @@ import '../App.css';
 import { Line } from 'rc-progress';
 import { getDeveloper } from '../services/firebase/getDeveloper'
 
-export default class App extends Component {
+export default class Leaderboard extends Component {
 
   constructor() {
     super();

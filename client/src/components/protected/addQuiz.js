@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { createQuiz } from '../../services/firebase/createQuiz'
 
-export class AddQuiz extends Component {
+export default class AddQuiz extends Component {
   constructor() {
     super();
     this.state = {
