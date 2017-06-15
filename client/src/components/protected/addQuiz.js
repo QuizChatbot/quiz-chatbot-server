@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import firebase, { ref } from '../../config/firebase.js';
+import { createQuiz } from '../../services/firebase/createQuiz'
 
 export class AddQuiz extends Component {
-
   constructor() {
     super();
     this.state = {
@@ -25,33 +24,7 @@ export class AddQuiz extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const itemsRef = ref.child('Quests');
-    const item = {
-      subject: this.state.subject,
-      question: this.state.question,
-      answers: [this.state.answer, this.state.choice1, this.state.choice2],
-      skills: "es6",
-      point: 10
-    }
-
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        item.owner = user.uid;
-      } else {
-        item.owner = "anonymous";
-      }
-    });
-
-    itemsRef.push(item);
-    alert("Complete");
-
-    this.setState({
-      subject: '',
-      question: '',
-      answer: '',
-      choice1: '',
-      choice2: ''
-    });
+    createQuiz(this);
   }
 
   render() {
