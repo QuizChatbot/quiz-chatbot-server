@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, Redirect, Switch } from 'react-router-dom'
 import Leaderboard from './components/leaderboard'
 import { AddQuiz } from './components/protected/addQuiz'
 import { handleLogin, handleLogout, onStateChanged } from './helpers/handleAuth'
@@ -53,10 +53,11 @@ export default class App extends Component {
               </div>
             )
           }
-          
+          <Switch>
           <Route exact path="/" component={Leaderboard} />
           <PrivateRoute authed={this.state.isLoggedIn} path='/addQuiz' component={AddQuiz} />
           <Route render={() => <h3>No Match</h3>} />
+          </Switch>
         </div>
       </Router>
     );
