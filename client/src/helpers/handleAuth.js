@@ -11,7 +11,7 @@ export function handleLogin(state) {
         displayName: result.user.displayName,
         photoURL: result.user.photoURL,
       },
-      isLoggedIn: true
+      authed: true
     });
   });
 }
@@ -20,7 +20,7 @@ export function handleLogout(state) {
   return firebaseAuth.signOut().then(function () {
     state.setState({
       user: null,
-      isLoggedIn: false
+      authed: false
     });
   });
 }
@@ -35,12 +35,12 @@ export function onStateChanged(state) {
           displayName: user.displayName,
           photoURL: user.photoURL,
         },
-        isLoggedIn: true
+        authed: true
       })
     } else {
       state.setState({
         user: null,
-        isLoggedIn: false
+        authed: false
       })
     }
   });
