@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { getQuizzes } from '../../services/firebase/getQuizzes'
-// import { deleteQuiz } from '../../services/firebase/deleteQuiz'
+import { deleteQuiz } from '../../services/firebase/deleteQuiz'
 import firebase, { ref } from '../../config/firebase'
 
 export default class MyQuiz extends Component {
@@ -21,12 +21,6 @@ export default class MyQuiz extends Component {
       })
   }
 
-  removeItem(quizId) {
-    const quizRef = firebase.database().ref(`/Quests/${quizId}`);
-    quizRef.remove();
-    alert('Delete succeeded');
-  }
-
   render() {
     return (
       <div>
@@ -39,7 +33,7 @@ export default class MyQuiz extends Component {
                 <p>answer: {quiz.answer}</p>
                 <p>choice1: {quiz.choice1}</p>
                 <p>choice2: {quiz.choice2}</p>
-                <button onClick={() => this.removeItem(quiz.id)}>Remove Quiz</button>
+                <button onClick={() => deleteQuiz(quiz.id)}>Remove Quiz</button>
               </li>
             )
           })}
