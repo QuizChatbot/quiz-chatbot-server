@@ -7,7 +7,7 @@ const
   request = require('request'),
   readJson = require('./readjson'),
   utillArray = require('./utill_array')
-
+ 
 let questions = getAllQuestions() 
 
 let answerForEachQuestion
