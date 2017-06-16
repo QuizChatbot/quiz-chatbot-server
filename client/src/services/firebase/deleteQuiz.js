@@ -1,4 +1,4 @@
-import firebase, { ref } from '../../config/firebase'
+import firebase from '../../config/firebase'
 
 export const deleteQuiz = (quizId) =>
   new Promise((resolve, reject) => {

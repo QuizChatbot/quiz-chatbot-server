@@ -1,5 +1,3 @@
-import firebase, { ref } from '../../config/firebase'
-
 export const getQuizzes = (snapshot) =>
   new Promise((resolve, reject) => {
     let quizzes = [];
