@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { getQuizzes } from '../../services/firebase/getQuizzes'
+// import { deleteQuiz } from '../../services/firebase/deleteQuiz'
+import firebase, { ref } from '../../config/firebase'
 
 export default class MyQuiz extends Component {
   constructor() {
@@ -10,28 +12,19 @@ export default class MyQuiz extends Component {
   }
 
   componentDidMount() {
-    getQuizzes(this).then(this.setState.bind(this));
-    // ref.child("Quests")
-    //   .orderByChild("owner")
-    //   .equalTo(firebase.auth().currentUser.uid)
-    //   // .orderBy("lastEditAt")
-    //   .on('value', (snapshot) => {
-    //     let quizzes = [];
-    //     snapshot.forEach(function (child) {
-    //       quizzes.unshift({
-    //         id: child.key,
-    //         question: child.val().question,
-    //         subject: child.val().subject,
-    //         answer: child.val().answers[0],
-    //         choice1: child.val().answers[1],
-    //         choice2: child.val().answers[2]
-    //       });
-    //     })
+    ref.child("Quests")
+      .orderByChild("owner")
+      .equalTo(firebase.auth().currentUser.uid)
+      // .orderBy("lastEditAt")
+      .on('value', (snapshot) => {
+        getQuizzes(snapshot.val(), this).then(this.setState.bind(this));
+      })
+  }
 
-    //     this.setState({
-    //       quizzes: quizzes
-    //     })
-    //   });
+  removeItem(quizId) {
+    const quizRef = firebase.database().ref(`/Quests/${quizId}`);
+    quizRef.remove();
+    alert('Delete succeeded');
   }
 
   render() {
