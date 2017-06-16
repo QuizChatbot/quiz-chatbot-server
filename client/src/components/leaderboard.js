@@ -8,8 +8,8 @@ export default class Leaderboard extends Component {
 
   constructor() {
     super();
-    this.state = { 
-      users: [] 
+    this.state = {
+      users: []
     }
   }
 
@@ -24,24 +24,24 @@ export default class Leaderboard extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Chatbot Quiz - Leaderboard 2017</h2>
         </div>
-
         <div className="wrapper">
           <ul>
-            {this.state.users.map((user, idx) => {
-              return (
-                <div key={idx} style={{ width: "50%" }}>
-                  <h2>
-                    <div >
-                      {idx + 1} {user.name} ES6 {user.grade} ( score : {user.score + ""} )
-                      <Line percent={user.score} strokeWidth="4" strokeColor="#03a9f4" trailWidth="4" />
-                    </div>
-                  </h2>
-                </div>
-              )
-            })}
+            {
+              this.state.users.map((user, idx) => {
+                return (
+                  <div key={idx} style={{ width: "50%" }}>
+                    <h2>
+                      <div >
+                        {idx + 1} {user.name} ES6 {user.grade} ( score : {user.score + ""} )
+                        <Line percent={user.score} strokeWidth="4" strokeColor="#03a9f4" trailWidth="4" />
+                      </div>
+                    </h2>
+                  </div>
+                )
+              })
+            }
           </ul>
         </div>
-
       </div>
     );
   }

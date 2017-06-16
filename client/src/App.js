@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch } from 'react-router-dom'
-import Leaderboard from './components/leaderboard'
-import { AddQuiz } from './components/protected/addQuiz'
 import { handleLogin, handleLogout, onStateChanged } from './helpers/handleAuth'
+import Leaderboard from './components/leaderboard'
+import AddQuiz from './components/protected/addQuiz'
+import MyQuiz from './components/protected/myQuiz'
 
 function PrivateRoute({ component: Component, authed, ...rest }) {
   return (
@@ -47,6 +48,7 @@ export default class App extends Component {
               <button onClick={() => {handleLogin(this)}}>Login</button>
             ) : (
               <div>
+                <Link to="/myQuiz">My Quiz</Link><br />
                 <Link to="/addQuiz">Add Quiz</Link><br />
                 <span> name: {this.state.isLoggedIn && this.state.user.displayName} </span><br />
                 <button onClick={() => {handleLogout(this)}}>Log out</button>
@@ -56,6 +58,7 @@ export default class App extends Component {
           <Switch>
           <Route exact path="/" component={Leaderboard} />
           <PrivateRoute authed={this.state.isLoggedIn} path='/addQuiz' component={AddQuiz} />
+          <PrivateRoute authed={this.state.isLoggedIn} path='/myQuiz' component={MyQuiz} />
           <Route render={() => <h3>No Match</h3>} />
           </Switch>
         </div>
