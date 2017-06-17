@@ -1,18 +1,26 @@
-export const getQuizzes = (snapshot) =>
+import firebase, { ref } from '../../config/firebase'
+
+export const getQuizzes = () =>
   new Promise((resolve, reject) => {
-    let quizzes = [];
-    Object.keys(snapshot).map(function (objectKey, index) {
-      var value = snapshot[objectKey];
-      quizzes.unshift({
-        id: objectKey,
-        question: value.question,
-        subject: value.subject,
-        answer: value.answers[0],
-        choice1: value.answers[1],
-        choice2: value.answers[2]
+    ref.child("Quests")
+      .orderByChild("owner")
+      .equalTo(firebase.auth().currentUser.uid)
+      // .orderBy("lastEditAt")
+      .on('value', (snapshot) => {
+        let quizzes = [];
+        snapshot.forEach(function (child) {
+          quizzes.unshift({
+            id: child.key,
+            question: child.val().question,
+            subject: child.val().subject,
+            answer: child.val().answers[0],
+            choice1: child.val().answers[1],
+            choice2: child.val().answers[2]
+          });
+        })
+
+        resolve({
+          quizzes
+        });
       });
-    });
-    resolve({
-      quizzes
-    });
-  })
+  }) 

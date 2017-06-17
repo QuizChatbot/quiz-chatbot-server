@@ -12,13 +12,7 @@ export default class MyQuiz extends Component {
   }
 
   componentDidMount() {
-    ref.child("Quests")
-      .orderByChild("owner")
-      .equalTo(firebase.auth().currentUser.uid)
-      // .orderBy("lastEditAt")
-      .on('value', (snapshot) => {
-        getQuizzes(snapshot.val(), this).then(this.setState.bind(this));
-      })
+    getQuizzes().then(this.setState.bind(this));
   }
 
   render() {
