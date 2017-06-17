@@ -5,7 +5,6 @@ import { Line } from 'rc-progress';
 import { getDeveloper } from '../services/firebase/getDeveloper'
 
 export default class Leaderboard extends Component {
-
   constructor() {
     super();
     this.state = {
