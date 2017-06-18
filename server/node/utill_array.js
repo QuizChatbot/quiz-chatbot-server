@@ -29,4 +29,4 @@ const shuffleKeyFromQuestions = function(keys) {
 
 
 
-module.exports={shuffleKeyFromQuestions}
+module.exports={shuffleKeyFromQuestions, _}

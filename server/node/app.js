@@ -8,7 +8,7 @@
     express = require('express'),
     https = require('https'),
     request = require('request'),
-    readJson = require('./readjson'),
+    createButton = require('./readjson'),
     utillArray = require('./utill_array'),
     firebase = require('./firebase')
 
@@ -19,6 +19,7 @@
   //let questions = getAllQuestions()
 
   let answerForEachQuestion
+  let currentQuestionKey
   let userData = {}
 
 
@@ -336,6 +337,7 @@
 
           else if (state === 1) { //already quiz with chatbot
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keys)
+            currentQuestionKey = shuffledKey
             answerForEachQuestion = await firebase.getAllAnswerFromQuestion(shuffledKey)
             if (answerForEachQuestion == null) {
               console.log("Doesn't have this id in questions database")
@@ -343,8 +345,8 @@
             }
 
 
-            const buttonsCreated = await readJson.createButtonFromQuestionId(shuffledKey)
-            const buttonMessage = await readJson.createButtonMessageWithButtons(senderID, buttonsCreated)
+            const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+            const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
             callSendAPI(buttonMessage)
 
 
@@ -359,8 +361,8 @@
             //   return null
             // }
 
-            // let buttonsCreated = readJson.createButtonFromQuestionId("-KmfdJ61WGXoWBhqbsAl")
-            // let buttonMessage = readJson.createButtonMessageWithButtons(senderID, buttonsCreated)
+            // let buttonsCreated = createButton.createButtonFromQuestionId("-KmfdJ61WGXoWBhqbsAl")
+            // let buttonMessage = createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
 
             // callSendAPI(buttonMessage)  
           }
@@ -438,23 +440,16 @@
   }
 
   async function nextQuestion(senderID) {
+    //delete key of question that already asked from all keys
+    keys = removeKeyThatAsked(currentQuestionKey) 
+    console.log("keyToButton in nextQuestion after delete = ", keys)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keys)
+    //define current key = key of question about to ask
+    currentQuestionKey = keyOfNextQuestion
     console.log("keyToButton in nextQuestion = ", keyOfNextQuestion)
     //no question left
     if (keyOfNextQuestion == null) sendTextMessage(senderID, "Finish!")
-
     else {
-      //key that we will delete from all keys
-      let keyToDelete
-      
-      //check whether questions contain that key to set button message
-      for (let i in keys) {
-        if (keys[i] == keyOfNextQuestion) {
-          keyToDelete = i
-          console.log("key same = ", keyToDelete)
-        }
-      }
-
       //no key that matched question
       answerForEachQuestion = await firebase.getAllAnswerFromQuestion(keyOfNextQuestion)
       console.log("answerForEachQuestion in nextQ = ", answerForEachQuestion)
@@ -463,18 +458,26 @@
         return null
       }
 
-      let buttonsCreated = await readJson.createButtonFromQuestionId(keyOfNextQuestion)
-      let buttonMessage = await readJson.createButtonMessageWithButtons(senderID, buttonsCreated)
-      delete keys[keyToDelete] //keyToDelete = index of key of question that already asked
+      let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
+      let buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+      
       callSendAPI(buttonMessage)
     }
   }
 
-
-  function getAllQuestions() {
-    let questions = readJson.readQuestions()
-    return questions
+  //delete key of question that already asked
+  function removeKeyThatAsked(currentQuestionKey){
+     utillArray._.remove(keys, function (key) {
+      return key === currentQuestionKey 
+    })
+    return keys
   }
+
+
+  // function getAllQuestions() {
+  //   let questions = createButton.readQuestions()
+  //   return questions
+  // }
 
 
   /*
