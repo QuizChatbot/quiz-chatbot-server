@@ -1,17 +1,31 @@
 import React, { Component } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Link, Redirect, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Link, Redirect, Switch } from 'react-router-dom'
+import { login, logout, validateUser } from './services/firebase/auth'
 import Leaderboard from './components/leaderboard'
-import { AddQuiz } from './components/protected/addQuiz'
-import { handleLogin, handleLogout, onStateChanged } from './helpers/handleAuth'
+import AddQuiz from './components/protected/addQuiz'
+import MyQuiz from './components/protected/myQuiz'
+import EditQuiz from './components/protected/editQuiz'
+import { AUTH } from './services/helpers/enum.js'
 
-function PrivateRoute({ component: Component, authed, ...rest }) {
+function PrivateRoute({ component: Component, authed, authState, ...rest }) {
   return (
     <Route
       {...rest}
-      render={(props) => authed === true
-        ? <Component {...props} />
-        : <Redirect to={{ pathname: '/', state: { from: props.location } }} />}
+      render={function (props) {
+        switch (authState) {
+          case AUTH.CHECKING: {
+            return <div> {'Verifying session'}</div>
+          }
+          case AUTH.SUCCESS: {
+            return <Component {...props} />
+          }
+          case AUTH.FAIL: {
+            return <div>{'Need to signin'}</div>
+          }
+          default: return <div />
+        }
+      }}
     />
   )
 }
@@ -32,34 +46,69 @@ export default class App extends Component {
     super();
     this.state = {
       user: null,
-      isLoggedIn: false
+      authed: false,
+      authState: AUTH.CHECKING,
     }
-    onStateChanged(this);
+
+    this.handleLogin = this.handleLogin.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+
+  componentDidMount() {
+    validateUser().then((res) => this.setState(res));
+  }
+
+  componentWillUnmount() {
+    // this.removeListener()
+  }
+
+  handleLogin() {
+    login().then((res) => this.setState(res));
+  }
+
+  handleLogout() {
+    logout().then((res) => this.setState(res));
   }
 
   render() {
+    // if (this.state.authState === AUTH.CHECKING) {
+    //   return <div> {'Loading...'} {this.state.authState} </div>
+    // }
     return (
-      <Router>
+      <BrowserRouter>
         <div>
           <Link to="/">Leaderboard</Link><br />
-          {
-            this.state.isLoggedIn === false ? (
-              <button onClick={() => {handleLogin(this)}}>Login</button>
-            ) : (
+          {!this.state.authed ? (
+            <button onClick={this.handleLogin}>Login{this.state.authed} </button>
+          ) : (
               <div>
+                <Link to="/myQuiz">My Quiz</Link><br />
                 <Link to="/addQuiz">Add Quiz</Link><br />
-                <span> name: {this.state.isLoggedIn && this.state.user.displayName} </span><br />
-                <button onClick={() => {handleLogout(this)}}>Log out</button>
+                <span> name: {this.state.authed && this.state.user.displayName} </span><br />
+                <button onClick={this.handleLogout}>Log out</button>
               </div>
             )
           }
           <Switch>
-          <Route exact path="/" component={Leaderboard} />
-          <PrivateRoute authed={this.state.isLoggedIn} path='/addQuiz' component={AddQuiz} />
-          <Route render={() => <h3>No Match</h3>} />
+            <Route exact path="/" component={Leaderboard} />
+            <PrivateRoute
+              authState={this.state.authState}
+              authed={this.state.authed} path='/addQuiz'
+              component={AddQuiz} />
+            <PrivateRoute
+              authState={this.state.authState}
+              authed={this.state.authed}
+              path='/myQuiz'
+              component={MyQuiz} />
+            <PrivateRoute
+              authState={this.state.authState}
+              authed={this.state.authed}
+              path='/editQuiz'
+              component={EditQuiz} />
+            <Route render={() => <h3>No Match</h3>} />
           </Switch>
         </div>
-      </Router>
+      </BrowserRouter>
     );
   }
 }
