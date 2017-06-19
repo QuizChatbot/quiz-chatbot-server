@@ -14,8 +14,7 @@ export const createQuiz = (state) =>
     }
 
     ref.child('Quests').push(item);
-    alert("Complete");
-
+    alert("Add succeeded");
     resolve({
       subject: '',
       question: '',
