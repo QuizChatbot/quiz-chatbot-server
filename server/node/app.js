@@ -1,6 +1,7 @@
 
 (async () => {
-
+  require('es6-promise').polyfill();
+  require('isomorphic-fetch');
   const
     bodyParser = require('body-parser'),
     config = require('config'),
@@ -12,15 +13,12 @@
     utillArray = require('./utill_array'),
     firebase = require('./firebase')
 
+    
   let keys = await getKeys()
-  console.log("keys in app = ", keys)
-
-
-  //let questions = getAllQuestions()
-
+  let user
+  let results
   let answerForEachQuestion
   let currentQuestionKey
-  let userData = {}
 
 
   function setState(userId, state) {
@@ -46,7 +44,22 @@
   }
 
 
+  const getUserDetail = (senderID) => new Promise(async (resolve) => {
 
+    const pageAccessToken = 'EAADz9MihTvcBAIytXu2dASyZACO3IFrx2v5YQYjNBnZAXsgxohA3P0FUbQ87EAi7ojJLdqQiQ4VCZCTWe1ctTdKUabE2hLRbJ5yFMfPzjaQrRtpWgnVktLjOExjjTQdW5SZCZA1imL83x6iBECIkacm8IE6Tnwf4veTNvKuZCa8wZDZD'
+    const graph = `https://graph.facebook.com/v2.6/${senderID}?access_token=${pageAccessToken}`
+    console.log("graph = ", graph);
+    fetch(graph)
+      .then(async function (response) {
+        if (response.status >= 400) {
+          throw new Error("Bad response from server");
+        }
+        let json = await response.json();
+        console.log("json = ", json);
+        resolve(json)
+      })
+
+  })
 
 
 
@@ -88,6 +101,7 @@
 
 
   app.get('/webhook', (req, res) => {
+
     if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === VALIDATION_TOKEN) {
       console.log("Validating webhook")
@@ -146,28 +160,7 @@
     }
   });
 
-  /*
-   * This path is used for account linking. The account linking call-to-action
-   * (sendAccountLinking) is pointed to this URL. 
-   * 
-   */
-  // app.get('/authorize', function(req, res) {
-  //   var accountLinkingToken = req.query.account_linking_token;
-  //   var redirectURI = req.query.redirect_uri;
 
-  //   // Authorization Code should be generated per user by the developer. This will 
-  //   // be passed to the Account Linking callback.
-  //   var authCode = "1234567890";
-
-  //   // Redirect users to this URI on successful login
-  //   var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
-
-  //   res.render('authorize', {
-  //     accountLinkingToken: accountLinkingToken,
-  //     redirectURI: redirectURI,
-  //     redirectURISuccess: redirectURISuccess
-  //   });
-  // });
 
   /*
    * Verify that the callback came from Facebook. Using the App Secret from 
@@ -177,27 +170,27 @@
    * https://developers.facebook.com/docs/graph-api/webhooks#setup
    *
    */
-  // function verifyRequestSignature(req, res, buf) {
-  //   var signature = req.headers["x-hub-signature"];
+  function verifyRequestSignature(req, res, buf) {
+    var signature = req.headers["x-hub-signature"];
 
-  //   if (!signature) {
-  //     // For testing, let's log an error. In production, you should throw an 
-  //     // error.
-  //     console.error("Couldn't validate the signature.");
-  //   } else {
-  //     var elements = signature.split('=');
-  //     var method = elements[0];
-  //     var signatureHash = elements[1];
+    if (!signature) {
+      // For testing, let's log an error. In production, you should throw an 
+      // error.
+      console.error("Couldn't validate the signature.");
+    } else {
+      var elements = signature.split('=');
+      var method = elements[0];
+      var signatureHash = elements[1];
 
-  //     var expectedHash = crypto.createHmac('sha1', APP_SECRET)
-  //                         .update(buf)
-  //                         .digest('hex');
+      var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+        .update(buf)
+        .digest('hex');
 
-  //     if (signatureHash != expectedHash) {
-  //       throw new Error("Couldn't validate the request signature.");
-  //     }
-  //   }
-  // }
+      if (signatureHash != expectedHash) {
+        throw new Error("Couldn't validate the request signature.");
+      }
+    }
+  }
 
   /*
    * Authorization Event
@@ -207,26 +200,27 @@
    * https://developers.facebook.com/docs/messenger-platform/webhook-reference/authentication
    *
    */
-  // function receivedAuthentication(event) {
-  //   var senderID = event.sender.id;
-  //   var recipientID = event.recipient.id;
-  //   var timeOfAuth = event.timestamp;
+  function receivedAuthentication(event) {
+    console.log("_________________________________ ", event)
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfAuth = event.timestamp;
 
-  //   // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
-  //   // The developer can set this to an arbitrary value to associate the 
-  //   // authentication callback with the 'Send to Messenger' click event. This is
-  //   // a way to do account linking when the user clicks the 'Send to Messenger' 
-  //   // plugin.
-  //   var passThroughParam = event.optin.ref;
+    // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
+    // The developer can set this to an arbitrary value to associate the 
+    // authentication callback with the 'Send to Messenger' click event. This is
+    // a way to do account linking when the user clicks the 'Send to Messenger' 
+    // plugin.
+    var passThroughParam = event.optin.ref;
 
-  //   console.log("Received authentication for user %d and page %d with pass " +
-  //     "through param '%s' at %d", senderID, recipientID, passThroughParam, 
-  //     timeOfAuth);
+    console.log("Received authentication for user %d and page %d with pass " +
+      "through param '%s' at %d", senderID, recipientID, passThroughParam,
+      timeOfAuth);
 
-  //   // When an authentication is received, we'll send a message back to the sender
-  //   // to let them know it was successful.
-  //   sendTextMessage(senderID, "Authentication successful");
-  // }
+    // When an authentication is received, we'll send a message back to the sender
+    // to let them know it was successful.
+    sendTextMessage(senderID, "Authentication successful");
+  }
 
   /*
    * Message Event
@@ -243,7 +237,7 @@
    * 
    */
   async function receivedMessage(event) {
-
+    console.log("Event = ", event.userId)
     var senderID = event.sender.id
     var recipientID = event.recipient.id
     var timeOfMessage = event.timestamp
@@ -332,8 +326,37 @@
           break
 
         default: {
-          if (state === 0) //user chat with bot for the first time
-            sendLetsQuiz(senderID, messageText)
+          if (state === 0) { //user chat with bot for the first time
+
+            if (!user) {
+              let userDetail = await getUserDetail(senderID)
+              user = userDetail
+            }
+            let firstName = user.first_name
+            console.log("User= ", user)
+            sendLetsQuiz(senderID, messageText, firstName)
+            //Log in Button
+            // var messageData = {
+            //   recipient: {
+            //     id: senderID
+            //   },
+            //   message: {
+            //     attachment: {
+            //       type: "template",
+            //       payload: {
+            //         template_type: "button",
+            //         text: "What are you?",
+            //         buttons: [{
+            //           type: "account_link",
+            //           url: "https://caab1a09.ngrok.io/authorize"
+
+            //         }]
+            //       }
+            //     }
+            //   }
+            // };
+            // callSendAPI(messageData)
+          }
 
           else if (state === 1) { //already quiz with chatbot
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keys)
@@ -348,23 +371,6 @@
             const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
             const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
             callSendAPI(buttonMessage)
-
-
-
-
-
-
-
-
-            // if(answerForEachQuestion == null){ 
-            //   console.log("Doesn't have this id in questions json")
-            //   return null
-            // }
-
-            // let buttonsCreated = createButton.createButtonFromQuestionId("-KmfdJ61WGXoWBhqbsAl")
-            // let buttonMessage = createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-
-            // callSendAPI(buttonMessage)  
           }
         }
       }
@@ -441,7 +447,7 @@
 
   async function nextQuestion(senderID) {
     //delete key of question that already asked from all keys
-    keys = removeKeyThatAsked(currentQuestionKey) 
+    keys = removeKeyThatAsked(currentQuestionKey)
     console.log("keyToButton in nextQuestion after delete = ", keys)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keys)
     //define current key = key of question about to ask
@@ -460,25 +466,18 @@
 
       let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
       let buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-      
+
       callSendAPI(buttonMessage)
     }
   }
 
   //delete key of question that already asked
-  function removeKeyThatAsked(currentQuestionKey){
-     utillArray._.remove(keys, function (key) {
-      return key === currentQuestionKey 
+  function removeKeyThatAsked(currentQuestionKey) {
+    utillArray._.remove(keys, function (key) {
+      return key === currentQuestionKey
     })
     return keys
   }
-
-
-  // function getAllQuestions() {
-  //   let questions = createButton.readQuestions()
-  //   return questions
-  // }
-
 
   /*
    * Message Read Event
@@ -509,16 +508,16 @@
    * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
    * 
    */
-  // function receivedAccountLink(event) {
-  //   var senderID = event.sender.id;
-  //   var recipientID = event.recipient.id;
+  function receivedAccountLink(event) {
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
 
-  //   var status = event.account_linking.status;
-  //   var authCode = event.account_linking.authorization_code;
+    var status = event.account_linking.status;
+    var authCode = event.account_linking.authorization_code;
 
-  //   console.log("Received account link event with for user %d with status %s " +
-  //     "and auth code %s ", senderID, status, authCode);
-  // }
+    console.log("Received account link event with for user %d with status %s " +
+      "and auth code %s ", senderID, status, authCode);
+  }
 
   // /*
   //  * Send an image using the Send API.
@@ -975,13 +974,13 @@
   }
 
 
-  function sendLetsQuiz(recipientId, messageText) {
+  function sendLetsQuiz(recipientId, messageText, firstName) {
     var messageData = {
       recipient: {
         id: recipientId
       },
       message: {
-        text: "Welcome to Quizbot",
+        text: "Welcome to Quizbot! " + firstName,
         metadata: "DEVELOPER_DEFINED_METADATA"
       }
     };

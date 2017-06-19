@@ -7,9 +7,7 @@ const readQuestions = function () {
 
 const createButtonFromQuestionId = async (id) => {
   let question = await firebase.getQuestionFromId(id)
-  //console.log("Q = ", question)
   let answers = question.answers
-  //console.log("result answer createButtonFromQuestionId= ", answers)
 
   //push key and value to button 
   //but we will delete the 'subject' and 'question' key later'
@@ -24,7 +22,6 @@ const createButtonFromQuestionId = async (id) => {
   }, this);
 
   console.log("buttons =", buttons)
-  //console.log("subject =", question.subject)
 
   return {
     buttons: buttons,
@@ -55,9 +52,8 @@ const createButtonMessageWithButtons =  (recipientId, buttons) => {
       }
     }
   };
-  //console.log("mssgdata = ",messageData)
   console.log("mssgdata buttons= ",buttons)
   return messageData
 }
-
+ 
 module.exports = { readQuestions, createButtonFromQuestionId, createButtonMessageWithButtons}

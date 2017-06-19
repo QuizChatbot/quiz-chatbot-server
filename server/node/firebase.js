@@ -91,6 +91,23 @@ const getAllQuestionKeys = ()=> new Promise(async (resolve) => {
    
 })
 
+const test = () => {
+    //const admin = require("firebase-admin");
+    //var authData = admin.database()
+    const firebase = require('firebase')
+    const firebaseApp = require('firebase/app');
+    const firebaseAuth = require('firebase/auth');
+    //let ref = new Firebase("https://quizchatbot-ce222.firebaseio.com/")
+    
+    // let authData = ref.getAuth()   
+    // if (authData) {
+    //     console.log("Authenticated user with uid:", authData.uid);
+    // }
+    // else{
+    //     console.log("No UID")
+    // }
+}
 
-module.exports = { connectToFirebase, readQuestionsFromFirebase, getAllAnswerFromQuestion, getQuestionFromId, getAllQuestionKeys }
+
+module.exports = { connectToFirebase, readQuestionsFromFirebase, getAllAnswerFromQuestion, getQuestionFromId, getAllQuestionKeys, test }
 
