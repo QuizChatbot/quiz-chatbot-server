@@ -5,7 +5,7 @@ export const createQuiz = (state) =>
     const item = {
       owner: firebase.auth().currentUser.uid,
       subject: state.subject,
-      question: "```" + state.question + "```",
+      question: state.question,
       answers: [state.answer, state.choice1, state.choice2],
       skills: "es6",
       point: 10,
