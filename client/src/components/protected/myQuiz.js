@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import firebase, { ref } from '../../config/firebase'
 import { getQuizzes } from '../../services/firebase/getQuizzes'
 import { deleteQuiz } from '../../services/firebase/deleteQuiz'
+import firebase, { ref } from '../../config/firebase'
 
 export default class MyQuiz extends Component {
   constructor() {
@@ -13,6 +13,10 @@ export default class MyQuiz extends Component {
 
   componentDidMount() {
     getQuizzes().then(this.setState.bind(this));
+  }
+
+  deleteQuiz(qid) {
+    deleteQuiz(qid).then((res) => this.setState({ quizzes: res }));
   }
 
   render() {
@@ -27,8 +31,8 @@ export default class MyQuiz extends Component {
                 <p>answer: {quiz.answer}</p>
                 <p>choice1: {quiz.choice1}</p>
                 <p>choice2: {quiz.choice2}</p>
-                <button onClick={() => window.location = '/editquiz/'}>Edit Quiz</button>
-                <button onClick={() => deleteQuiz(quiz.id)}>Remove Quiz</button>
+                <button onClick={() => this.editQuiz(quiz.id)}>Edit Quiz</button>
+                <button onClick={() => this.deleteQuiz(quiz.id)}>Remove Quiz</button>
               </li>
             )
           })}

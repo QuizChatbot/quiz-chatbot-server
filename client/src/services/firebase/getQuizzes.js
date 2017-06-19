@@ -18,7 +18,6 @@ export const getQuizzes = () =>
             choice2: child.val().answers[2]
           });
         })
-
         resolve({
           quizzes
         });
