@@ -98,7 +98,7 @@ const saveResultToFirebase = (senderID, prepareResult) => {
     let db = admin.database() 
     let ref = db.ref("/Developer/" + senderID)
     ref.child("results").push({
-        result  
+        result   
     })
 }
 

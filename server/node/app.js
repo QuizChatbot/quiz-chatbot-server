@@ -19,7 +19,7 @@
   let results
   let answerForEachQuestion
   let currentQuestionKey
-
+  
 
   function setState(userId, state) {
     if (!userData.hasOwnProperty(userId)) {
@@ -469,13 +469,13 @@
     //Correct
     if (result) {
       sendTextMessage(senderID, "Good dog!")
-      let preapareResult = prepareResultForFirebase(payload, answerForEachQuestion, result)
+      let preapareResult = prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback)
       firebase.saveResultToFirebase(senderID, preapareResult)
     }
     //Wrong
     else {
       sendTextMessage(senderID, "Bad dog!")
-      let preapareResult = prepareResultForFirebase(payload, answerForEachQuestion, result)
+      let preapareResult = prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback)
       firebase.saveResultToFirebase(senderID, preapareResult)
     }
 
@@ -495,10 +495,12 @@
   }
 
   //set format of the result we want to save in firebase
-  function prepareResultForFirebase(payload, answerForEachQuestion, result) {
+  function prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback) {
     let preapareObj = []
     let userAnswerObj = JSON.parse(payload)
+    let doneAt = utillArray.getFormattedDate(timeOfPostback)
     userAnswerObj.result = result
+    userAnswerObj.doneAt = doneAt
     preapareObj.push(userAnswerObj)
     console.log("reuslt = ", preapareObj)
     return preapareObj

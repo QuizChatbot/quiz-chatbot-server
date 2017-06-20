@@ -1,5 +1,6 @@
-const _ = require('lodash');
+const _ = require('lodash')
 const array = require('lodash/array')
+const moment = require('moment')
 
 const shuffleKeyFromQuestions = (keys) => {
     console.log("shuffle function")
@@ -14,9 +15,14 @@ const shuffleKeyFromQuestions = (keys) => {
 }
 
 const timer = () => {
-    
+
+}
+
+const getFormattedDate = (timestamp) => {
+    let date = moment(timestamp).format()
+    return date
 }
 
 
 
-module.exports = { shuffleKeyFromQuestions, _ }
+module.exports = { shuffleKeyFromQuestions, _, getFormattedDate }
