@@ -454,13 +454,13 @@
    */
   function receivedPostback(event) {
 
-    var senderID = event.sender.id;
-    var recipientID = event.recipient.id;
-    var timeOfPostback = event.timestamp;
+    let senderID = event.sender.id;
+    let recipientID = event.recipient.id;
+    let timeOfPostback = event.timestamp;
 
     // The 'payload' param is a developer-defined field which is set in a postback 
     // button for Structured Messages. 
-    var payload = event.postback.payload;
+    let payload = event.postback.payload;
     console.log("Received postback for user %d and page %d with payload '%s' " +
       "at %d", senderID, recipientID, payload, timeOfPostback);
 
@@ -469,11 +469,14 @@
     //Correct
     if (result) {
       sendTextMessage(senderID, "Good dog!")
-      //firebase.saveResultToFirebase(senderID, result)
+      let preapareResult = prepareResultForFirebase(payload, answerForEachQuestion, result)
+      firebase.saveResultToFirebase(senderID, preapareResult)
     }
     //Wrong
     else {
       sendTextMessage(senderID, "Bad dog!")
+      let preapareResult = prepareResultForFirebase(payload, answerForEachQuestion, result)
+      firebase.saveResultToFirebase(senderID, preapareResult)
     }
 
     nextQuestion(senderID)
@@ -491,13 +494,14 @@
 
   }
 
-  function prepareResultForFirebase(payload, answerForEachQuestion) {
-    let result = {}
+  //set format of the result we want to save in firebase
+  function prepareResultForFirebase(payload, answerForEachQuestion, result) {
+    let preapareObj = []
     let userAnswerObj = JSON.parse(payload)
-    result.push(userAnswerObj.answers)
-    console.log("reuslt = ", result)
-
-
+    userAnswerObj.result = result
+    preapareObj.push(userAnswerObj)
+    console.log("reuslt = ", preapareObj)
+    return preapareObj
   }
 
   async function nextQuestion(senderID) {

@@ -17,7 +17,7 @@ const createButtonFromQuestionId = async (id) => {
     buttons.push({
       type: "postback",
       title: element,
-      payload: JSON.stringify({ "answers": element, "question": id })
+      payload: JSON.stringify({ "answers": element, "question": id, "point" : question.point })
     })
   }, this);
 

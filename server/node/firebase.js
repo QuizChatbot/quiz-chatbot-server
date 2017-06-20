@@ -91,15 +91,14 @@ const getAllQuestionKeys = () => new Promise(async (resolve) => {
 
 })
 
-const saveResultToFirebase = (senderID, result) => {
-    let db = admin.database()
+const saveResultToFirebase = (senderID, prepareResult) => {
+    let result = prepareResult[0]
+    let keyQuestion = result.question
+    console.log("key = " + keyQuestion)
+    let db = admin.database() 
     let ref = db.ref("/Developer/" + senderID)
-
-
-    ref.child("results").update({
-        "alanisawesome/nickname": "Alan The Machine",
-        "dog/full_name": "Doggy Doggy",
-        "cat/full_name": "Kitty"
+    ref.child("results").push({
+        result  
     })
 }
 
