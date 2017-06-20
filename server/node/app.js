@@ -13,7 +13,7 @@
     utillArray = require('./utill_array'),
     firebase = require('./firebase')
 
-    
+
   let keys = await getKeys()
   let user
   let results
@@ -47,8 +47,8 @@
   const getUserDetail = (senderID) => new Promise(async (resolve) => {
 
     const pageAccessToken = 'EAADz9MihTvcBAIytXu2dASyZACO3IFrx2v5YQYjNBnZAXsgxohA3P0FUbQ87EAi7ojJLdqQiQ4VCZCTWe1ctTdKUabE2hLRbJ5yFMfPzjaQrRtpWgnVktLjOExjjTQdW5SZCZA1imL83x6iBECIkacm8IE6Tnwf4veTNvKuZCa8wZDZD'
-    const graph = `https://graph.facebook.com/v2.6/${senderID}?access_token=${pageAccessToken}`
-    console.log("graph = ", graph);
+    const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${pageAccessToken}`
+    console.log("graph user detail= ", graph);
     fetch(graph)
       .then(async function (response) {
         if (response.status >= 400) {
@@ -58,8 +58,24 @@
         console.log("json = ", json);
         resolve(json)
       })
-
   })
+
+  // const getUserPSID = (senderID) => new Promise(async (resolve) => {
+  //   const accountLinkingToken = "ART0rGA7_DePruzCsC6LWtN5Oapr5pt5DFFVHtsqsiyRkFsmUCqgkvVuFsDAoosdjhwSBgXOpSNtPnKxIPOEQvM6mKDwu7P2IStBlAIbIfLp1w"
+  //   const pageAccessToken = 'EAADz9MihTvcBAIytXu2dASyZACO3IFrx2v5YQYjNBnZAXsgxohA3P0FUbQ87EAi7ojJLdqQiQ4VCZCTWe1ctTdKUabE2hLRbJ5yFMfPzjaQrRtpWgnVktLjOExjjTQdW5SZCZA1imL83x6iBECIkacm8IE6Tnwf4veTNvKuZCa8wZDZD'
+  //   const graph = `https://graph.facebook.com/v2.9/me?access_token=${pageAccessToken}\&fields=recipient\&account_linking_token=${accountLinkingToken}`
+  //   console.log("graph user PSID = ", graph);
+  //   fetch(graph)
+  //     .then(async function (response) {
+  //       if (response.status >= 400) {
+  //         throw new Error("Bad response from server");
+  //       }
+  //       let result = await response.json();
+  //       console.log("response psid = ", result);
+  //       resolve(result)
+  //     })
+
+  // })
 
 
 
@@ -160,6 +176,28 @@
     }
   });
 
+  /*
+ * This path is used for account linking. The account linking call-to-action
+ * (sendAccountLinking) is pointed to this URL. 
+ * 
+ */
+  app.get('/authorize', function (req, res) {
+    var accountLinkingToken = req.query.account_linking_token;
+    var redirectURI = req.query.redirect_uri;
+    console.log("/Authorize tokem = ", accountLinkingToken)
+    // Authorization Code should be generated per user by the developer. This will 
+    // be passed to the Account Linking callback.
+    var authCode = "1234567890";
+
+    // Redirect users to this URI on successful login
+    var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
+
+    res.render('authorize', {
+      accountLinkingToken: accountLinkingToken,
+      redirectURI: redirectURI,
+      redirectURISuccess: redirectURISuccess
+    });
+  });
 
 
   /*
@@ -335,6 +373,7 @@
             let firstName = user.first_name
             console.log("User= ", user)
             sendLetsQuiz(senderID, messageText, firstName)
+            firebase.saveUserToFirebase(senderID, user)
             //Log in Button
             // var messageData = {
             //   recipient: {
@@ -427,8 +466,15 @@
 
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
-    if (result) sendTextMessage(senderID, "Good dog!")
-    else sendTextMessage(senderID, "Bad dog!")
+    //Correct
+    if (result) {
+      sendTextMessage(senderID, "Good dog!")
+      //firebase.saveResultToFirebase(senderID, result)
+    }
+    //Wrong
+    else {
+      sendTextMessage(senderID, "Bad dog!")
+    }
 
     nextQuestion(senderID)
 
@@ -442,6 +488,15 @@
     //the correct answer is always in first element of answers in json file
     if (userAnswerObj.answers == answerForEachQuestion[0]) return true
     else return false
+
+  }
+
+  function prepareResultForFirebase(payload, answerForEachQuestion) {
+    let result = {}
+    let userAnswerObj = JSON.parse(payload)
+    result.push(userAnswerObj.answers)
+    console.log("reuslt = ", result)
+
 
   }
 
@@ -508,15 +563,19 @@
    * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
    * 
    */
-  function receivedAccountLink(event) {
-    var senderID = event.sender.id;
-    var recipientID = event.recipient.id;
+  async function receivedAccountLink(event) {
+    var senderID = event.sender.id
+    console.log("account linking token= ", event.account_linking_token)
+    var recipientID = event.recipient.id
 
-    var status = event.account_linking.status;
-    var authCode = event.account_linking.authorization_code;
+    var status = event.account_linking.status
+    var authCode = event.account_linking.authorization_code
 
     console.log("Received account link event with for user %d with status %s " +
       "and auth code %s ", senderID, status, authCode);
+
+    let resultPSID = await getUserPSID(senderID)
+    console.log("result in receivedAccountLink = ", resultPSID)
   }
 
   // /*
@@ -890,28 +949,28 @@
    * Send a message with the account linking call-to-action
    *
    */
-  // function sendAccountLinking(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "template",
-  //         payload: {
-  //           template_type: "button",
-  //           text: "Welcome. Link your account.",
-  //           buttons:[{
-  //             type: "account_link",
-  //             url: SERVER_URL + "/authorize"
-  //           }]
-  //         }
-  //       }
-  //     }
-  //   };  
+  function sendAccountLinking(recipientId) {
+    var messageData = {
+      recipient: {
+        id: recipientId
+      },
+      message: {
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "button",
+            text: "Welcome. Link your account.",
+            buttons: [{
+              type: "account_link",
+              url: SERVER_URL + "/authorize"
+            }]
+          }
+        }
+      }
+    };
 
-  //   callSendAPI(messageData);
-  // }
+    callSendAPI(messageData);
+  }
 
   /*
    * Call the Send API. The message data goes in the body. If successful, we'll 

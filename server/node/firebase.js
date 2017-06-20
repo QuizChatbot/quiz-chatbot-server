@@ -33,7 +33,7 @@ const readQuestionsFromFirebase = async () => {
     return result
 }
 
-const getAllAnswerFromQuestion = async (id) =>{
+const getAllAnswerFromQuestion = async (id) => {
     var db = admin.database()
     var ref = db.ref("/Quests")
 
@@ -55,7 +55,7 @@ const getAllAnswerFromQuestion = async (id) =>{
     return result
 }
 
-const getQuestionFromId = async (id) =>{
+const getQuestionFromId = async (id) => {
     var db = admin.database()
     var ref = db.ref("/Quests")
 
@@ -72,42 +72,66 @@ const getQuestionFromId = async (id) =>{
     }).catch(function (errorObject) {
         return "The read failed: " + errorObject.code
     })
-    
+
     return result
 }
 
-const getAllQuestionKeys = ()=> new Promise(async (resolve) => {
+const getAllQuestionKeys = () => new Promise(async (resolve) => {
     const questions = await readQuestionsFromFirebase()
     const db = admin.database()
     const ref = db.ref("/Quests")
-    
+
     ref.orderByKey().once("value", (snapshot) => {
-            let keys = Object.keys(snapshot.val())
-            console.log("keys in getAllQuestionKeys =  " + keys) 
-            resolve(keys)
-        }, (errorObject) => {
-            console.log("Cannot get keys = " + errorObject.code)
-        })
-   
+        let keys = Object.keys(snapshot.val())
+        console.log("keys in getAllQuestionKeys =  " + keys)
+        resolve(keys)
+    }, (errorObject) => {
+        console.log("Cannot get keys = " + errorObject.code)
+    })
+
 })
 
-const test = () => {
-    //const admin = require("firebase-admin");
-    //var authData = admin.database()
-    const firebase = require('firebase')
-    const firebaseApp = require('firebase/app');
-    const firebaseAuth = require('firebase/auth');
-    //let ref = new Firebase("https://quizchatbot-ce222.firebaseio.com/")
-    
-    // let authData = ref.getAuth()   
-    // if (authData) {
-    //     console.log("Authenticated user with uid:", authData.uid);
-    // }
-    // else{
-    //     console.log("No UID")
-    // }
+const saveResultToFirebase = (senderID, result) => {
+    let db = admin.database()
+    let ref = db.ref("/Developer/" + senderID)
+
+
+    ref.child("results").update({
+        "alanisawesome/nickname": "Alan The Machine",
+        "dog/full_name": "Doggy Doggy",
+        "cat/full_name": "Kitty"
+    })
+}
+
+const saveUserToFirebase = (senderID, user) => {
+    console.log("User in firebase= ", user)
+    let db = admin.database()
+    let ref = db.ref("/Developer/")
+    let hasUser = false
+    //check if firebase has that user data 
+    ref.once("value")
+        .then((snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                console.log("chilssnapshot = ", childSnapshot.key)
+                if (childSnapshot.key == senderID) {
+                    console.log("Already have user information")
+                    hasUser = true
+                    return
+                }
+            });
+        });
+
+    //if firebase doesn't have user data
+    ref = db.ref("/Developer/" + senderID)
+    ref.update({ profile: user })
+
+
+
 }
 
 
-module.exports = { connectToFirebase, readQuestionsFromFirebase, getAllAnswerFromQuestion, getQuestionFromId, getAllQuestionKeys, test }
+module.exports = {
+    connectToFirebase, readQuestionsFromFirebase, getAllAnswerFromQuestion, getQuestionFromId,
+    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase
+}
 
