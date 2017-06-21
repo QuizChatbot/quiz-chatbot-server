@@ -100,6 +100,8 @@ const saveResultToFirebase = (senderID, prepareResult) => {
     ref.child("results").push({
           "answer" : result.answer,
           "doneAt" : result.doneAt,
+          "startedAt" : result.startedAt,
+          "duration" : result.duration,
           "point" : result.point,
           "question" : result.question,
           "result" : result.result

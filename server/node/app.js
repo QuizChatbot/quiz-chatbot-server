@@ -16,12 +16,14 @@
 
   config.serverURL = tunnelConfig.serverURL
   console.log("config ", config, tunnelConfig)
+
  
   let keys = await getKeys()
   let user
   let results
   let answerForEachQuestion
   let currentQuestionKey
+  let startedAt
 
 
   function setState(userId, state) {
@@ -414,6 +416,7 @@
 
             const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
             const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+            startedAt = utillArray.getMoment()
             callSendAPI(buttonMessage)
           }
         }
@@ -458,7 +461,6 @@
    * 
    */
   function receivedPostback(event) {
-    console.log("Receive postback")
     let senderID = event.sender.id;
     let recipientID = event.recipient.id;
     let timeOfPostback = event.timestamp;
@@ -480,8 +482,8 @@
     //Wrong
     else {
       sendTextMessage(senderID, "Bad dog!")
-      let preapareResult = prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback)
-      firebase.saveResultToFirebase(senderID, preapareResult)
+      let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback)
+      firebase.saveResultToFirebase(senderID, preparedResult)
     }
 
     nextQuestion(senderID)
@@ -504,8 +506,12 @@
     let preapareObj = []
     let userAnswerObj = JSON.parse(payload)
     let doneAt = utillArray.getFormattedDate(timeOfPostback)
+    let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
+    console.log("______DURATION  = ", duration)
     userAnswerObj.result = result
     userAnswerObj.doneAt = doneAt
+    userAnswerObj.startedAt = startedAt
+    userAnswerObj.duration = duration
     preapareObj.push(userAnswerObj)
     console.log("reuslt = ", preapareObj)
     return preapareObj
@@ -524,7 +530,6 @@
     else {
       //no key that matched question
       answerForEachQuestion = await firebase.getAllAnswerFromQuestion(keyOfNextQuestion)
-      console.log("answerForEachQuestion in nextQ = ", answerForEachQuestion)
       if (answerForEachQuestion == null) {
         console.log("Doesn't have this id in questions json")
         return null
@@ -532,6 +537,8 @@
 
       let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
       let buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+
+      startedAt = utillArray.getMoment()
 
       callSendAPI(buttonMessage)
     }
@@ -989,6 +996,7 @@
    *
    */
   function callSendAPI(messageData) {
+    //startedAt = utillArray.getMoment() //get started time
     request({
       uri: 'https://graph.facebook.com/v2.6/me/messages',
       qs: { access_token: PAGE_ACCESS_TOKEN },
