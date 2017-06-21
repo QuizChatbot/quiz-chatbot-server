@@ -11,10 +11,10 @@ const prepareSummary = (done, keys, round, skill, grade, score) => {
     return summaryObj
 }
 
-const calculateUserScore = (result) => {
+const calculateUserScore = (point, result) => {
     let score = 0
     if(result){
-         score = 10
+         score = point
     }
    
     return score

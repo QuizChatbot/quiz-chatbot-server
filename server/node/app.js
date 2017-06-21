@@ -501,7 +501,7 @@
 
     //send to calculate grade
     let totalScore = summary.calculateTotalScore(numberOfQuestions)
-    let scoreOfThatQuestion = summary.calculateUserScore(done, result)
+    let scoreOfThatQuestion = summary.calculateUserScore(JSON.parse(payload).point, result)
     userScore += scoreOfThatQuestion
     let grade = summary.calculateGrade(totalScore, userScore)
 
