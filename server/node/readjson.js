@@ -17,7 +17,7 @@ const createButtonFromQuestionId = async (id) => {
     buttons.push({
       type: "postback",
       title: element,
-      payload: JSON.stringify({ "answers": element, "question": id, "point" : question.point })
+      payload: JSON.stringify({ "answer": element, "question": id, "point": question.point })
     })
   }, this);
 
@@ -30,7 +30,7 @@ const createButtonFromQuestionId = async (id) => {
   }
 }
 
-const createButtonMessageWithButtons =  (recipientId, buttons) => {
+const createButtonMessageWithButtons = (recipientId, buttons) => {
   //delete 'subject' and 'question' key from buttons
   let subject = buttons.subject
   let question = buttons.question
@@ -52,8 +52,8 @@ const createButtonMessageWithButtons =  (recipientId, buttons) => {
       }
     }
   };
-  console.log("mssgdata buttons= ",buttons)
+  console.log("mssgdata buttons= ", buttons)
   return messageData
 }
- 
+
 module.exports = { readQuestions, createButtonFromQuestionId, createButtonMessageWithButtons}

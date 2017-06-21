@@ -25,6 +25,7 @@
     "firebase-admin": "^5.0.0",
     "https": "^1.0.0",
     "isomorphic-fetch": "^2.2.1",
+    "localtunnel": "^1.8.3",
     "lodash": "^4.17.4",
     "lodash.remove": "^4.7.0",
     "moment": "^2.18.1",

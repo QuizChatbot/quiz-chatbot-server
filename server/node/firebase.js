@@ -98,7 +98,11 @@ const saveResultToFirebase = (senderID, prepareResult) => {
     let db = admin.database() 
     let ref = db.ref("/Developer/" + senderID)
     ref.child("results").push({
-        result   
+          "answer" : result.answer,
+          "doneAt" : result.doneAt,
+          "point" : result.point,
+          "question" : result.question,
+          "result" : result.result
     })
 }
 

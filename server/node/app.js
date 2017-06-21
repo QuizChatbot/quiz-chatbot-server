@@ -11,15 +11,18 @@
     request = require('request'),
     createButton = require('./readjson'),
     utillArray = require('./utill_array'),
-    firebase = require('./firebase')
+    firebase = require('./firebase'),
+    tunnelConfig = require('./tunnel.json')
 
-
+  config.serverURL = tunnelConfig.serverURL
+  console.log("config ", config, tunnelConfig)
+ 
   let keys = await getKeys()
   let user
   let results
   let answerForEachQuestion
   let currentQuestionKey
-  
+
 
   function setState(userId, state) {
     if (!userData.hasOwnProperty(userId)) {
@@ -34,9 +37,9 @@
       return "initialize"
     } else {
       return userData[userId].state
-    }
+    }  
   }
-
+ 
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
     console.log("getkeys = ", keys)
@@ -44,21 +47,7 @@
   }
 
 
-  const getUserDetail = (senderID) => new Promise(async (resolve) => {
 
-    const pageAccessToken = 'EAADz9MihTvcBAIytXu2dASyZACO3IFrx2v5YQYjNBnZAXsgxohA3P0FUbQ87EAi7ojJLdqQiQ4VCZCTWe1ctTdKUabE2hLRbJ5yFMfPzjaQrRtpWgnVktLjOExjjTQdW5SZCZA1imL83x6iBECIkacm8IE6Tnwf4veTNvKuZCa8wZDZD'
-    const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${pageAccessToken}`
-    console.log("graph user detail= ", graph);
-    fetch(graph)
-      .then(async function (response) {
-        if (response.status >= 400) {
-          throw new Error("Bad response from server");
-        }
-        let json = await response.json();
-        console.log("json = ", json);
-        resolve(json)
-      })
-  })
 
   // const getUserPSID = (senderID) => new Promise(async (resolve) => {
   //   const accountLinkingToken = "ART0rGA7_DePruzCsC6LWtN5Oapr5pt5DFFVHtsqsiyRkFsmUCqgkvVuFsDAoosdjhwSBgXOpSNtPnKxIPOEQvM6mKDwu7P2IStBlAIbIfLp1w"
@@ -80,7 +69,7 @@
 
 
   var app = express()
-  app.set('port', process.env.PORT || 5000)
+  app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
   app.use(express.static('public'))
@@ -109,22 +98,38 @@
   const SERVER_URL = (process.env.SERVER_URL) ?
     (process.env.SERVER_URL) :
     config.get('serverURL')
+  
 
   if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
     console.error("Missing config values")
     process.exit(1)
   }
 
+  const getUserDetail = (senderID) => new Promise(async (resolve) => {
+
+    //const pageAccessToken = 'EAADz9MihTvcBAIytXu2dASyZACO3IFrx2v5YQYjNBnZAXsgxohA3P0FUbQ87EAi7ojJLdqQiQ4VCZCTWe1ctTdKUabE2hLRbJ5yFMfPzjaQrRtpWgnVktLjOExjjTQdW5SZCZA1imL83x6iBECIkacm8IE6Tnwf4veTNvKuZCa8wZDZD'
+    const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
+    console.log("graph user detail= ", graph);
+    fetch(graph)
+      .then(async function (response) {
+        if (response.status >= 400) {
+          throw new Error("Bad response from server");
+        }
+        let json = await response.json();
+        console.log("json = ", json);
+        resolve(json)
+      })
+  })
 
   app.get('/webhook', (req, res) => {
-
+    console.log("req = .", req.query)
     if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === VALIDATION_TOKEN) {
       console.log("Validating webhook")
       res.status(200).send(req.query['hub.challenge'])
-      res.send("Hello from the other sideeeee")
     } else {
       console.error("Failed validation. Make sure the validation tokens match.")
+
       res.sendStatus(403)
     }
   });
@@ -453,7 +458,7 @@
    * 
    */
   function receivedPostback(event) {
-
+    console.log("Receive postback")
     let senderID = event.sender.id;
     let recipientID = event.recipient.id;
     let timeOfPostback = event.timestamp;
