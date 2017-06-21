@@ -12,18 +12,24 @@
     createButton = require('./readjson'),
     utillArray = require('./utill_array'),
     firebase = require('./firebase'),
-    tunnelConfig = require('./tunnel.json')
+    tunnelConfig = require('./tunnel.json'),
+    summary = require('./summary')
 
   config.serverURL = tunnelConfig.serverURL
   console.log("config ", config, tunnelConfig)
 
- 
+
   let keys = await getKeys()
+  let numberOfQuestions = await firebase.getNumberOfQuestions()
   let user
   let results
   let answerForEachQuestion
   let currentQuestionKey
   let startedAt
+  let round = 1
+  let done = 0
+  let skill = "es6"
+  let userScore = 0
 
 
   function setState(userId, state) {
@@ -39,9 +45,9 @@
       return "initialize"
     } else {
       return userData[userId].state
-    }  
+    }
   }
- 
+
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
     console.log("getkeys = ", keys)
@@ -100,7 +106,7 @@
   const SERVER_URL = (process.env.SERVER_URL) ?
     (process.env.SERVER_URL) :
     config.get('serverURL')
-  
+
 
   if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
     console.error("Missing config values")
@@ -378,9 +384,10 @@
               user = userDetail
             }
             let firstName = user.first_name
-            console.log("User= ", user)
             sendLetsQuiz(senderID, messageText, firstName)
             firebase.saveUserToFirebase(senderID, user)
+
+
             //Log in Button
             // var messageData = {
             //   recipient: {
@@ -471,13 +478,17 @@
     console.log("Received postback for user %d and page %d with payload '%s' " +
       "at %d", senderID, recipientID, payload, timeOfPostback);
 
+    //if in question state when receive postback done = done +1 
+    //number of question user answered incresae 
+    if (state == 1) done++
+
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
     //Correct
     if (result) {
       sendTextMessage(senderID, "Good dog!")
-      let preapareResult = prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback)
-      firebase.saveResultToFirebase(senderID, preapareResult)
+      let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback)
+      firebase.saveResultToFirebase(senderID, preparedResult)
     }
     //Wrong
     else {
@@ -486,6 +497,19 @@
       firebase.saveResultToFirebase(senderID, preparedResult)
     }
 
+    keys = removeKeyThatAsked(currentQuestionKey)
+
+    //send to calculate grade
+    let totalScore = summary.calculateTotalScore(numberOfQuestions)
+    let scoreOfThatQuestion = summary.calculateUserScore(done, result)
+    userScore += scoreOfThatQuestion
+    let grade = summary.calculateGrade(totalScore, userScore)
+
+
+    //prepare summary object to save in firebase
+    let preparedSummary = summary.prepareSummary(done, keys, round, skill, grade, userScore)
+    console.log("summary = ", preparedSummary)
+    firebase.saveSummaryToFirebase(senderID, preparedSummary)
     nextQuestion(senderID)
 
   }
@@ -496,37 +520,44 @@
     console.log("check ansforeachQ = ", answerForEachQuestion)
     console.log("check ans that user choose  = ", userAnswerObj)
     //the correct answer is always in first element of answers in json file
-    if (userAnswerObj.answers == answerForEachQuestion[0]) return true
+    if (userAnswerObj.answer == answerForEachQuestion[0]) return true
     else return false
 
   }
 
   //set format of the result we want to save in firebase
   function prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback) {
-    let preapareObj = []
+    let prepareObj = []
     let userAnswerObj = JSON.parse(payload)
     let doneAt = utillArray.getFormattedDate(timeOfPostback)
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
-    console.log("______DURATION  = ", duration)
     userAnswerObj.result = result
     userAnswerObj.doneAt = doneAt
     userAnswerObj.startedAt = startedAt
     userAnswerObj.duration = duration
-    preapareObj.push(userAnswerObj)
-    console.log("reuslt = ", preapareObj)
-    return preapareObj
+    prepareObj.push(userAnswerObj)
+    console.log("result = ", prepareObj)
+    return prepareObj
   }
 
   async function nextQuestion(senderID) {
     //delete key of question that already asked from all keys
-    keys = removeKeyThatAsked(currentQuestionKey)
+    //keys = removeKeyThatAsked(currentQuestionKey)
+
     console.log("keyToButton in nextQuestion after delete = ", keys)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keys)
     //define current key = key of question about to ask
     currentQuestionKey = keyOfNextQuestion
     console.log("keyToButton in nextQuestion = ", keyOfNextQuestion)
+
     //no question left
-    if (keyOfNextQuestion == null) sendTextMessage(senderID, "Finish!")
+    //finish that round
+    if (keyOfNextQuestion == null) {
+      sendTextMessage(senderID, "Finish!")
+      state = 2
+      done = 0
+      userScore = 0
+  }
     else {
       //no key that matched question
       answerForEachQuestion = await firebase.getAllAnswerFromQuestion(keyOfNextQuestion)

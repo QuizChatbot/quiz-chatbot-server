@@ -9,10 +9,16 @@ const connectToFirebase = () => {
 }
 const admin = connectToFirebase()
 
+const getNumberOfQuestions = async () => {
+     let keys  = await getAllQuestionKeys()
+     let numberOfQuestions = keys.length
+     return numberOfQuestions
+}
+
 const readQuestionsFromFirebase = async () => {
     // Get a database reference to our posts 
-    var db = admin.database()
-    var ref = db.ref("/Quests")
+    let db = admin.database()
+    let ref = db.ref("/Quests")
 
     let questionSnapshots
     // Attach an asynchronous callback to read the data at our posts reference
@@ -129,14 +135,23 @@ const saveUserToFirebase = (senderID, user) => {
     //if firebase doesn't have user data
     ref = db.ref("/Developer/" + senderID)
     ref.update({ profile: user })
-
-
-
 }
 
+const saveSummaryToFirebase = (senderID, summary) => {
+    let db = admin.database()
+    let ref = db.ref("/Developer/" + senderID)
+      ref.child("summary").update({
+          "round" : summary.round,
+          "done" : summary.done,
+          "keysQuestionLeft" : summary.keysQuestionLeft,
+          "skill" : summary.skill,
+          "grade" : summary.grade,
+          "score" : summary.score
+    })
+}
 
 module.exports = {
     connectToFirebase, readQuestionsFromFirebase, getAllAnswerFromQuestion, getQuestionFromId,
-    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase
+    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions
 }
 
