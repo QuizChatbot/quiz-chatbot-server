@@ -501,10 +501,9 @@
 
     //send to calculate grade
     let totalScore = summary.calculateTotalScore(numberOfQuestions)
-    let scoreOfThatQuestion = summary.calculateUserScore(JSON.parse(payload).point, result)
+    let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result) //point for that question 
     userScore += scoreOfThatQuestion
     let grade = summary.calculateGrade(totalScore, userScore)
-
 
     //prepare summary object to save in firebase
     let preparedSummary = summary.prepareSummary(done, keys, round, skill, grade, userScore)

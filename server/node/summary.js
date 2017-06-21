@@ -11,7 +11,7 @@ const prepareSummary = (done, keys, round, skill, grade, score) => {
     return summaryObj
 }
 
-const calculateUserScore = (point, result) => {
+const calculateScoreForThatQuestion = (point, result) => {
     let score = 0
     if(result){
          score = point
@@ -36,4 +36,4 @@ const calculateGrade = (totalScore, userScore) => {
     return grade
 }
 
-module.exports = {prepareSummary, calculateTotalScore, calculateGrade, calculateUserScore}
+module.exports = {prepareSummary, calculateTotalScore, calculateGrade, calculateScoreForThatQuestion}

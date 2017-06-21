@@ -140,7 +140,7 @@ const saveUserToFirebase = (senderID, user) => {
 const saveSummaryToFirebase = (senderID, summary) => {
     let db = admin.database()
     let ref = db.ref("/Developer/" + senderID)
-      ref.child("summary").update({
+      ref.child("summary").child(summary.round).update({
           "round" : summary.round,
           "done" : summary.done,
           "keysQuestionLeft" : summary.keysQuestionLeft,
