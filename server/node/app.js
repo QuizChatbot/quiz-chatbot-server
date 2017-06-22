@@ -26,7 +26,7 @@
   let answerForEachQuestion
   let currentQuestionKey
   let startedAt
-  let round = 2
+  let round = 1
   let done = 0
   let skill = "es6"
   let userScore = 0
@@ -130,7 +130,6 @@
   })
 
   app.get('/webhook', (req, res) => {
-    console.log("req = .", req.query)
     if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === VALIDATION_TOKEN) {
       console.log("Validating webhook")
@@ -252,7 +251,6 @@
    *
    */
   function receivedAuthentication(event) {
-    console.log("_________________________________ ", event)
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
     var timeOfAuth = event.timestamp;
@@ -288,7 +286,6 @@
    * 
    */
   async function receivedMessage(event) {
-    console.log("Event = ", event.userId)
     var senderID = event.sender.id
     var recipientID = event.recipient.id
     var timeOfMessage = event.timestamp
@@ -377,8 +374,9 @@
           break
 
         default: {
-          if (state === 0) { //user chat with bot for the first time
 
+          //user chat with bot for the first time
+          if (state === 0) {
             if (!user) {
               let userDetail = await getUserDetail(senderID)
               user = userDetail
@@ -411,7 +409,15 @@
             // callSendAPI(messageData)
           }
 
-          else if (state === 1) { //already quiz with chatbot
+          //already quiz with chatbot
+          else if (state === 1) {
+
+            //get keys question that user done
+            let keysDone = await firebase.getQuestionDone(senderID)
+            console.log("keyDone1 = ", keysDone)
+            removeKeysDone(keys, keysDone)
+            console.log("key left1 = ", keys)
+
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keys)
             currentQuestionKey = shuffledKey
             answerForEachQuestion = await firebase.getAllAnswerFromQuestion(shuffledKey)
@@ -467,7 +473,7 @@
    * https://developers.facebook.com/docs/messenger-platform/webhook-reference/postback-received
    * 
    */
-  function receivedPostback(event) {
+  async function receivedPostback(event) {
     let senderID = event.sender.id;
     let recipientID = event.recipient.id;
     let timeOfPostback = event.timestamp;
@@ -484,6 +490,7 @@
 
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
+
     //Correct
     if (result) {
       sendTextMessage(senderID, "Good dog!")
@@ -497,7 +504,13 @@
       firebase.saveResultToFirebase(senderID, preparedResult)
     }
 
-    keys = removeKeyThatAsked(currentQuestionKey)
+    //keys = removeKeyThatAsked(currentQuestionKey)
+
+    let keysDone = await firebase.getQuestionDone(senderID)
+    console.log("keyDone2 = ", keysDone)
+    removeKeysDone(keys, keysDone)
+    console.log("key left2 = ", keys)
+
 
     //send to calculate grade
     let totalScore = summary.calculateTotalScore(numberOfQuestions)
@@ -556,7 +569,7 @@
       state = 2
       done = 0
       userScore = 0
-  }
+    }
     else {
       //no key that matched question
       answerForEachQuestion = await firebase.getAllAnswerFromQuestion(keyOfNextQuestion)
@@ -580,6 +593,11 @@
       return key === currentQuestionKey
     })
     return keys
+  }
+
+  //remove array from array
+  const removeKeysDone = (keys, keysDone) => {
+    utillArray._.pullAll(keys, keysDone)
   }
 
   /*

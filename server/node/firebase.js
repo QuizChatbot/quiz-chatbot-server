@@ -10,9 +10,9 @@ const connectToFirebase = () => {
 const admin = connectToFirebase()
 
 const getNumberOfQuestions = async () => {
-     let keys  = await getAllQuestionKeys()
-     let numberOfQuestions = keys.length
-     return numberOfQuestions
+    let keys = await getAllQuestionKeys()
+    let numberOfQuestions = keys.length
+    return numberOfQuestions
 }
 
 const readQuestionsFromFirebase = async () => {
@@ -83,7 +83,7 @@ const getQuestionFromId = async (id) => {
 }
 
 const getAllQuestionKeys = () => new Promise(async (resolve) => {
-    const questions = await readQuestionsFromFirebase()
+    //const questions = await readQuestionsFromFirebase()
     const db = admin.database()
     const ref = db.ref("/Quests")
 
@@ -97,20 +97,40 @@ const getAllQuestionKeys = () => new Promise(async (resolve) => {
 
 })
 
+//get key of questions already done by that user
+const getQuestionDone = async (senderID) => new Promise(async (resolve) => {
+    const db = admin.database()
+    const ref = db.ref("/Developer/" + senderID)
+    let keysDone = []
+    ref.child("results").on("value", (snapshot) => {
+        let resultSnapshot = snapshot.val()
+        for (let property in resultSnapshot) {
+            if (resultSnapshot.hasOwnProperty(property)) {
+                keysDone.push(resultSnapshot[property].question)
+            }
+        }
+        resolve(keysDone)
+    }, (errorObject) => {
+        console.log("Cannot get keys of questions that user already done  = " + errorObject.code)
+
+    })
+
+})
+
 const saveResultToFirebase = (senderID, prepareResult) => {
     let result = prepareResult[0]
     let keyQuestion = result.question
     console.log("key = " + keyQuestion)
-    let db = admin.database() 
+    let db = admin.database()
     let ref = db.ref("/Developer/" + senderID)
     ref.child("results").push({
-          "answer" : result.answer,
-          "doneAt" : result.doneAt,
-          "startedAt" : result.startedAt,
-          "duration" : result.duration,
-          "point" : result.point,
-          "question" : result.question,
-          "result" : result.result
+        "answer": result.answer,
+        "doneAt": result.doneAt,
+        "startedAt": result.startedAt,
+        "duration": result.duration,
+        "point": result.point,
+        "question": result.question,
+        "result": result.result
     })
 }
 
@@ -140,18 +160,18 @@ const saveUserToFirebase = (senderID, user) => {
 const saveSummaryToFirebase = (senderID, summary) => {
     let db = admin.database()
     let ref = db.ref("/Developer/" + senderID)
-      ref.child("summary").child(summary.round).update({
-          "round" : summary.round,
-          "done" : summary.done,
-          "keysQuestionLeft" : summary.keysQuestionLeft,
-          "skill" : summary.skill,
-          "grade" : summary.grade,
-          "score" : summary.score
+    ref.child("summary").child(summary.round).update({
+        "round": summary.round,
+        "done": summary.done,
+        "keysQuestionLeft": summary.keysQuestionLeft,
+        "skill": summary.skill,
+        "grade": summary.grade,
+        "score": summary.score
     })
 }
 
 module.exports = {
     connectToFirebase, readQuestionsFromFirebase, getAllAnswerFromQuestion, getQuestionFromId,
-    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions
+    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone
 }
 
