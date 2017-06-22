@@ -26,7 +26,7 @@
   let answerForEachQuestion
   let currentQuestionKey
   let startedAt
-  let round = 1
+  let round = 2
   let done = 0
   let skill = "es6"
   let userScore = 0
