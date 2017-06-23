@@ -37,7 +37,7 @@ const app = async () => {
     if (!userData.hasOwnProperty(userId)) {
       userData[userId] = { state }
     } else {
-      userData[userId].state = state
+      userData[userId] = state
     }
     console.log('userData = ', userData)
   }
