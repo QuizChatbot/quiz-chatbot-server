@@ -2,9 +2,10 @@
   "name": "messenger-get-started",
   "version": "1.0.0",
   "description": "Get started example for Messenger Platform",
-  "main": "app.js",
+  "main": "server/node/app.js",
   "scripts": {
     "start": "node server/node/app.js",
+    "preinstall": "npm install",
     "lint": "jshint --exclude node_modules .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,6 +33,7 @@
     "request": "^2.81.0"
   },
   "engines": {
-    "node": "~4.1.2"
+    "node": "7.10.0",
+    "npm": "4.2.0"
   }
 }
