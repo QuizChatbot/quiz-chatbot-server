@@ -20,6 +20,7 @@ const app = async () => {
 
 
   let keys = await getKeys()
+  console.log("keys = ", keys)
   let numberOfQuestions = await firebase.getNumberOfQuestions()
   let user
   let results
@@ -1114,9 +1115,8 @@ const app = async () => {
     };
     state = 1;
 
-    console.log("getState = ",getState(recipientId))
-    setState(recipientId, {state, keys})
-
+    setState(recipientId, {state, keys, round})
+    console.log("state of that user = ", userData.recipientId.state.state)
     callSendAPI(messageData);
   }
 
