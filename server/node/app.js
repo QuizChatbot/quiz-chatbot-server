@@ -495,8 +495,8 @@ const app = async () => {
 
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
-    if (getState(senderID) == 1) done++
-    console.log("get state done+ = ", getState(senderID))
+    if (await getState(senderID) == 1) done++
+    console.log("get state done+ = ", await getState(senderID))
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
 
