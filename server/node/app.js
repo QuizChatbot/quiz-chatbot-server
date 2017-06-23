@@ -51,6 +51,14 @@ const app = async () => {
     }
   }
 
+  async function getKeysLeftForThatUser(userId) {
+    if (!userData.hasOwnProperty(userId)) {
+      return "initialize"
+    } else {
+      return userData[userId].keys
+    }
+  }
+
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
     console.log("getkeys = ", keys)
@@ -422,7 +430,7 @@ const app = async () => {
           //already quiz with chatbot
           else if (userState.state === 1) {
 
-            let keysLeftForThatUser = await getState(senderID)
+            let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
             console.log("keysLeftForThatUser = ", keysLeftForThatUser)
             //get keys question that user done
             let keysDone = await firebase.getQuestionDone(senderID)
@@ -499,7 +507,7 @@ const app = async () => {
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
     if (await getState(senderID).state == 1) done++
-   
+
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
 
@@ -515,7 +523,7 @@ const app = async () => {
       let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
       firebase.saveResultToFirebase(senderID, preparedResult)
     }
- 
+
     //keys = removeKeyThatAsked(currentQuestionKey)
 
     let keysDone = await firebase.getQuestionDone(senderID)
@@ -580,7 +588,7 @@ const app = async () => {
     if (keyOfNextQuestion == null) {
       sendTextMessage(senderID, "Finish!")
       state = 2
-      setState(senderID, {state, round})
+      setState(senderID, { state, round })
       cons.log("set state after = ", userData)
       done = 0
       userScore = 0
