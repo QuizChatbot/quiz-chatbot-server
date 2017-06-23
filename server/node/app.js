@@ -496,7 +496,7 @@ const app = async () => {
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
     if (getState(senderID) == 1) done++
-
+    console.log("get state done+ = ", getState(senderID))
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
 
@@ -577,7 +577,7 @@ const app = async () => {
     if (keyOfNextQuestion == null) {
       sendTextMessage(senderID, "Finish!")
       state = 2
-      setState(senderID, state)
+      setState(senderID, {state, round})
       cons.log("set state after = ", userData)
       done = 0
       userScore = 0
