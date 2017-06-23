@@ -417,6 +417,7 @@ const app = async () => {
             // callSendAPI(messageData)
           }
 
+          //when set state again, data format will change
           //already quiz with chatbot
           else if (userState === 1) {
 
@@ -494,7 +495,7 @@ const app = async () => {
 
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
-    if (state == 1) done++
+    if (getState(senderID) == 1) done++
 
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
@@ -576,6 +577,8 @@ const app = async () => {
     if (keyOfNextQuestion == null) {
       sendTextMessage(senderID, "Finish!")
       state = 2
+      setState(senderID, state)
+      cons.log("set state after = ", userData)
       done = 0
       userScore = 0
     }
