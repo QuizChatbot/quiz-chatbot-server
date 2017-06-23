@@ -49,7 +49,7 @@ const app = async () => {
     } else {
       return userData[userId]
     }
-  }
+  } 
 
   async function getKeysLeftForThatUser(userId) {
     if (!userData.hasOwnProperty(userId)) {
