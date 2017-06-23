@@ -48,7 +48,7 @@ const app = async () => {
     if (!userData.hasOwnProperty(userId)) {
       return "initialize"
     } else {
-      return userData[userId].state
+      return userData[userId]
     }
   }
 
@@ -496,7 +496,7 @@ const app = async () => {
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
     if (await getState(senderID) == 1) done++
-    console.log("get state done+ = ", await getState(senderID))
+   
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
 
