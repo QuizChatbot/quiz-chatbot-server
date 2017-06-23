@@ -30,6 +30,7 @@ const app = async () => {
   let done = 0
   let skill = "es6"
   let userScore = 0
+  let userData
 
 
   function setState(userId, state) {
