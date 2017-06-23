@@ -1114,7 +1114,7 @@ const app = async () => {
     };
     state = 1;
 
-    setState(recipientId, state)
+    setState(recipientId, {state, keys})
 
     callSendAPI(messageData);
   }
