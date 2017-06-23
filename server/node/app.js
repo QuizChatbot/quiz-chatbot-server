@@ -38,6 +38,7 @@ const app = async () => {
     } else {
       userData[userId].state = state
     }
+    console.log('userData = ', userData)
   }
 
   function getState(userId) {
@@ -106,7 +107,7 @@ const app = async () => {
   const SERVER_URL = (process.env.SERVER_URL) ?
     (process.env.SERVER_URL) :
     config.get('serverURL')
-console.log('SERVER_URL = ',SERVER_URL)
+  console.log('SERVER_URL = ', SERVER_URL)
 
   if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
     console.error("Missing config values")
@@ -123,7 +124,7 @@ console.log('SERVER_URL = ',SERVER_URL)
           throw new Error("Bad response from server");
         }
         let json = await response.json();
-        console.log("json = ", json);
+        console.log("userDetail = ", json);
         resolve(json)
       })
   })
@@ -308,14 +309,14 @@ console.log('SERVER_URL = ',SERVER_URL)
       // Just logging message echoes to console
       console.log("Received echo for message %s and app %d with metadata %s",
         messageId, appId, metadata)
-      return;
+      return
     } else if (quickReply) {
       var quickReplyPayload = quickReply.payload;
       console.log("Quick reply for mesage %s with payload %s",
         messageId, quickReplyPayload)
 
       sendTextMessage(senderID, "Quick reply tapped");
-      return;
+      return
     }
 
     if (messageText) {
@@ -538,7 +539,7 @@ console.log('SERVER_URL = ',SERVER_URL)
   }
 
   //set format of the result we want to save in firebase
-  function prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt,timeOfPostback) {
+  function prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback) {
     let prepareObj = []
     let userAnswerObj = JSON.parse(payload)
     let doneAt = utillArray.getFormattedDate(timeOfPostback)
@@ -1111,6 +1112,8 @@ console.log('SERVER_URL = ',SERVER_URL)
       }
     };
     state = 1;
+
+    setState(recipientId, state)
 
     callSendAPI(messageData);
   }
