@@ -90,7 +90,6 @@ const app = async () => {
   const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
     process.env.MESSENGER_APP_SECRET :
     config.get('appSecret')
-    console.log("secret = ", APP_SECRET )
 
   // Arbitrary value used to validate a webhook
   const VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
@@ -116,7 +115,6 @@ console.log('SERVER_URL = ',SERVER_URL)
 
   const getUserDetail = (senderID) => new Promise(async (resolve) => {
 
-    //const pageAccessToken = 'EAADz9MihTvcBAIytXu2dASyZACO3IFrx2v5YQYjNBnZAXsgxohA3P0FUbQ87EAi7ojJLdqQiQ4VCZCTWe1ctTdKUabE2hLRbJ5yFMfPzjaQrRtpWgnVktLjOExjjTQdW5SZCZA1imL83x6iBECIkacm8IE6Tnwf4veTNvKuZCa8wZDZD'
     const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
     console.log("graph user detail= ", graph);
     fetch(graph)
@@ -495,13 +493,13 @@ console.log('SERVER_URL = ',SERVER_URL)
     //Correct
     if (result) {
       sendTextMessage(senderID, "Good dog!")
-      let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback)
+      let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
       firebase.saveResultToFirebase(senderID, preparedResult)
     }
     //Wrong
     else {
       sendTextMessage(senderID, "Bad dog!")
-      let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback)
+      let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
       firebase.saveResultToFirebase(senderID, preparedResult)
     }
 
@@ -514,8 +512,9 @@ console.log('SERVER_URL = ',SERVER_URL)
 
 
     //send to calculate grade
+    let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
     let totalScore = summary.calculateTotalScore(numberOfQuestions)
-    let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result) //point for that question 
+    let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
     userScore += scoreOfThatQuestion
     let grade = summary.calculateGrade(totalScore, userScore)
 
@@ -539,7 +538,7 @@ console.log('SERVER_URL = ',SERVER_URL)
   }
 
   //set format of the result we want to save in firebase
-  function prepareResultForFirebase(payload, answerForEachQuestion, result, timeOfPostback) {
+  function prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt,timeOfPostback) {
     let prepareObj = []
     let userAnswerObj = JSON.parse(payload)
     let doneAt = utillArray.getFormattedDate(timeOfPostback)
