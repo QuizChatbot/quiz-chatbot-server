@@ -390,7 +390,6 @@ const app = async () => {
           setState(senderID, { state, keys, round })
           let userState = await getState(senderID)
           console.log("user state = ", userState.state)
-          console.log("user state.state = ", userState.state.state)
 
           //user chat with bot for the first time
           if (userState.state.state === 0) {
@@ -431,12 +430,13 @@ const app = async () => {
           else if (userState.state === 1) {
 
             let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-            console.log("keysLeftForThatUser = ", keysLeftForThatUser)
+            console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
             //get keys question that user done
             let keysDone = await firebase.getQuestionDone(senderID)
             console.log("keyDone1 = ", keysDone)
             removeKeysDone(keysLeftForThatUser, keysDone)
-            console.log("key left1 = ", keys)
+            console.log("key left1 after remove= ", keyskeysLeftForThatUser)
+
             setState(senderID, {state, keysLeftForThatUser, round})
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
@@ -507,6 +507,7 @@ const app = async () => {
 
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
+    console.log("post back getState= ", await getState(senderID))
     if (await getState(senderID).state == 1) done++
 
     //check answer and ask next question
@@ -528,10 +529,11 @@ const app = async () => {
     //keys = removeKeyThatAsked(currentQuestionKey)
 
     let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+    console.log("key left2= ", keysLeftForThatUser)
     let keysDone = await firebase.getQuestionDone(senderID)
     console.log("keyDone2 = ", keysDone)
     removeKeysDone(keysLeftForThatUser, keysDone)
-    console.log("key left2 = ", keysLeftForThatUser)
+    console.log("key left2 after remove= ", keysLeftForThatUser)
     setState(senderID, {state, keysLeftForThatUser, round})
 
     //send to calculate grade
