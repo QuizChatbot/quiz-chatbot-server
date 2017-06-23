@@ -34,7 +34,7 @@ const app = async () => {
   let userData = {}
 
 
-  function setState(userId, state) {
+  async function setState(userId, state) {
     if (!userData.hasOwnProperty(userId)) {
       userData[userId] = { state }
     } else {
@@ -43,7 +43,7 @@ const app = async () => {
     console.log('userData = ', userData)
   }
 
-  function getState(userId) {
+  async function getState(userId) {
     if (!userData.hasOwnProperty(userId)) {
       return "initialize"
     } else {
@@ -1116,7 +1116,8 @@ const app = async () => {
     state = 1;
 
     setState(recipientId, {state, keys, round})
-    console.log("state of that user = ", userData.recipientId)
+    let testState =  getState(recipientId)
+    console.log("state of that user = ", testState)
     callSendAPI(messageData);
   }
 
