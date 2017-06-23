@@ -380,11 +380,11 @@ const app = async () => {
 
           setState(senderID, { state, keys, round })
           let userState = await getState(senderID)
-          console.log("user state = ", userState)
-          console.log("user state.state = ", userState.state)
+          console.log("user state = ", userState.state)
+          console.log("user state.state = ", userState.state.state)
 
           //user chat with bot for the first time
-          if (userState.state === 0) {
+          if (userState.state.state === 0) {
             if (!user) {
               let userDetail = await getUserDetail(senderID)
               user = userDetail
@@ -419,7 +419,7 @@ const app = async () => {
 
           //when set state again, data format will change
           //already quiz with chatbot
-          else if (userState === 1) {
+          else if (userState.state === 1) {
 
             //get keys question that user done
             let keysDone = await firebase.getQuestionDone(senderID)
