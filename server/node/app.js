@@ -412,7 +412,7 @@ const app = async () => {
           }
 
           //already quiz with chatbot
-          else if (state === 1) {
+          else if (getState(senderID).state === 1) {
 
             //get keys question that user done
             let keysDone = await firebase.getQuestionDone(senderID)
@@ -1103,7 +1103,7 @@ const app = async () => {
   }
 
 
-  function sendLetsQuiz(recipientId, messageText, firstName) {
+  async function sendLetsQuiz(recipientId, messageText, firstName) {
     var messageData = {
       recipient: {
         id: recipientId
@@ -1116,7 +1116,7 @@ const app = async () => {
     state = 1;
 
     setState(recipientId, {state, keys, round})
-    let testState =  getState(recipientId)
+    let testState =  await getState(recipientId)
     console.log("state of that user = ", testState)
     callSendAPI(messageData);
   }
