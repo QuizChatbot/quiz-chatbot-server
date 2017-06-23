@@ -418,7 +418,7 @@ const app = async () => {
           }
 
           //already quiz with chatbot
-          else if (userState.state === 1) {
+          else if (userState === 1) {
 
             //get keys question that user done
             let keysDone = await firebase.getQuestionDone(senderID)
