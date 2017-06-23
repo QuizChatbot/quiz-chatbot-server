@@ -1116,7 +1116,7 @@ const app = async () => {
     state = 1;
 
     setState(recipientId, {state, keys, round})
-    console.log("state of that user = ", userData.recipientId.state.state)
+    console.log("state of that user = ", userData.recipientId)
     callSendAPI(messageData);
   }
 
