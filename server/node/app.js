@@ -507,7 +507,8 @@ const app = async () => {
 
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
-    console.log("post back getState= ", await getState(senderID))
+    let postbackState = await getState(senderID)
+    console.log("post back getState= ", postbackState.state)
     if (await getState(senderID).state === 1) done++
 
     //check answer and ask next question
@@ -580,9 +581,10 @@ const app = async () => {
   async function nextQuestion(senderID) {
     //delete key of question that already asked from all keys
     //keys = removeKeyThatAsked(currentQuestionKey)
-
-    console.log("keyToButton in nextQuestion after delete = ", keys)
-    let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keys)
+    
+    let keysLeftForThatUser = await getKeysLeftForThatUser(senderID) 
+    console.log("keyToButton in nextQuestion after delete = ", keysLeftForThatUser)
+    let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     //define current key = key of question about to ask
     currentQuestionKey = keyOfNextQuestion
     console.log("keyToButton in nextQuestion = ", keyOfNextQuestion)
