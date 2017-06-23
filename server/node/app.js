@@ -435,10 +435,11 @@ const app = async () => {
             //get keys question that user done
             let keysDone = await firebase.getQuestionDone(senderID)
             console.log("keyDone1 = ", keysDone)
-            removeKeysDone(keys, keysDone)
+            removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 = ", keys)
+            setState(senderID, {state, keysLeftForThatUser, round})
 
-            let shuffledKey = utillArray.shuffleKeyFromQuestions(keys)
+            let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
             currentQuestionKey = shuffledKey
             answerForEachQuestion = await firebase.getAllAnswerFromQuestion(shuffledKey)
             if (answerForEachQuestion == null) {
@@ -526,11 +527,12 @@ const app = async () => {
 
     //keys = removeKeyThatAsked(currentQuestionKey)
 
+    let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
     let keysDone = await firebase.getQuestionDone(senderID)
     console.log("keyDone2 = ", keysDone)
-    removeKeysDone(keys, keysDone)
-    console.log("key left2 = ", keys)
-
+    removeKeysDone(keysLeftForThatUser, keysDone)
+    console.log("key left2 = ", keysLeftForThatUser)
+    setState(senderID, {state, keysLeftForThatUser, round})
 
     //send to calculate grade
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
@@ -540,7 +542,7 @@ const app = async () => {
     let grade = summary.calculateGrade(totalScore, userScore)
 
     //prepare summary object to save in firebase
-    let preparedSummary = summary.prepareSummary(done, keys, round, skill, grade, userScore)
+    let preparedSummary = summary.prepareSummary(done, keysLeftForThatUser, round, skill, grade, userScore)
     console.log("summary = ", preparedSummary)
     firebase.saveSummaryToFirebase(senderID, preparedSummary)
     nextQuestion(senderID)
