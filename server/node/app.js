@@ -34,6 +34,7 @@ const app = async () => {
   let userData = {}
 
 
+
   async function setState(userId, state) {
     if (!userData.hasOwnProperty(userId)) {
       userData[userId] = { state }
@@ -376,9 +377,11 @@ const app = async () => {
           break
 
         default: {
-
+          setState(senderID, {state, round})
+          let userState = await getState(senderID)
+          console.log("user state = ", userState.state)
           //user chat with bot for the first time
-          if (state === 0) {
+          if (userState.state === 0) {
             if (!user) {
               let userDetail = await getUserDetail(senderID)
               user = userDetail
@@ -412,7 +415,7 @@ const app = async () => {
           }
 
           //already quiz with chatbot
-          else if (getState(senderID).state === 1) {
+          else if (userState.state === 1) {
 
             //get keys question that user done
             let keysDone = await firebase.getQuestionDone(senderID)
@@ -1115,9 +1118,9 @@ const app = async () => {
     };
     state = 1;
 
-    setState(recipientId, {state, keys, round})
-    let testState =  await getState(recipientId)
-    console.log("state of that user = ", testState.state)
+    // setState(recipientId, {state, keys, round})
+    // let testState =  await getState(recipientId)
+    // console.log("state of that user = ", testState)
     callSendAPI(messageData);
   }
 
