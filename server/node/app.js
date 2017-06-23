@@ -512,7 +512,7 @@ const app = async () => {
       let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
       firebase.saveResultToFirebase(senderID, preparedResult)
     }
-
+ 
     //keys = removeKeyThatAsked(currentQuestionKey)
 
     let keysDone = await firebase.getQuestionDone(senderID)
