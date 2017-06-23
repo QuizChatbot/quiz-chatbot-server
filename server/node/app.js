@@ -15,8 +15,8 @@
     tunnelConfig = require('./tunnel.json'),
     summary = require('./summary')
 
-  config.serverURL = tunnelConfig.serverURL
-  console.log("config ", config, tunnelConfig)
+  //config.serverURL = tunnelConfig.serverURL
+  //console.log("config ", config, tunnelConfig)
 
 
   let keys = await getKeys()
@@ -106,7 +106,7 @@
   const SERVER_URL = (process.env.SERVER_URL) ?
     (process.env.SERVER_URL) :
     config.get('serverURL')
-
+console.log('SERVER_URL = ',SERVER_URL)
 
   if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
     console.error("Missing config values")
