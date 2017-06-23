@@ -435,7 +435,7 @@ const app = async () => {
             let keysDone = await firebase.getQuestionDone(senderID)
             console.log("keyDone1 = ", keysDone)
             removeKeysDone(keysLeftForThatUser, keysDone)
-            console.log("key left1 after remove= ", keyskeysLeftForThatUser)
+            console.log("key left1 after remove= ", keysLeftForThatUser)
 
             setState(senderID, {state, keysLeftForThatUser, round})
 
