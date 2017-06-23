@@ -19,8 +19,7 @@ const app = async () => {
   // console.log("config ", config, tunnelConfig)
 
 
-  let keys = await getKeys()
-  console.log("keys = ", keys)
+  //let keys = await getKeys()
   let numberOfQuestions = await firebase.getNumberOfQuestions()
   let user
   let results
@@ -378,6 +377,8 @@ const app = async () => {
 
         default: {
 
+          let keys = await getKeys()
+
           setState(senderID, { state, keys, round })
           let userState = await getState(senderID)
           console.log("user state = ", userState.state)
@@ -421,6 +422,8 @@ const app = async () => {
           //already quiz with chatbot
           else if (userState.state === 1) {
 
+            let keysLeftForThatUser = await getState(senderID)
+            console.log("keysLeftForThatUser = ", keysLeftForThatUser)
             //get keys question that user done
             let keysDone = await firebase.getQuestionDone(senderID)
             console.log("keyDone1 = ", keysDone)
@@ -495,7 +498,7 @@ const app = async () => {
 
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
-    if (await getState(senderID) == 1) done++
+    if (await getState(senderID).state == 1) done++
    
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
