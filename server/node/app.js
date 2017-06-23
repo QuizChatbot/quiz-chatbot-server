@@ -55,7 +55,7 @@ const app = async () => {
     if (!userData.hasOwnProperty(userId)) {
       return "initialize"
     } else {
-      return userData[userId].keys
+      return userData[userId].keysLeftForThatUser
     }
   }
 
@@ -385,9 +385,9 @@ const app = async () => {
 
         default: {
 
-          let keys = await getKeys()
+          let keysLeftForThatUser = await getKeys()
 
-          setState(senderID, { state, keys, round })
+          setState(senderID, { state, keysLeftForThatUser, round })
           let userState = await getState(senderID)
           console.log("user state = ", userState.state)
 
@@ -508,7 +508,7 @@ const app = async () => {
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
     console.log("post back getState= ", await getState(senderID))
-    if (await getState(senderID).state == 1) done++
+    if (await getState(senderID).state === 1) done++
 
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
