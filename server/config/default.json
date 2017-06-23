@@ -1,6 +1,6 @@
 {
     "appSecret": "846db8cc009e3572b32f0f2dae22167c",
-    "pageAccessToken": "EAADz9MihTvcBACeOqPnGQppK7Y470lzPi8G5NSnhlX8WHl5h6petEaGxXYLMdZB6jIhvStwq8ZBbfn4EZAixmSBGVorUY6f7Mip5HziPs3O1BhctFdZCIvBrRAZCbSwJWJzsyOWsieAfdWYXmLiJW1QaFH74UUI8PijXYhf4PAwZDZD",
+    "pageAccessToken": "EAADz9MihTvcBAICSZBM31QFcXcas8savBXrgbTDPI5DBVZCGHrb08K6RmjoiBRSIiPCM27WIHjINoko40bqvZA2ocjGiS88NXGoUUSiRWhcCOmaOHGM9NLQNNCbiZBHMgil8mYlZBQvgIZCUNrH47ZC6sx7KTtzucMDHQ5ZCNcSBcAZDZD",
     "validationToken": "chatbotxxx",
     "serverURL": "https://quiz-chatbot.herokuapp.com/" 
 }

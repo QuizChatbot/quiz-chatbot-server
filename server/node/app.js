@@ -90,6 +90,7 @@ const app = async () => {
   const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
     process.env.MESSENGER_APP_SECRET :
     config.get('appSecret')
+    console.log("secret = ", APP_SECRET )
 
   // Arbitrary value used to validate a webhook
   const VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
