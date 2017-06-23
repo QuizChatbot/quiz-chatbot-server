@@ -1,5 +1,5 @@
 
-(async () => {
+const app = async () => {
   require('es6-promise').polyfill();
   require('isomorphic-fetch');
   const
@@ -1127,4 +1127,6 @@ console.log('SERVER_URL = ',SERVER_URL)
   module.exports = app
 
 
-})()
+}
+
+app()
