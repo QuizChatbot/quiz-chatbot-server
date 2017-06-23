@@ -377,9 +377,12 @@ const app = async () => {
           break
 
         default: {
-          setState(senderID, {state, round})
+
+          setState(senderID, { state, keys, round })
           let userState = await getState(senderID)
-          console.log("user state = ", userState.state)
+          console.log("user state = ", userState)
+          console.log("user state.state = ", userState.state)
+
           //user chat with bot for the first time
           if (userState.state === 0) {
             if (!user) {
