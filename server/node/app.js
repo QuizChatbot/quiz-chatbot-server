@@ -509,7 +509,7 @@ const app = async () => {
     //number of question user answered incresae 
     let postbackState = await getState(senderID)
     console.log("post back getState= ", postbackState.state)
-    if (await getState(senderID).state === 1) done++
+    if (postbackState.state === 1) done++
 
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
