@@ -129,6 +129,7 @@ const saveResultToFirebase = (senderID, prepareResult) => {
         "startedAt": result.startedAt,
         "duration": result.duration,
         "point": result.point,
+        "totalScore" : result.totalScore,
         "question": result.question,
         "result": result.result
     })
