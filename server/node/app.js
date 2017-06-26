@@ -30,32 +30,32 @@ const app = async () => {
   let done = 0
   let skill = "es6"
   let userScore = 0
-  let userData = {}
+  let usersData = {} //keep user sessions
 
 
 
   async function setState(userId, state) {
-    if (!userData.hasOwnProperty(userId)) {
-      userData[userId] = { state }
+    if (!usersData.hasOwnProperty(userId)) {
+      usersData[userId] = { state }
     } else {
-      userData[userId] = state
+      usersData[userId] = state
     }
-    console.log('userData = ', userData)
+    console.log('userData = ', usersData)
   }
 
   async function getState(userId) {
-    if (!userData.hasOwnProperty(userId)) {
+    if (!usersData.hasOwnProperty(userId)) {
       return "initialize"
     } else {
-      return userData[userId]
+      return usersData[userId]
     }
   } 
 
   async function getKeysLeftForThatUser(userId) {
-    if (!userData.hasOwnProperty(userId)) {
-      return "initialize"
+    if (!usersData.hasOwnProperty(userId)) {
+      return "User answered all questions"
     } else {
-      return userData[userId].keysLeftForThatUser
+      return usersData[userId].keysLeftForThatUser
     }
   }
 
@@ -595,7 +595,7 @@ const app = async () => {
       sendTextMessage(senderID, "Finish!")
       state = 2
       setState(senderID, { state, round })
-      cons.log("set state after = ", userData)
+      cons.log("set state after = ", usersData)
       done = 0
       userScore = 0
     }
