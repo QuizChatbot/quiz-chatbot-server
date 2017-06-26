@@ -546,15 +546,15 @@ const app = async () => {
       "at %d", senderID, recipientID, payload, timeOfPostback);
 
     //check for button nextRound payload
-    // if (payload == '{"nextRound":true}') {
-    //   sendTextMessage(senderID, "Next Round!")
-    //   let tmpRound = await getRoundFromThatUser(senderID)
-    //   //startNextRound(senderID, tmpRound)
-    // }
-    // else if (payload == '{"nextRound":false}') {
-    //   sendTextMessage(senderID, "Bye Bye <3")
-    //   return
-    // }
+    if (payload == '{"nextRound":true}') {
+      sendTextMessage(senderID, "Next Round!")
+      let tmpRound = await getRoundFromThatUser(senderID)
+      //startNextRound(senderID, tmpRound)
+    }
+    else if (payload == '{"nextRound":false}') {
+      sendTextMessage(senderID, "Bye Bye <3")
+      return
+    }
 
     //Postback for normal questions
     else {
