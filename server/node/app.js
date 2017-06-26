@@ -546,57 +546,62 @@ const app = async () => {
     console.log("Received postback for user %d and page %d with payload '%s' " +
       "at %d", senderID, recipientID, payload, timeOfPostback);
 
-    if(payload == '{"nextRound":true}') sendTextMessage(senderID, "Next Round!")
-
-    //if in question state when receive postback done = done +1 
-    //number of question user answered incresae 
-    let postbackState = await getState(senderID)
-    console.log("post back getState= ", postbackState.state)
-
-    //number of questions that user already done increase
-    let tmpDone = await getDoneFromThatUser(senderID)
-    if (postbackState.state === 1) tmpDone++
-
-    //check answer and ask next question
-    let result = checkAnswer(payload, answerForEachQuestion)
-
-    //Correct
-    if (result) {
-      sendTextMessage(senderID, "Good dog!")
-      let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
-      firebase.saveResultToFirebase(senderID, preparedResult)
+    if (payload == '{"nextRound":true}') sendTextMessage(senderID, "Next Round!")
+    else if (payload == '{"nextRound":false}') {
+      sendTextMessage(senderID, "Bye Bye <3")
+      return
     }
-    //Wrong
     else {
-      sendTextMessage(senderID, "Bad dog!")
-      let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
-      firebase.saveResultToFirebase(senderID, preparedResult)
+      //if in question state when receive postback done = done +1 
+      //number of question user answered incresae 
+      let postbackState = await getState(senderID)
+      console.log("post back getState= ", postbackState.state)
+
+      //number of questions that user already done increase
+      let tmpDone = await getDoneFromThatUser(senderID)
+      if (postbackState.state === 1) tmpDone++
+
+      //check answer and ask next question
+      let result = checkAnswer(payload, answerForEachQuestion)
+
+      //Correct
+      if (result) {
+        sendTextMessage(senderID, "Good dog!")
+        let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
+        firebase.saveResultToFirebase(senderID, preparedResult)
+      }
+      //Wrong
+      else {
+        sendTextMessage(senderID, "Bad dog!")
+        let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
+        firebase.saveResultToFirebase(senderID, preparedResult)
+      }
+
+      //keys = removeKeyThatAsked(currentQuestionKey)
+      let tmpRound = await getRoundFromThatUser(senderID)
+      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+      console.log("key left2= ", keysLeftForThatUser)
+      let keysDone = await firebase.getQuestionDone(senderID)
+      console.log("keyDone2 = ", keysDone)
+      removeKeysDone(keysLeftForThatUser, keysDone)
+      console.log("key left2 after remove= ", keysLeftForThatUser)
+      setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
+      console.log("userData4 = ", usersData)
+      //send to calculate grade
+      let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
+      let totalScore = summary.calculateTotalScore(numberOfQuestions)
+      let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
+      userScore += scoreOfThatQuestion
+      let grade = summary.calculateGrade(totalScore, userScore)
+      console.log("total score= ", totalScore)
+
+      //prepare summary object to save in firebase
+      tmpDone = await getDoneFromThatUser(senderID)
+      let preparedSummary = summary.prepareSummary(tmpDone, keysLeftForThatUser, tmpRound, skill, grade, userScore, totalScore)
+      console.log("summary = ", preparedSummary)
+      firebase.saveSummaryToFirebase(senderID, preparedSummary)
+      nextQuestion(senderID)
     }
-
-    //keys = removeKeyThatAsked(currentQuestionKey)
-    let tmpRound = await getRoundFromThatUser(senderID)
-    let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-    console.log("key left2= ", keysLeftForThatUser)
-    let keysDone = await firebase.getQuestionDone(senderID)
-    console.log("keyDone2 = ", keysDone)
-    removeKeysDone(keysLeftForThatUser, keysDone)
-    console.log("key left2 after remove= ", keysLeftForThatUser)
-    setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-    console.log("userData4 = ", usersData)
-    //send to calculate grade
-    let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
-    let totalScore = summary.calculateTotalScore(numberOfQuestions)
-    let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
-    userScore += scoreOfThatQuestion
-    let grade = summary.calculateGrade(totalScore, userScore)
-    console.log("total score= ", totalScore)
-
-    //prepare summary object to save in firebase
-    tmpDone = await getDoneFromThatUser(senderID)
-    let preparedSummary = summary.prepareSummary(tmpDone, keysLeftForThatUser, tmpRound, skill, grade, userScore, totalScore)
-    console.log("summary = ", preparedSummary)
-    firebase.saveSummaryToFirebase(senderID, preparedSummary)
-    nextQuestion(senderID)
 
   }
 
@@ -683,7 +688,7 @@ const app = async () => {
   }
 
   const nextRound = (senderID, round, done, numberOfQuestions) => {
-    if (done == numberOfQuestions){
+    if (done == numberOfQuestions) {
       round++
       setRound(senderID, round)
       console.log("usersData in nextRound= ", usersData)
