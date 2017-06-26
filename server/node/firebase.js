@@ -119,8 +119,6 @@ const getQuestionDone = async (senderID) => new Promise(async (resolve) => {
 
 const saveResultToFirebase = async (senderID, prepareResult) => {
     let result = prepareResult[0]
-    console.log("key in save= ", result)
-    console.log("prepareREsult in save= " ,prepareResult)
     let keyQuestion = result.question
     console.log("key = ", keyQuestion)
     let db = admin.database()
@@ -133,7 +131,8 @@ const saveResultToFirebase = async (senderID, prepareResult) => {
         "point": result.point,
         "question": result.question,
         "result": result.result,
-        "round" : result.round
+        "round" : result.round,
+        "score" : result.score
     })
 }
 

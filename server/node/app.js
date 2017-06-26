@@ -568,19 +568,29 @@ const app = async () => {
       let tmpDone = await getDoneFromThatUser(senderID)
       if (postbackState.state === 1) tmpDone++
 
+
       //check answer and ask next question
       let result = checkAnswer(payload, answerForEachQuestion)
+
+      //send to calculate grade and score
+      let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
+      let totalScore = summary.calculateTotalScore(numberOfQuestions)
+      let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
+      userScore += scoreOfThatQuestion
+      let grade = summary.calculateGrade(totalScore, userScore)
 
       //Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
-        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID)
+        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, 
+                                                            timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
       //Wrong
       else {
         sendTextMessage(senderID, "Bad dog!")
-        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID)
+        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, 
+                                                            timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
 
@@ -595,12 +605,6 @@ const app = async () => {
       setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
       console.log("userData4 = ", usersData)
 
-      //send to calculate grade and score
-      let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
-      let totalScore = summary.calculateTotalScore(numberOfQuestions)
-      let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
-      userScore += scoreOfThatQuestion
-      let grade = summary.calculateGrade(totalScore, userScore)
 
 
       //prepare summary object to save in firebase
@@ -627,7 +631,7 @@ const app = async () => {
   }
 
   //set format of the result we want to save in firebase
-  async function prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID) {
+  async function prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID) {
     //in payload contain answer, question key, point
     let prepareObj = []
     //parse string to object
@@ -641,6 +645,7 @@ const app = async () => {
     userAnswerObj.startedAt = startedAt
     userAnswerObj.duration = duration
     userAnswerObj.round = round
+    userAnswerObj.score = scoreOfThatQuestion
     prepareObj.push(userAnswerObj)
     console.log("result = ", prepareObj)
     return prepareObj
