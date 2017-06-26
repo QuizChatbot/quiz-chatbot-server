@@ -387,6 +387,7 @@ const app = async () => {
           let keysLeftForThatUser = await getKeys()
           //set state in usersData
           setState(senderID, { state, keysLeftForThatUser, round, done })
+          console.log("userData1 = ", usersData)
           //get state of this user
           let userState = await getState(senderID)
           console.log("user state = ", userState.state)
@@ -440,6 +441,7 @@ const app = async () => {
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
             setState(senderID, {state, keysLeftForThatUser, round, done})
+             console.log("userData2 = ", usersData)
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
             currentQuestionKey = shuffledKey
@@ -512,7 +514,7 @@ const app = async () => {
     let postbackState = await getState(senderID)
     console.log("post back getState= ", postbackState.state)
     if (postbackState.state === 1) postbackState.done++
-
+     console.log("userData3 = ", usersData)
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
 
