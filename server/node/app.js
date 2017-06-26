@@ -553,11 +553,11 @@ const app = async () => {
     }
     else if (payload == '{"nextRound":false}') {
       sendTextMessage(senderID, "Bye Bye <3")
-      return
+      //return
     }
-
-    //Postback for normal questions
     else {
+      //Postback for normal questions
+
       //if in question state when receive postback done = done +1 
       //number of question user answered incresae 
       let postbackState = await getState(senderID)
