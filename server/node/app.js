@@ -423,7 +423,7 @@ const app = async () => {
 
           //when received welcome will setState again
           else {
-            let tmpRound = await getRoundFromThatUser(senderID)
+            let tmpRound = await getState(senderID)
             console.log("tmpRound in default else = ", tmpRound)
             setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
             userState = await getState(senderID)
