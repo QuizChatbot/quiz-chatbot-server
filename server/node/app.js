@@ -709,11 +709,14 @@ const app = async () => {
 
   const startNextRound =  async (senderID, round) => {
     let keysLeftForThatUser = await getKeys()
+    console.log("keysLeftForThatUser next round = ", keysLeftForThatUser)
     setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })
 
     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     currentQuestionKey = shuffledKey
     answerForEachQuestion = await firebase.getAllAnswerFromQuestion(shuffledKey)
+    console.log("answerForEachQuestion next round = ", answerForEachQuestion)
+    
     if (answerForEachQuestion == null) {
       console.log("Doesn't have this id in questions database")
       return null
