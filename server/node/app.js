@@ -417,7 +417,7 @@ const app = async () => {
             userState = await getState(senderID)
           }
           console.log("userData1.2 = ", usersData)
-
+          console.log("state 1 = ", userState.state)
 
           //user chat with bot for the first time
           if (userState.state.state === 0) {
@@ -428,7 +428,7 @@ const app = async () => {
             let firstName = user.first_name
             sendLetsQuiz(senderID, messageText, firstName)
             firebase.saveUserToFirebase(senderID, user)
-            console.log("state 1 = ", userState.state)
+          
 
             //Log in Button
             // var messageData = {
