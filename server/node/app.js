@@ -644,11 +644,11 @@ const app = async () => {
     //keys = removeKeyThatAsked(currentQuestionKey)
 
     let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-    console.log("keyToButton in nextQuestion after delete = ", keysLeftForThatUser)
+    console.log("keysLeftForThatUser in nextQuestion after delete = ", keysLeftForThatUser)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     //define current key = key of question about to ask
     currentQuestionKey = keyOfNextQuestion
-    console.log("keyToButton in nextQuestion = ", keyOfNextQuestion)
+    console.log("keyOfNextQuestion in nextQuestion = ", keyOfNextQuestion)
 
     //no question left
     //finish that round
@@ -670,6 +670,7 @@ const app = async () => {
     else {
 
       answerForEachQuestion = await firebase.getAllAnswerFromQuestion(keyOfNextQuestion)
+      console.log(" answerForEachQuestion in nextQ = ", answerForEachQuestion)
       //no key that matched question
       if (answerForEachQuestion == null) {
         console.log("Doesn't have this id in questions json")
