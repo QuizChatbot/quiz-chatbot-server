@@ -127,14 +127,13 @@ const app = async () => {
   const getUserDetail = (senderID) => new Promise(async (resolve) => {
 
     const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
-    console.log("graph user detail= ", graph);
     fetch(graph)
       .then(async function (response) {
         if (response.status >= 400) {
-          throw new Error("Bad response from server");
+          throw new Error("Bad response from server")
         }
-        let json = await response.json();
-        console.log("userDetail = ", json);
+        let json = await response.json()
+        console.log("userDetail = ", json)
         resolve(json)
       })
   })
@@ -384,10 +383,11 @@ const app = async () => {
           break
 
         default: {
-
+          //get all question keys and save to usersData for that senderID
           let keysLeftForThatUser = await getKeys()
-
-          setState(senderID, { state, keysLeftForThatUser, round })
+          //set state in usersData
+          setState(senderID, { state, keysLeftForThatUser, round, done })
+          //get state of this user
           let userState = await getState(senderID)
           console.log("user state = ", userState.state)
 
@@ -431,13 +431,15 @@ const app = async () => {
 
             let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
             console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
+
             //get keys question that user done
             let keysDone = await firebase.getQuestionDone(senderID)
             console.log("keyDone1 = ", keysDone)
+            //remove questions done from questions that not yet answered
             removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
-            setState(senderID, {state, keysLeftForThatUser, round})
+            setState(senderID, {state, keysLeftForThatUser, round, done})
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
             currentQuestionKey = shuffledKey
@@ -509,7 +511,7 @@ const app = async () => {
     //number of question user answered incresae 
     let postbackState = await getState(senderID)
     console.log("post back getState= ", postbackState.state)
-    if (postbackState.state === 1) done++
+    if (postbackState.state === 1) postbackState.done++
 
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
@@ -595,7 +597,7 @@ const app = async () => {
       sendTextMessage(senderID, "Finish!")
       state = 2
       setState(senderID, { state, round })
-      cons.log("set state after = ", usersData)
+      console.log("set state after = ", usersData)
       done = 0
       userScore = 0
     }
