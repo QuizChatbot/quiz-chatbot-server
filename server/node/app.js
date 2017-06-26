@@ -703,12 +703,11 @@ const app = async () => {
       setRound(senderID, round)
       console.log("usersData in nextRound= ", usersData)
     }
-
     let buttonMessage = createButton.createButtonNextRound(senderID)
     callSendAPI(buttonMessage)
   }
 
-  async const startNextRound = (senderID, round) => {
+  const startNextRound =  async (senderID, round) => {
     let keysLeftForThatUser = await getKeys()
     setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })
 
