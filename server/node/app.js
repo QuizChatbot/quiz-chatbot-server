@@ -67,6 +67,14 @@ const app = async () => {
     }
   }
 
+  async function getRoundFromThatUser(userId) {
+    if (!usersData.hasOwnProperty(userId)) {
+      return "Initialize"
+    } else {
+      return usersData[userId].round
+    }
+  }
+
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
     console.log("getkeys = ", keys)
@@ -398,12 +406,12 @@ const app = async () => {
           console.log("user state = ", userState)
           if (userState == "initialize") {
             //set state in usersData
-            setState(senderID, { state, keysLeftForThatUser, "round":1, done })
+            setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
             userState = await getState(senderID)
             console.log("userData1.1 = ", usersData)
           }
           console.log("userData1.2 = ", usersData)
-          
+
 
           //user chat with bot for the first time
           if (userState.state.state === 0) {
@@ -453,7 +461,7 @@ const app = async () => {
             removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
-            setState(senderID, { state, keysLeftForThatUser, "round":1, done })
+            setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
             console.log("userData2 = ", usersData)
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
@@ -548,14 +556,14 @@ const app = async () => {
     }
 
     //keys = removeKeyThatAsked(currentQuestionKey)
-
+    let tmpRound = await getRoundFromThatUser(senderID)
     let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
     console.log("key left2= ", keysLeftForThatUser)
     let keysDone = await firebase.getQuestionDone(senderID)
     console.log("keyDone2 = ", keysDone)
     removeKeysDone(keysLeftForThatUser, keysDone)
     console.log("key left2 after remove= ", keysLeftForThatUser)
-    setState(senderID, { state, keysLeftForThatUser, round, "done": tmpDone })
+    setState(senderID, { state, keysLeftForThatUser, "round" : tmpRound, "done": tmpDone })
     console.log("userData4 = ", usersData)
     //send to calculate grade
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
@@ -567,7 +575,7 @@ const app = async () => {
 
     //prepare summary object to save in firebase
     tmpDone = await getDoneFromThatUser(senderID)
-    let preparedSummary = summary.prepareSummary(tmpDone, keysLeftForThatUser, round, skill, grade, userScore, totalScore)
+    let preparedSummary = summary.prepareSummary(tmpDone, keysLeftForThatUser, tmpRound, skill, grade, userScore, totalScore)
     console.log("summary = ", preparedSummary)
     firebase.saveSummaryToFirebase(senderID, preparedSummary)
     nextQuestion(senderID)
@@ -616,7 +624,8 @@ const app = async () => {
     if (keyOfNextQuestion == null) {
       sendTextMessage(senderID, "Finish!")
       state = 2
-      setState(senderID, { state, round })
+      let tmpRound = await getRoundFromThatUser(senderID)
+      setState(senderID, { state, "round" : tmpRound })
       console.log("set state after = ", usersData)
       done = 0
       userScore = 0
@@ -652,7 +661,7 @@ const app = async () => {
   }
 
   const nextRound = (round, done, numberOfQuestions) => {
-    if(done == numberOfQuestions)
+    if (done == numberOfQuestions)
       round++
   }
 
