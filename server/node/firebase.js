@@ -131,7 +131,7 @@ const saveResultToFirebase = (senderID, prepareResult) => {
         "point": result.point,
         "question": result.question,
         "result": result.result,
-        'round' : result.round
+        "round" : result.round
     })
 }
 
