@@ -59,6 +59,14 @@ const app = async () => {
     }
   }
 
+  async function getDoneFromThatUser(userId) {
+    if (!usersData.hasOwnProperty(userId)) {
+      return "Initialize"
+    } else {
+      return usersData[userId].done
+    }
+  }
+
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
     console.log("getkeys = ", keys)
@@ -513,7 +521,9 @@ const app = async () => {
     //number of question user answered incresae 
     let postbackState = await getState(senderID)
     console.log("post back getState= ", postbackState.state)
-    if (postbackState.state === 1) postbackState.done++
+
+    let tmpDone = await getDoneFromThatUser(senderID) 
+    if (postbackState.state === 1) tmpDone++
      console.log("userData3 = ", usersData)
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
@@ -539,7 +549,7 @@ const app = async () => {
     console.log("keyDone2 = ", keysDone)
     removeKeysDone(keysLeftForThatUser, keysDone)
     console.log("key left2 after remove= ", keysLeftForThatUser)
-    setState(senderID, {state, keysLeftForThatUser, round})
+    setState(senderID, {state, keysLeftForThatUser, round, "done" : tmpDone})
     console.log("userData4 = ", usersData)
     //send to calculate grade
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
