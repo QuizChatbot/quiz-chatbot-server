@@ -414,6 +414,7 @@ const app = async () => {
           else{
             console.log("state in else = ", state)
             setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
+            userState = await getState(senderID)
           }
           console.log("userData1.2 = ", usersData)
 
@@ -454,7 +455,7 @@ const app = async () => {
           
           //when set state again, data format will change
           //already quiz with chatbot
-          else if (userState.state === 1) {
+          else if (userState.state.state === 1) {
 
             let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
             console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
