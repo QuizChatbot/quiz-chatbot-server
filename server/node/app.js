@@ -399,6 +399,7 @@ const app = async () => {
           if (userState == "initialize") {
             //set state in usersData
             setState(senderID, { state, keysLeftForThatUser, "round":1, done })
+            userState = await getState(senderID)
             console.log("userData1.1 = ", usersData)
           }
           console.log("userData1.2 = ", usersData)
