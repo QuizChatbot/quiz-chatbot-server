@@ -549,7 +549,7 @@ const app = async () => {
     console.log("summary = ", preparedSummary)
     firebase.saveSummaryToFirebase(senderID, preparedSummary)
     nextQuestion(senderID)
-
+ 
   }
 
   function checkAnswer(payload, answerForEachQuestion) {
