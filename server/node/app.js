@@ -49,7 +49,7 @@ const app = async () => {
     } else {
       return usersData[userId]
     }
-  } 
+  }
 
   async function getKeysLeftForThatUser(userId) {
     if (!usersData.hasOwnProperty(userId)) {
@@ -125,15 +125,14 @@ const app = async () => {
   const SERVER_URL = (process.env.SERVER_URL) ?
     (process.env.SERVER_URL) :
     config.get('serverURL')
-  console.log('SERVER_URL = ', SERVER_URL)
 
   if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
     console.error("Missing config values")
     process.exit(1)
   }
 
+  // get user information from facebook
   const getUserDetail = (senderID) => new Promise(async (resolve) => {
-
     const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
     fetch(graph)
       .then(async function (response) {
@@ -393,12 +392,17 @@ const app = async () => {
         default: {
           //get all question keys and save to usersData for that senderID
           let keysLeftForThatUser = await getKeys()
-          //set state in usersData
-          setState(senderID, { state, keysLeftForThatUser, round, done })
-          console.log("userData1 = ", usersData)
+
           //get state of this user
           let userState = await getState(senderID)
           console.log("user state = ", userState.state)
+          if (userState == "initialize") {
+            //set state in usersData
+            setState(senderID, { state, keysLeftForThatUser, "round":1, done })
+            console.log("userData1.1 = ", usersData)
+          }
+          console.log("userData1.2 = ", usersData)
+          
 
           //user chat with bot for the first time
           if (userState.state.state === 0) {
@@ -448,8 +452,8 @@ const app = async () => {
             removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
-            setState(senderID, {state, keysLeftForThatUser, round, done})
-             console.log("userData2 = ", usersData)
+            setState(senderID, { state, keysLeftForThatUser, "round":1, done })
+            console.log("userData2 = ", usersData)
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
             currentQuestionKey = shuffledKey
@@ -522,9 +526,10 @@ const app = async () => {
     let postbackState = await getState(senderID)
     console.log("post back getState= ", postbackState.state)
 
-    let tmpDone = await getDoneFromThatUser(senderID) 
+    //number of questions that user already done increase
+    let tmpDone = await getDoneFromThatUser(senderID)
     if (postbackState.state === 1) tmpDone++
-     console.log("userData3 = ", usersData)
+    console.log("userData3 = ", usersData)
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
 
@@ -549,7 +554,7 @@ const app = async () => {
     console.log("keyDone2 = ", keysDone)
     removeKeysDone(keysLeftForThatUser, keysDone)
     console.log("key left2 after remove= ", keysLeftForThatUser)
-    setState(senderID, {state, keysLeftForThatUser, round, "done" : tmpDone})
+    setState(senderID, { state, keysLeftForThatUser, round, "done": tmpDone })
     console.log("userData4 = ", usersData)
     //send to calculate grade
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
@@ -565,7 +570,7 @@ const app = async () => {
     console.log("summary = ", preparedSummary)
     firebase.saveSummaryToFirebase(senderID, preparedSummary)
     nextQuestion(senderID)
- 
+
   }
 
   function checkAnswer(payload, answerForEachQuestion) {
@@ -597,8 +602,8 @@ const app = async () => {
   async function nextQuestion(senderID) {
     //delete key of question that already asked from all keys
     //keys = removeKeyThatAsked(currentQuestionKey)
-    
-    let keysLeftForThatUser = await getKeysLeftForThatUser(senderID) 
+
+    let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
     console.log("keyToButton in nextQuestion after delete = ", keysLeftForThatUser)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     //define current key = key of question about to ask
@@ -643,6 +648,11 @@ const app = async () => {
   //remove array from array
   const removeKeysDone = (keys, keysDone) => {
     utillArray._.pullAll(keys, keysDone)
+  }
+
+  const nextRound = (round, done, numberOfQuestions) => {
+    if(done == numberOfQuestions)
+      round++
   }
 
   /*
