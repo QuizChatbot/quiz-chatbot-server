@@ -543,7 +543,7 @@ const app = async () => {
     let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
     userScore += scoreOfThatQuestion
     let grade = summary.calculateGrade(totalScore, userScore)
-
+    console.log("total score= ", totalScore)
     //prepare summary object to save in firebase
     let preparedSummary = summary.prepareSummary(done, keysLeftForThatUser, round, skill, grade, userScore, totalScore)
     console.log("summary = ", preparedSummary)
