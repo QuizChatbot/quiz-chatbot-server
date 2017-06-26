@@ -110,7 +110,7 @@ const app = async () => {
   app.use(express.static('public'))
 
 
-  var state = 0
+  let state = 0
 
 
   // App Secret can be retrieved from the App Dashboard
@@ -404,6 +404,7 @@ const app = async () => {
           //get state of this user
           let userState = await getState(senderID)
           console.log("user state = ", userState)
+
           if (userState == "initialize") {
             //set state in usersData
             setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
@@ -411,6 +412,7 @@ const app = async () => {
             console.log("userData1.1 = ", usersData)
           }
           else{
+            console.log("state in else = ", state)
             setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
           }
           console.log("userData1.2 = ", usersData)
@@ -1177,8 +1179,8 @@ const app = async () => {
         text: "Welcome to Quizbot! " + firstName,
         metadata: "DEVELOPER_DEFINED_METADATA"
       }
-    };
-    state = 1;
+    }
+    state = 1
 
     // setState(recipientId, {state, keys, round})
     // let testState =  await getState(recipientId)
