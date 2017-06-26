@@ -540,7 +540,7 @@ const app = async () => {
     removeKeysDone(keysLeftForThatUser, keysDone)
     console.log("key left2 after remove= ", keysLeftForThatUser)
     setState(senderID, {state, keysLeftForThatUser, round})
-
+    console.log("userData4 = ", usersData)
     //send to calculate grade
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
     let totalScore = summary.calculateTotalScore(numberOfQuestions)
