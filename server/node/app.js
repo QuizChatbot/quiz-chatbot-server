@@ -549,7 +549,7 @@ const app = async () => {
     if (payload == '{"nextRound":true}') {
       sendTextMessage(senderID, "Next Round!")
       let tmpRound = await getRoundFromThatUser(senderID)
-      startNextRound(senderID, tmpRound)
+      //startNextRound(senderID, tmpRound)
     }
     else if (payload == '{"nextRound":false}') {
       sendTextMessage(senderID, "Bye Bye <3")
@@ -716,7 +716,7 @@ const app = async () => {
     currentQuestionKey = shuffledKey
     answerForEachQuestion = await firebase.getAllAnswerFromQuestion(shuffledKey)
     console.log("answerForEachQuestion next round = ", answerForEachQuestion)
-    
+
     if (answerForEachQuestion == null) {
       console.log("Doesn't have this id in questions database")
       return null
