@@ -85,7 +85,6 @@ const app = async () => {
 
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
-    console.log("getkeys = ", keys)
     return keys
   }
 
@@ -709,7 +708,7 @@ const app = async () => {
     callSendAPI(buttonMessage)
   }
 
-  const startNextRound = (senderID, round) => {
+  async const startNextRound = (senderID, round) => {
     let keysLeftForThatUser = await getKeys()
     setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })
 
