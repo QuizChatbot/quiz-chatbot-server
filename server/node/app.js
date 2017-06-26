@@ -574,13 +574,13 @@ const app = async () => {
       //Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
-        let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
+        let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
       //Wrong
       else {
         sendTextMessage(senderID, "Bad dog!")
-        let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback)
+        let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
 
@@ -595,7 +595,7 @@ const app = async () => {
       setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
       console.log("userData4 = ", usersData)
 
-      //send to calculate grade
+      //send to calculate grade and score
       let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
       let totalScore = summary.calculateTotalScore(numberOfQuestions)
       let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
@@ -608,6 +608,8 @@ const app = async () => {
       let preparedSummary = summary.prepareSummary(tmpDone, keysLeftForThatUser, tmpRound, skill, grade, userScore, totalScore)
       console.log("summary = ", preparedSummary)
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
+
+      //call next question
       nextQuestion(senderID)
     }
 
@@ -625,15 +627,20 @@ const app = async () => {
   }
 
   //set format of the result we want to save in firebase
-  function prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback) {
+  async function prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID) {
+    //in payload contain answer, question key, point
     let prepareObj = []
+    //parse string to object
     let userAnswerObj = JSON.parse(payload)
     let doneAt = utillArray.getFormattedDate(timeOfPostback)
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
+    let round = await getRoundFromThatUser(senderID)
+    //add key to userAnswerObj
     userAnswerObj.result = result
     userAnswerObj.doneAt = doneAt
     userAnswerObj.startedAt = startedAt
     userAnswerObj.duration = duration
+    userAnswerObj.round = round
     prepareObj.push(userAnswerObj)
     console.log("result = ", prepareObj)
     return prepareObj
