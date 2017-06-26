@@ -410,6 +410,9 @@ const app = async () => {
             userState = await getState(senderID)
             console.log("userData1.1 = ", usersData)
           }
+          else{
+            setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
+          }
           console.log("userData1.2 = ", usersData)
 
 
@@ -422,7 +425,7 @@ const app = async () => {
             let firstName = user.first_name
             sendLetsQuiz(senderID, messageText, firstName)
             firebase.saveUserToFirebase(senderID, user)
-
+            console.log("state 1 = ", userState.state)
 
             //Log in Button
             // var messageData = {
@@ -446,7 +449,7 @@ const app = async () => {
             // };
             // callSendAPI(messageData)
           }
-
+          
           //when set state again, data format will change
           //already quiz with chatbot
           else if (userState.state === 1) {
@@ -613,7 +616,7 @@ const app = async () => {
     //keys = removeKeyThatAsked(currentQuestionKey)
 
     let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-    console.log("keyToButton in nextQuestion after delete = ", keysLeftForThatUser)
+    console.log("keyToButton in nextQuestion after delete = ", keysLeftForThatUser) 
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     //define current key = key of question about to ask
     currentQuestionKey = keyOfNextQuestion
