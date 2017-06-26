@@ -550,7 +550,7 @@ const app = async () => {
     if (payload == '{"nextRound":true}') {
       sendTextMessage(senderID, "Next Round!")
       let tmpRound = await getRoundFromThatUser(senderID)
-      //startNextRound(senderID, tmpRound)
+      startNextRound(senderID, tmpRound)
     }
     else if (payload == '{"nextRound":false}') {
       sendTextMessage(senderID, "Bye Bye <3")
@@ -601,7 +601,7 @@ const app = async () => {
       let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
       userScore += scoreOfThatQuestion
       let grade = summary.calculateGrade(totalScore, userScore)
-      console.log("total score= ", totalScore)
+
 
       //prepare summary object to save in firebase
       tmpDone = await getDoneFromThatUser(senderID)
@@ -709,26 +709,26 @@ const app = async () => {
     callSendAPI(buttonMessage)
   }
 
-  // const startNextRound =  async (senderID, round) => {
-  //   let keysLeftForThatUser = await getKeys()
-  //   console.log("keysLeftForThatUser next round = ", keysLeftForThatUser)
-  //   setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })
+  const startNextRound =  async (senderID, round) => {
+    let keysLeftForThatUser = await getKeys()
+    console.log("keysLeftForThatUser next round = ", keysLeftForThatUser)
+    setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })
 
-  //   let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-  //   currentQuestionKey = shuffledKey
-  //   answerForEachQuestion = await firebase.getAllAnswerFromQuestion(shuffledKey)
-  //   console.log("answerForEachQuestion next round = ", answerForEachQuestion)
+    let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
+    currentQuestionKey = shuffledKey
+    answerForEachQuestion = await firebase.getAllAnswerFromQuestion(shuffledKey)
+    console.log("answerForEachQuestion next round = ", answerForEachQuestion)
 
-  //   if (answerForEachQuestion == null) {
-  //     console.log("Doesn't have this id in questions database")
-  //     return null
-  //   }
+    if (answerForEachQuestion == null) {
+      console.log("Doesn't have this id in questions database")
+      return null
+    }
 
-  //   const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-  //   const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-  //   startedAt = utillArray.getMoment()
-  //   callSendAPI(buttonMessage)
-  // }
+    const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+    const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+    startedAt = utillArray.getMoment()
+    callSendAPI(buttonMessage)
+  }
 
   /*
    * Message Read Event
