@@ -129,7 +129,6 @@ const saveResultToFirebase = (senderID, prepareResult) => {
         "startedAt": result.startedAt,
         "duration": result.duration,
         "point": result.point,
-        "totalScore" : result.totalScore,
         "question": result.question,
         "result": result.result
     })
@@ -167,7 +166,8 @@ const saveSummaryToFirebase = (senderID, summary) => {
         "keysQuestionLeft": summary.keysQuestionLeft,
         "skill": summary.skill,
         "grade": summary.grade,
-        "score": summary.score
+        "score": summary.score,
+        "totalScore" : summary.totalScore
     })
 }
 
