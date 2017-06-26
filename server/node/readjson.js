@@ -74,7 +74,7 @@ const createButtonNextRound = (recipientId) => {
             }, {
               type: "postback",
               title: "No",
-              payload: JSON.stringify({ "nextRound": flase})
+              payload: JSON.stringify({ "nextRound": false})
             }]
           }
         }
