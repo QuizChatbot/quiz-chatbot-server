@@ -117,11 +117,12 @@ const getQuestionDone = async (senderID) => new Promise(async (resolve) => {
 
 })
 
-const saveResultToFirebase = (senderID, prepareResult) => {
+const saveResultToFirebase = async (senderID, prepareResult) => {
     let result = prepareResult[0]
-    console.log("key = " + result)
+    console.log("key in save= ", result)
+    console.log("prepareREsult in save= " ,prepareResult)
     let keyQuestion = result.question
-    console.log("key = " + keyQuestion)
+    console.log("key = ", keyQuestion)
     let db = admin.database()
     let ref = db.ref("/Developer/" + senderID)
     ref.child("results").push({

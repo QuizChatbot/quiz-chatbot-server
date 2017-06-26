@@ -574,13 +574,13 @@ const app = async () => {
       //Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
-        let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID)
+        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
       //Wrong
       else {
         sendTextMessage(senderID, "Bad dog!")
-        let preparedResult = prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID)
+        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
 
