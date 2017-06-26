@@ -43,6 +43,14 @@ const app = async () => {
     console.log('userData = ', usersData)
   }
 
+  async function setRound(userId, round) {
+    if (!usersData.hasOwnProperty(userId)) {
+      usersData[userId] = { round }
+    } else {
+      usersData[userId].round = round
+    }
+  }
+
   async function getState(userId) {
     if (!usersData.hasOwnProperty(userId)) {
       return "initialize"
@@ -405,19 +413,21 @@ const app = async () => {
           let userState = await getState(senderID)
           console.log("user state = ", userState)
 
+          //first time connect to bot
+          //let round = 1
           if (userState == "initialize") {
             //set state in usersData
             setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
+            //get state of the user
             userState = await getState(senderID)
-            console.log("userData1.1 = ", usersData)
           }
-          else{
-            console.log("state in else = ", state)
+
+          //when received welcome will setState again
+          //let round = 1
+          else {
             setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
             userState = await getState(senderID)
           }
-          console.log("userData1.2 = ", usersData)
-          console.log("state 1 = ", userState.state)
 
           //user chat with bot for the first time
           if (userState.state.state === 0) {
@@ -428,7 +438,7 @@ const app = async () => {
             let firstName = user.first_name
             sendLetsQuiz(senderID, messageText, firstName)
             firebase.saveUserToFirebase(senderID, user)
-          
+
 
             //Log in Button
             // var messageData = {
@@ -452,7 +462,7 @@ const app = async () => {
             // };
             // callSendAPI(messageData)
           }
-          
+
           //when set state again, data format will change
           //already quiz with chatbot
           else if (userState.state === 1) {
@@ -468,6 +478,7 @@ const app = async () => {
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
             setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
+            setRound(senderID, 2)
             console.log("userData2 = ", usersData)
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
@@ -544,7 +555,7 @@ const app = async () => {
     //number of questions that user already done increase
     let tmpDone = await getDoneFromThatUser(senderID)
     if (postbackState.state === 1) tmpDone++
-    console.log("userData3 = ", usersData)
+
     //check answer and ask next question
     let result = checkAnswer(payload, answerForEachQuestion)
 
@@ -569,7 +580,7 @@ const app = async () => {
     console.log("keyDone2 = ", keysDone)
     removeKeysDone(keysLeftForThatUser, keysDone)
     console.log("key left2 after remove= ", keysLeftForThatUser)
-    setState(senderID, { state, keysLeftForThatUser, "round" : tmpRound, "done": tmpDone })
+    setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
     console.log("userData4 = ", usersData)
     //send to calculate grade
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
@@ -619,7 +630,7 @@ const app = async () => {
     //keys = removeKeyThatAsked(currentQuestionKey)
 
     let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-    console.log("keyToButton in nextQuestion after delete = ", keysLeftForThatUser) 
+    console.log("keyToButton in nextQuestion after delete = ", keysLeftForThatUser)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     //define current key = key of question about to ask
     currentQuestionKey = keyOfNextQuestion
@@ -631,7 +642,7 @@ const app = async () => {
       sendTextMessage(senderID, "Finish!")
       state = 2
       let tmpRound = await getRoundFromThatUser(senderID)
-      setState(senderID, { state, "round" : tmpRound })
+      setState(senderID, { state, "round": tmpRound })
       console.log("set state after = ", usersData)
       done = 0
       userScore = 0
