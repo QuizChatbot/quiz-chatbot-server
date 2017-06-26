@@ -7,8 +7,9 @@ const readQuestions = function () {
 
 const createButtonFromQuestionId = async (id) => {
   let question = await firebase.getQuestionFromId(id)
+  console.log("questions in createButtonFromQuestionId = ", questions)
   let answers = question.answers
-
+  console.log("answers in createButtonFromQuestionId = ", answers)
   //push key and value to button 
   //but we will delete the 'subject' and 'question' key later'
   let buttons = []

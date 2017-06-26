@@ -489,6 +489,7 @@ const app = async () => {
 
 
             const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+            console.log("buttonsCreated = ", buttonsCreated)
             const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
             startedAt = utillArray.getMoment()
             callSendAPI(buttonMessage)
