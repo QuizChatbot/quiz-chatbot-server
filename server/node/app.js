@@ -422,9 +422,9 @@ const app = async () => {
           }
 
           //when received welcome will setState again
-          //let round = 1
           else {
-            setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
+            let tmpRound = await getRoundFromThatUser(senderID)
+            setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
             userState = await getState(senderID)
           }
 
@@ -476,7 +476,8 @@ const app = async () => {
             removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
-            setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
+            let tmpRound = await getRoundFromThatUser(senderID)
+            setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
             console.log("userData2 = ", usersData)
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
@@ -556,9 +557,8 @@ const app = async () => {
       sendTextMessage(senderID, "Bye Bye <3")
       //return
     }
+    //Postback for normal questions
     else {
-      //Postback for normal questions
-
       //if in question state when receive postback done = done +1 
       //number of question user answered incresae 
       let postbackState = await getState(senderID)
@@ -567,7 +567,6 @@ const app = async () => {
       //number of questions that user already done increase
       let tmpDone = await getDoneFromThatUser(senderID)
       if (postbackState.state === 1) tmpDone++
-
 
       //check answer and ask next question
       let result = checkAnswer(payload, answerForEachQuestion)
@@ -579,14 +578,14 @@ const app = async () => {
       userScore += scoreOfThatQuestion
       let grade = summary.calculateGrade(totalScore, userScore)
 
-      //Correct
+      // answer Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
         let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, 
                                                             timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
-      //Wrong
+      //answer Wrong
       else {
         sendTextMessage(senderID, "Bad dog!")
         let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, 
