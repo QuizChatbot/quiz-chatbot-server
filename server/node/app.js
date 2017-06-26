@@ -478,7 +478,6 @@ const app = async () => {
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
             setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
-            setRound(senderID, 2)
             console.log("userData2 = ", usersData)
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
@@ -641,11 +640,15 @@ const app = async () => {
     if (keyOfNextQuestion == null) {
       sendTextMessage(senderID, "Finish!")
       state = 2
+
       let tmpRound = await getRoundFromThatUser(senderID)
+      let tmpDone = await getDoneFromThatUser(senderID)
       setState(senderID, { state, "round": tmpRound })
       console.log("set state after = ", usersData)
       done = 0
       userScore = 0
+
+      nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
     }
     else {
       //no key that matched question
@@ -677,9 +680,14 @@ const app = async () => {
     utillArray._.pullAll(keys, keysDone)
   }
 
-  const nextRound = (round, done, numberOfQuestions) => {
-    if (done == numberOfQuestions)
+  const nextRound = (senderID, round, done, numberOfQuestions) => {
+    if (done == numberOfQuestions){
       round++
+      setRound(senderID, round)
+    }
+
+    let buttonMessage = createButton.createButtonNextRound(senderID)
+    callSendAPI(buttonMessage)
   }
 
   /*
@@ -890,6 +898,9 @@ const app = async () => {
 
     callSendAPI(messageData)
   }
+
+
+
 
   /*
    * Send a Structured Message (Generic Message type) using the Send API.

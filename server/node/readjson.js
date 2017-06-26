@@ -31,7 +31,7 @@ const createButtonFromQuestionId = async (id) => {
 }
 
 const createButtonMessageWithButtons = (recipientId, buttons) => {
-  //delete 'subject' and 'question' key from buttons
+  //delete 'subject' and 'question' key that comes with buttons
   let subject = buttons.subject
   let question = buttons.question
   delete buttons.subject
@@ -56,4 +56,31 @@ const createButtonMessageWithButtons = (recipientId, buttons) => {
   return messageData
 }
 
-module.exports = { readQuestions, createButtonFromQuestionId, createButtonMessageWithButtons}
+const createButtonNextRound = (recipientId) => {
+    var messageData = {
+      recipient: {
+        id: recipientId
+      },
+      message: {
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "button",
+            text: "Do you want to play the next round?",
+            buttons: [{
+              type: "postback",
+              title: "Yes"
+            }, {
+              type: "postback",
+              title: "No",
+              payload: "DEVELOPER_DEFINED_PAYLOAD"
+            }]
+          }
+        }
+      }
+    };
+
+    return messageData
+  }
+
+module.exports = { readQuestions, createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound}
