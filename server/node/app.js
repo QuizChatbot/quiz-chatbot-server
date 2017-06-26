@@ -558,8 +558,10 @@ const app = async () => {
     userScore += scoreOfThatQuestion
     let grade = summary.calculateGrade(totalScore, userScore)
     console.log("total score= ", totalScore)
+
     //prepare summary object to save in firebase
-    let preparedSummary = summary.prepareSummary(done, keysLeftForThatUser, round, skill, grade, userScore, totalScore)
+    tmpDone = await getDoneFromThatUser(senderID)
+    let preparedSummary = summary.prepareSummary(tmpDone, keysLeftForThatUser, round, skill, grade, userScore, totalScore)
     console.log("summary = ", preparedSummary)
     firebase.saveSummaryToFirebase(senderID, preparedSummary)
     nextQuestion(senderID)
