@@ -637,7 +637,7 @@ const app = async () => {
     prepareObj.push(userAnswerObj)
     console.log("result = ", prepareObj)
     return prepareObj
-  }
+  } 
 
   async function nextQuestion(senderID) {
     //delete key of question that already asked from all keys
