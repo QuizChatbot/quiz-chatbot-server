@@ -69,11 +69,12 @@ const createButtonNextRound = (recipientId) => {
             text: "Do you want to play the next round?",
             buttons: [{
               type: "postback",
-              title: "Yes"
+              title: "Yes",
+              payload: JSON.stringify({ "nextRound": true})
             }, {
               type: "postback",
               title: "No",
-              payload: "DEVELOPER_DEFINED_PAYLOAD"
+              payload: JSON.stringify({ "nextRound": flase})
             }]
           }
         }
