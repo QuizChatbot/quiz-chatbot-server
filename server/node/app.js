@@ -546,6 +546,8 @@ const app = async () => {
     console.log("Received postback for user %d and page %d with payload '%s' " +
       "at %d", senderID, recipientID, payload, timeOfPostback);
 
+    if(payload == '{"nextRound":true}') sendTextMessage(senderID, "Next Round!")
+
     //if in question state when receive postback done = done +1 
     //number of question user answered incresae 
     let postbackState = await getState(senderID)
