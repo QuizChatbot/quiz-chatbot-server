@@ -420,7 +420,7 @@ const app = async () => {
             //get state of the user
             userState = await getState(senderID)
           }
-
+ 
           //when received welcome will setState again
           else {
             let tmpRound = await getState(senderID)
