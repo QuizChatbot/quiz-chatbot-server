@@ -473,7 +473,7 @@ const app = async () => {
             console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
 
             //get keys question that user done
-            let tmpRound = await getRoundFromThatUser(senderID)
+            let tmpRound = await getState(senderID)
             let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
             console.log("keyDone1 = ", keysDone)
             console.log("tpRound in pause/play = ", tmpRound)
