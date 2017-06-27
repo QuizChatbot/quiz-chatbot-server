@@ -476,6 +476,7 @@ const app = async () => {
             let tmpRound = await getRoundFromThatUser(senderID)
             let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
             console.log("keyDone1 = ", keysDone)
+            console.log("tpRound in pause/play = ", tmpRound)
 
             //remove questions done from questions that not yet answered
             removeKeysDone(keysLeftForThatUser, keysDone)
