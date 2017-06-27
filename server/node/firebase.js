@@ -125,8 +125,7 @@ const getQuestionTest = async (senderID, round) => new Promise(async (resolve) =
     let keysDone = []
     ref.child("results").on("value", (snapshot) => {
         let resultSnapshot = snapshot.val()
-        console.log("snapshot = ", snapshot)
-        console.log("resultSnapshot = ", resultSnapshot)
+        console.log("resultSnapshot = ", resultSnapshot.val())
         for (let property in resultSnapshot) {
             if (resultSnapshot.hasOwnProperty(property)) {
                 keysDone.push(resultSnapshot[property].question)
