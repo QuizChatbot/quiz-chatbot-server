@@ -32,7 +32,7 @@ const app = async () => {
   let userScore = 0
   let usersData = {} //keep user sessions
 
- let test = await firebase.getQuestionTest(1462233120486829, 1)
+ //let test = await firebase.getQuestionTest(1462233120486829, 1)
 
 
   async function setState(userId, state) {
