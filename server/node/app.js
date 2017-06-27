@@ -464,7 +464,7 @@ const app = async () => {
           }
 
           //when set state again, data format will change
-          //already quiz with chatbot
+          //already quiz with chatbot or user come back after pause
           else if (userState.state === "playing" || userState.state === "pause") {
 
 
@@ -499,7 +499,6 @@ const app = async () => {
               console.log("Doesn't have this id in questions database")
               return null
             }
-
 
             const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
             console.log("buttonsCreated = ", buttonsCreated)
