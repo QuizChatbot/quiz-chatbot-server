@@ -32,8 +32,6 @@ const app = async () => {
   let userScore = 0
   let usersData = {} //keep user sessions
 
-  let test = await firebase.getAllAnswersFromQuestion("-Knd5n9HqiFd6NkEsQsT")
-  console.log("test = ", test)
 
 
   async function setState(userId, state) {
