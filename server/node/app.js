@@ -560,6 +560,14 @@ const app = async () => {
       sendTextMessage(senderID, "Bye Bye <3")
       //return
     }
+    else if (payload == '{"nextQuestion":true}') {
+      //call next question
+      nextQuestion(senderID)
+    }
+    else if (payload == '{"nextQuestion":false}') {
+      sendTextMessage(senderID, "Hell <3")
+    }
+
     //Postback for normal questions
     else {
       //if in question state when receive postback done = done +1 
@@ -596,6 +604,8 @@ const app = async () => {
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
 
+
+
       //keys = removeKeyThatAsked(currentQuestionKey)
       let tmpRound = await getRoundFromThatUser(senderID)
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
@@ -618,11 +628,6 @@ const app = async () => {
       //ask whether user ready to play next question 
       let buttonNext = await createButton.createButtonNext(senderID)
       callSendAPI(buttonNext)
-
-      if (payload == '{"nextQuestion":true}') {
-        //call next question
-        nextQuestion(senderID)
-      }
 
 
     }
