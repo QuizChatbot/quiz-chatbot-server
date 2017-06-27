@@ -467,6 +467,7 @@ const app = async () => {
           //already quiz with chatbot
           else if (userState.state === "playing" || userState.state === "pause") {
 
+
             let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
             console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
 
@@ -479,8 +480,15 @@ const app = async () => {
             removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
-
-            setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
+            //if user pause -> change to playing
+            if (userState.state === "pause") {
+              let tmpDone = await getDoneFromThatUser(senderID)
+              setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done" : tmpDone })
+            }
+            //if user playing
+            else {
+              setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
+            }
             console.log("userData2 = ", usersData)
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
@@ -573,7 +581,7 @@ const app = async () => {
       let tmpDone = await getDoneFromThatUser(senderID)
       let tmpRound = await getRoundFromThatUser(senderID)
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      setState(senderID, {keysLeftForThatUser, state, "done" : tmpDone, "round" : tmpRound})
+      setState(senderID, { keysLeftForThatUser, state, "done": tmpDone, "round": tmpRound })
       sendTextMessage(senderID, "Hell <3")
       sendTextMessage(senderID, "Come back when you're ready baby~")
     }
