@@ -19,7 +19,7 @@ const createButtonFromQuestionId = async (id) => {
       buttons.push({
             type: "postback",
             title: choices[key],
-            payload: JSON.stringify({ "answer": element, "question": id, "point": question.point })
+            payload: JSON.stringify({ "answer": choices[key], "question": id, "point": question.point })
           })
       }
   }
