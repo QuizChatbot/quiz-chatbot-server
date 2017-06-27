@@ -129,6 +129,7 @@ const saveResultToFirebase = async (senderID, prepareResult) => {
     console.log("key = ", keyQuestion)
     let db = admin.database()
     let ref = db.ref("/Developer/" + senderID)
+    //create new key when push
     ref.child("results").push({
         "answer": result.answer,
         "doneAt": result.doneAt,
