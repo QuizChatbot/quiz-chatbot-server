@@ -118,7 +118,7 @@ const app = async () => {
   app.use(express.static('public'))
 
 
-  let state = 0
+  let state = "initial"
 
 
   // App Secret can be retrieved from the App Dashboard
@@ -430,7 +430,7 @@ const app = async () => {
           }
 
           //user chat with bot for the first time
-          if (userState.state.state === 0) {
+          if (userState.state.state === "initial") {
             if (!user) {
               let userDetail = await getUserDetail(senderID)
               user = userDetail
@@ -465,7 +465,7 @@ const app = async () => {
 
           //when set state again, data format will change
           //already quiz with chatbot
-          else if (userState.state === 1) {
+          else if (userState.state === "playing") {
 
             let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
             console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
@@ -577,7 +577,7 @@ const app = async () => {
 
       //number of questions that user already done increase
       let tmpDone = await getDoneFromThatUser(senderID)
-      if (postbackState.state === 1) tmpDone++
+      if (postbackState.state === "playing") tmpDone++
 
       //check answer and ask next question
       let result = checkAnswer(payload, answerForEachQuestion)
@@ -681,7 +681,7 @@ const app = async () => {
     //finish that round
     if (keyOfNextQuestion == null) {
       sendTextMessage(senderID, "Finish!")
-      state = 2
+      state = "finish"
 
       let tmpRound = await getRoundFromThatUser(senderID)
       let tmpDone = await getDoneFromThatUser(senderID)
@@ -739,7 +739,7 @@ const app = async () => {
   const startNextRound = async (senderID, round) => {
     //ready to ask question
     //reset state = 1
-    state = 1
+    state = "playing"
     let keysLeftForThatUser = await getKeys()
     console.log("keysLeftForThatUser next round = ", keysLeftForThatUser)
     setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })
@@ -1273,7 +1273,7 @@ const app = async () => {
         metadata: "DEVELOPER_DEFINED_METADATA"
       }
     }
-    state = 1
+    state = "playing"
 
     // setState(recipientId, {state, keys, round})
     // let testState =  await getState(recipientId)
