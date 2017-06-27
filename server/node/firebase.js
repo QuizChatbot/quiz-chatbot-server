@@ -112,7 +112,7 @@ const getQuestionDone = async (senderID, round) => new Promise(async (resolve) =
                     keysDone.push(resultSnapshot[property].question)
                 }
             }
-        }
+        } 
         resolve(keysDone)
     }, (errorObject) => {
         console.log("Cannot get keys of questions that user already done  = " + errorObject.code)
