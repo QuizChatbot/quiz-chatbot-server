@@ -58,31 +58,59 @@ const createButtonMessageWithButtons = (recipientId, buttons) => {
 }
 
 const createButtonNextRound = (recipientId) => {
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: "Do you want to play the next round?",
-            buttons: [{
-              type: "postback",
-              title: "Yes",
-              payload: JSON.stringify({ "nextRound": true})
-            }, {
-              type: "postback",
-              title: "No",
-              payload: JSON.stringify({ "nextRound": false})
-            }]
-          }
+  let messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "button",
+          text: "Do you want to play the next round?",
+          buttons: [{
+            type: "postback",
+            title: "Yes",
+            payload: JSON.stringify({ "nextRound": true })
+          }, {
+            type: "postback",
+            title: "No",
+            payload: JSON.stringify({ "nextRound": false })
+          }]
         }
       }
-    };
+    }
+  };
 
-    return messageData
-  }
+  return messageData
+}
 
-module.exports = { readQuestions, createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound}
+const createButtonNext = (recipientId) => {
+  let messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "button",
+          text: "Wanna play next question?",
+          buttons: [{
+            type: "postback",
+            title: "Yes",
+            payload: JSON.stringify({ "nextQuestion": true })
+          }, {
+            type: "postback",
+            title: "No",
+            payload: JSON.stringify({ "nextQuestion": false })
+          }]
+        }
+      }
+    }
+  };
+
+  return messageData
+}
+
+module.exports = { readQuestions, createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext }

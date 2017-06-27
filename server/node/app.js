@@ -32,7 +32,7 @@ const app = async () => {
   let userScore = 0
   let usersData = {} //keep user sessions
 
- //let test = await firebase.getQuestionTest(1462233120486829, 1)
+  //let test = await firebase.getQuestionTest(1462233120486829, 1)
 
 
   async function setState(userId, state) {
@@ -421,7 +421,7 @@ const app = async () => {
             //get state of the user
             userState = await getState(senderID)
           }
- 
+
           //when received welcome will setState again
           else {
             let tmpRound = await getState(senderID)
@@ -479,7 +479,7 @@ const app = async () => {
             removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
-            
+
             setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
             console.log("userData2 = ", usersData)
 
@@ -584,15 +584,15 @@ const app = async () => {
       // answer Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
-        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, 
-                                                            timeOfPostback, scoreOfThatQuestion, senderID)
+        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt,
+          timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
       //answer Wrong
       else {
         sendTextMessage(senderID, "Bad dog!")
-        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, 
-                                                            timeOfPostback, scoreOfThatQuestion, senderID)
+        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt,
+          timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
 
@@ -615,8 +615,15 @@ const app = async () => {
       console.log("summary = ", preparedSummary)
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
 
-      //call next question
-      nextQuestion(senderID)
+      //ask whether user ready to play next question 
+      createButton.createButtonNext(senderID)
+
+      if (payload == '{"nextQuestion":true}') {
+        //call next question
+        nextQuestion(senderID)
+      }
+
+
     }
 
   }
@@ -651,7 +658,7 @@ const app = async () => {
     prepareObj.push(userAnswerObj)
     console.log("result = ", prepareObj)
     return prepareObj
-  } 
+  }
 
   async function nextQuestion(senderID) {
     //delete key of question that already asked from all keys
@@ -723,8 +730,9 @@ const app = async () => {
     callSendAPI(buttonMessage)
   }
 
-  const startNextRound =  async (senderID, round) => {
+  const startNextRound = async (senderID, round) => {
     //ready to ask question
+    //reset state = 1
     state = 1
     let keysLeftForThatUser = await getKeys()
     console.log("keysLeftForThatUser next round = ", keysLeftForThatUser)
