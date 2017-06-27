@@ -108,7 +108,9 @@ const getQuestionDone = async (senderID, round) => new Promise(async (resolve) =
         let resultSnapshot = snapshot.val()
         for (let property in resultSnapshot) {
             if (resultSnapshot.hasOwnProperty(property)) {
-                keysDone.push(resultSnapshot[property].question)
+                if (resultSnapshot[property].round == round) {
+                    keysDone.push(resultSnapshot[property].question)
+                }
             }
         }
         resolve(keysDone)
@@ -127,9 +129,10 @@ const getQuestionTest = async (senderID, round) => new Promise(async (resolve) =
         let resultSnapshot = snapshot.val()
         console.log("resultSnapshot = ", resultSnapshot)
         for (let property in resultSnapshot) {
-            console.log("property = ", property)
             if (resultSnapshot.hasOwnProperty(property)) {
-                keysDone.push(resultSnapshot[property].question)
+                if (resultSnapshot[property].round == round) {
+                    keysDone.push(resultSnapshot[property].question)
+                }
             }
         }
         resolve(keysDone)
@@ -154,8 +157,8 @@ const saveResultToFirebase = async (senderID, prepareResult) => {
         "point": result.point,
         "question": result.question,
         "result": result.result,
-        "round" : result.round,
-        "score" : result.score
+        "round": result.round,
+        "score": result.score
     })
 }
 
@@ -192,7 +195,7 @@ const saveSummaryToFirebase = (senderID, summary) => {
         "skill": summary.skill,
         "grade": summary.grade,
         "score": summary.score,
-        "totalScore" : summary.totalScore
+        "totalScore": summary.totalScore
     })
 }
 
