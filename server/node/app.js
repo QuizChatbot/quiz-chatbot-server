@@ -724,6 +724,8 @@ const app = async () => {
   }
 
   const startNextRound =  async (senderID, round) => {
+    //ready to ask question
+    state = 1
     let keysLeftForThatUser = await getKeys()
     console.log("keysLeftForThatUser next round = ", keysLeftForThatUser)
     setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })

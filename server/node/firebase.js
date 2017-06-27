@@ -108,6 +108,7 @@ const getQuestionDone = async (senderID, round) => new Promise(async (resolve) =
         let resultSnapshot = snapshot.val()
         for (let property in resultSnapshot) {
             if (resultSnapshot.hasOwnProperty(property)) {
+                //get keys of questions done if that round
                 if (resultSnapshot[property].round == round) {
                     keysDone.push(resultSnapshot[property].question)
                 }
@@ -121,27 +122,6 @@ const getQuestionDone = async (senderID, round) => new Promise(async (resolve) =
 
 })
 
-const getQuestionTest = async (senderID, round) => new Promise(async (resolve) => {
-    const db = admin.database()
-    const ref = db.ref("/Developer/" + senderID)
-    let keysDone = []
-    ref.child("results").on("value", (snapshot) => {
-        let resultSnapshot = snapshot.val()
-        console.log("resultSnapshot = ", resultSnapshot)
-        for (let property in resultSnapshot) {
-            if (resultSnapshot.hasOwnProperty(property)) {
-                if (resultSnapshot[property].round == round) {
-                    keysDone.push(resultSnapshot[property].question)
-                }
-            }
-        }
-        resolve(keysDone)
-    }, (errorObject) => {
-        console.log("Cannot get keys of questions that user already done  = " + errorObject.code)
-
-    })
-
-})
 
 const saveResultToFirebase = async (senderID, prepareResult) => {
     let result = prepareResult[0]
@@ -201,7 +181,6 @@ const saveSummaryToFirebase = (senderID, summary) => {
 
 module.exports = {
     connectToFirebase, getQuestionsFromFirebase, getAllAnswersFromQuestion, getQuestionFromId,
-    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone,
-    getQuestionTest
+    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone
 }
 
