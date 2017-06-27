@@ -425,6 +425,7 @@ const app = async () => {
           //when received welcome will setState again
           else {
             let tmpRound = await getState(senderID)
+            console.log("tmpRound in else = ", tmpRound)
             setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, done })
             userState = await getState(senderID)
           }
