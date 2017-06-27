@@ -652,12 +652,13 @@ const app = async () => {
   }
 
   function checkAnswer(payload, answerForEachQuestion) {
+    //payload contain the answer user choose, point for that question
     let userAnswerStr = payload
     let userAnswerObj = JSON.parse(userAnswerStr)
     console.log("check ansforeachQ = ", answerForEachQuestion)
     console.log("check ans that user choose  = ", userAnswerObj)
     //the correct answer is always in first element of answers in json file
-    if (userAnswerObj.answer == answerForEachQuestion[0]) return true
+    if (userAnswerObj.answer == answerForEachQuestion.answer) return true
     else return false
 
   }
