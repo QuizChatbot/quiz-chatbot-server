@@ -32,6 +32,7 @@ const app = async () => {
   let userScore = 0
   let usersData = {} //keep user sessions
 
+ let test = await firebase.getQuestionTest(1462233120486829, 1)
 
 
   async function setState(userId, state) {
@@ -470,19 +471,21 @@ const app = async () => {
             console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
 
             //get keys question that user done
-            let keysDone = await firebase.getQuestionDone(senderID)
+            let tmpRound = await getRoundFromThatUser(senderID)
+            let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
             console.log("keyDone1 = ", keysDone)
+
             //remove questions done from questions that not yet answered
             removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 after remove= ", keysLeftForThatUser)
 
-            let tmpRound = await getRoundFromThatUser(senderID)
+            
             setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
             console.log("userData2 = ", usersData)
 
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
             currentQuestionKey = shuffledKey
-            answerForEachQuestion = await firebase.getAllAnswerFromQuestion(shuffledKey)
+            answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
             if (answerForEachQuestion == null) {
               console.log("Doesn't have this id in questions database")
               return null
@@ -597,7 +600,7 @@ const app = async () => {
       let tmpRound = await getRoundFromThatUser(senderID)
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
       console.log("key left2= ", keysLeftForThatUser)
-      let keysDone = await firebase.getQuestionDone(senderID)
+      let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
       console.log("keyDone2 = ", keysDone)
       removeKeysDone(keysLeftForThatUser, keysDone)
       console.log("key left2 after remove= ", keysLeftForThatUser)
@@ -680,7 +683,7 @@ const app = async () => {
     //still has questions not answered
     else {
 
-      answerForEachQuestion = await firebase.getAllAnswerFromQuestion(keyOfNextQuestion)
+      answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
       console.log(" answerForEachQuestion in nextQ = ", answerForEachQuestion)
       //no key that matched question
       if (answerForEachQuestion == null) {
@@ -727,7 +730,7 @@ const app = async () => {
 
     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     currentQuestionKey = shuffledKey
-    answerForEachQuestion = await firebase.getAllAnswerFromQuestion(shuffledKey)
+    answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
     console.log("answerForEachQuestion next round = ", answerForEachQuestion)
 
     if (answerForEachQuestion == null) {

@@ -9,13 +9,15 @@ const connectToFirebase = () => {
 }
 const admin = connectToFirebase()
 
+//get total number of questions
 const getNumberOfQuestions = async () => {
     let keys = await getAllQuestionKeys()
     let numberOfQuestions = keys.length
     return numberOfQuestions
 }
 
-const readQuestionsFromFirebase = async () => {
+//get all questions from firebase
+const getQuestionsFromFirebase = async () => {
     // Get a database reference to our posts 
     let db = admin.database()
     let ref = db.ref("/Quests")
@@ -39,7 +41,7 @@ const readQuestionsFromFirebase = async () => {
     return result
 }
 
-const getAllAnswerFromQuestion = async (id) => {
+const getAllAnswersFromQuestion = async (id) => {
     var db = admin.database()
     var ref = db.ref("/Quests")
 
@@ -83,7 +85,6 @@ const getQuestionFromId = async (id) => {
 }
 
 const getAllQuestionKeys = () => new Promise(async (resolve) => {
-    //const questions = await readQuestionsFromFirebase()
     const db = admin.database()
     const ref = db.ref("/Quests")
 
@@ -98,12 +99,34 @@ const getAllQuestionKeys = () => new Promise(async (resolve) => {
 })
 
 //get key of questions already done by that user
-const getQuestionDone = async (senderID) => new Promise(async (resolve) => {
+//query only question that done in that round
+const getQuestionDone = async (senderID, round) => new Promise(async (resolve) => {
     const db = admin.database()
     const ref = db.ref("/Developer/" + senderID)
     let keysDone = []
     ref.child("results").on("value", (snapshot) => {
         let resultSnapshot = snapshot.val()
+        for (let property in resultSnapshot) {
+            if (resultSnapshot.hasOwnProperty(property)) {
+                keysDone.push(resultSnapshot[property].question)
+            }
+        }
+        resolve(keysDone)
+    }, (errorObject) => {
+        console.log("Cannot get keys of questions that user already done  = " + errorObject.code)
+
+    })
+
+})
+
+const getQuestionTest = async (senderID, round) => new Promise(async (resolve) => {
+    const db = admin.database()
+    const ref = db.ref("/Developer/" + senderID)
+    let keysDone = []
+    ref.child("results").on("value", (snapshot) => {
+        let resultSnapshot = snapshot.val()
+        console.log("snapshot = ", snapshot)
+        console.log("resultSnapshot = ", resultSnapshot)
         for (let property in resultSnapshot) {
             if (resultSnapshot.hasOwnProperty(property)) {
                 keysDone.push(resultSnapshot[property].question)
@@ -174,7 +197,8 @@ const saveSummaryToFirebase = (senderID, summary) => {
 }
 
 module.exports = {
-    connectToFirebase, readQuestionsFromFirebase, getAllAnswerFromQuestion, getQuestionFromId,
-    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone
+    connectToFirebase, getQuestionsFromFirebase, getAllAnswersFromQuestion, getQuestionFromId,
+    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone,
+    getQuestionTest
 }
 
