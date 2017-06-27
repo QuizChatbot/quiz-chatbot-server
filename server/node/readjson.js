@@ -14,23 +14,13 @@ const createButtonFromQuestionId = async (id) => {
   //but we will delete the 'subject' and 'question' key later'
   let buttons = []
 
-  for (let key in choices) {
-    if (key != "answer") {
+    choices.forEach(function (element) {
       buttons.push({
-            type: "postback",
-            title: choices[key],
-            payload: JSON.stringify({ "answer": choices[key], "question": id, "point": question.point })
-          })
-      }
-  }
-
-    // choices.forEach(function (element) {
-    //   buttons.push({
-    //     type: "postback",
-    //     title: element,
-    //     payload: JSON.stringify({ "answer": element, "question": id, "point": question.point })
-    //   })
-    // }, this)
+        type: "postback",
+        title: element,
+        payload: JSON.stringify({ "answer": element, "question": id, "point": question.point })
+      })
+    }, this)
 
     console.log("buttons =", buttons)
 
