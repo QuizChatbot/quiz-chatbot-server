@@ -482,6 +482,7 @@ const app = async () => {
 
             //if user pause -> change to playing
             if (userState.state === "pause") {
+              console.log("_________PAUSE__________")
               let tmpDone = await getDoneFromThatUser(senderID)
               setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done" : tmpDone })
             }
