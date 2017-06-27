@@ -426,7 +426,8 @@ const app = async () => {
           else {
             let tmpRound = await getState(senderID)
             console.log("tmpRound in else = ", tmpRound)
-            setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, done })
+            if(tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, done })
+            else  setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, done })
             userState = await getState(senderID)
           }
 
