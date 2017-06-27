@@ -465,7 +465,7 @@ const app = async () => {
 
           //when set state again, data format will change
           //already quiz with chatbot
-          else if (userState.state === "playing") {
+          else if (userState.state === "playing" || userState.state === "pause") {
 
             let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
             console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
@@ -498,6 +498,7 @@ const app = async () => {
             startedAt = utillArray.getMoment()
             callSendAPI(buttonMessage)
           }
+
         }
       }
     } else if (messageAttachments) {
@@ -560,12 +561,21 @@ const app = async () => {
       sendTextMessage(senderID, "Bye Bye <3")
       //return
     }
+
+    //check for button next question
     else if (payload == '{"nextQuestion":true}') {
       //call next question
       nextQuestion(senderID)
     }
     else if (payload == '{"nextQuestion":false}') {
+      //pause
+      state = "pause"
+      let tmpDone = await getDoneFromThatUser(senderID)
+      let tmpRound = await getRoundFromThatUser(senderID)
+      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+      setState(senderID, {keysLeftForThatUser, state, "done" : tmpDone, "round" : tmpRound})
       sendTextMessage(senderID, "Hell <3")
+      sendTextMessage(senderID, "Come back when you're ready baby~")
     }
 
     //Postback for normal questions
