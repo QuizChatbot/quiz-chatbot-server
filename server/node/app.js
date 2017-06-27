@@ -32,7 +32,8 @@ const app = async () => {
   let userScore = 0
   let usersData = {} //keep user sessions
 
-
+let test = await getAllAnswersFromQuestion("-KndBoXvWd8nhK0za-8v")
+console.log("test = ", test)
 
   async function setState(userId, state) {
     if (!usersData.hasOwnProperty(userId)) {
