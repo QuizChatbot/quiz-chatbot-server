@@ -616,7 +616,8 @@ const app = async () => {
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
 
       //ask whether user ready to play next question 
-      createButton.createButtonNext(senderID)
+      let buttonNext = await createButton.createButtonNext(senderID)
+      callSendAPI(buttonNext)
 
       if (payload == '{"nextQuestion":true}') {
         //call next question
