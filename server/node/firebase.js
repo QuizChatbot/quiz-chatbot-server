@@ -46,7 +46,7 @@ const getAllAnswersFromQuestion = async (id) => {
     var ref = db.ref("/Quests")
 
     const result = await new Promise(function (resolve, reject) {
-        ref.child(id).child("answers").on("value", (snapshot) => {
+        ref.child(id).child("choices").on("value", (snapshot) => {
             questionSnapshots = snapshot.val()
             resolve(questionSnapshots)
         }, (errorObject) => {
