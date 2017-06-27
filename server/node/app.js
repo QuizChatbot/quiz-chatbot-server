@@ -582,6 +582,7 @@ const app = async () => {
       state = "pause"
       let tmpDone = await getDoneFromThatUser(senderID)
       let tmpRound = await getRoundFromThatUser(senderID)
+      console.log("________tmpRound________= ", tmpRound)
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
       setState(senderID, { keysLeftForThatUser, state, "done": tmpDone, "round": tmpRound })
       sendTextMessage(senderID, "Hell <3")
