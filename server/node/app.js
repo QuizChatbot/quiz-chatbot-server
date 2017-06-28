@@ -498,6 +498,7 @@ const app = async () => {
             }
             console.log("userData2 = ", usersData)
 
+            //shuffle keys of questions that have not answered
             let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
             currentQuestionKey = shuffledKey
             answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
@@ -506,8 +507,8 @@ const app = async () => {
               return null
             }
 
+            //create button for that question
             const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-            console.log("buttonsCreated = ", buttonsCreated)
             const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
             startedAt = utillArray.getMoment()
             callSendAPI(buttonMessage)
@@ -602,8 +603,9 @@ const app = async () => {
 
       //number of questions that user already done increase
       let tmpDone = await getDoneFromThatUser(senderID)
+      console.log("post back tmpDone= ", tmpDone)
       if (postbackState.state === "playing") tmpDone++
-
+      console.log("post back tmpDone after increase= ", tmpDone)
       //check answer and ask next question
       let result = checkAnswer(payload, answerForEachQuestion)
 
