@@ -588,7 +588,7 @@ else {
       let tmpDone = await getDoneFromThatUser(senderID)
       let tmpRound = await getRoundFromThatUser(senderID)
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      setState(senderID, { keysLeftForThatUser, "state" : "pause", "done": tmpDone, "round": tmpRound })
+      setState(senderID, { keysLeftForThatUser, "state" : "finish", "done": tmpDone, "round": tmpRound })
       sendTextMessage(senderID, "Come back when you're ready baby~ <3")
       sendTextMessage(senderID, "Bye Bye <3")
     }
