@@ -425,8 +425,10 @@ const app = async () => {
           //when received welcome will setState again
           else {
             let tmpRound = await getState(senderID)
-            console.log("tmpRound in else = ", tmpRound)
-            if(tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, done })
+            console.log("______state in else_________ = ", tmpRound)
+            let tmpDone = await getDoneFromThatUser(senderID)
+            console.log("______done in else_________ = ", tmpDone)
+            if(tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done" : tmpDone })
             else  setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, done })
             userState = await getState(senderID)
           }
