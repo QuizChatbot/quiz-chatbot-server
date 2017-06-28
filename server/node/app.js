@@ -632,7 +632,7 @@ const app = async () => {
           timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
-
+ 
 
 
       //keys = removeKeyThatAsked(currentQuestionKey)
