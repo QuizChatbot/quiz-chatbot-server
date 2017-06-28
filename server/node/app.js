@@ -659,7 +659,7 @@ const app = async () => {
 
 
 
-      if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser > 0) {
+      if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser.length > 0) {
         // the array is defined and has at least one element
         let buttonNext = await createButton.createButtonNext(senderID)
         callSendAPI(buttonNext)
