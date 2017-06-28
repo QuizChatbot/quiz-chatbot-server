@@ -653,9 +653,10 @@ const app = async () => {
       let preparedSummary = summary.prepareSummary(tmpDone, keysLeftForThatUser, tmpRound, skill, grade, userScore, totalScore)
       console.log("summary = ", preparedSummary)
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
-
+      console.log("_______keysLeftForThatUser______ = ", keysLeftForThatUser)
       //ask whether user ready to play next question 
       if (keysLeftForThatUser == null) {
+        console.log("ask for new round")
         nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
       }
       else {
