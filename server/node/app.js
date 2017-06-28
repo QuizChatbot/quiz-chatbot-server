@@ -430,12 +430,13 @@ else {
             console.log("______done in else_________ = ", tmpDone)
             //user has been paused
             if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-            //user has been playing
+            //user has been paused for next round
             else if(tmpRound.state == "finish"){
               console.log("______state finish_________ = ")
               tmpDone = 0
                setState(senderID, { "state" : "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
             }
+            //user has been playing
             else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
             userState = await getState(senderID) 
           }
