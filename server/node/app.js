@@ -654,15 +654,19 @@ const app = async () => {
       console.log("summary = ", preparedSummary)
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
       console.log("_______keysLeftForThatUser______ = ", keysLeftForThatUser)
-      console.log("_____ = ", Objects.keys(keysLeftForThatUser).length)
+
       //ask whether user ready to play next question 
-      if (keysLeftForThatUser.is) {
-        console.log("ask for new round")
-        nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
-      }
-      else {
+
+
+
+      if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser > 0) {
+        // the array is defined and has at least one element
         let buttonNext = await createButton.createButtonNext(senderID)
         callSendAPI(buttonNext)
+      }
+      else {
+          console.log("ask for new round")
+        nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
       }
 
 
