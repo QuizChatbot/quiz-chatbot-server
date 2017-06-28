@@ -646,7 +646,7 @@ const app = async () => {
       setState(senderID, { "state" : "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
       console.log("userData4 = ", usersData) 
 
-
+ 
 
       //prepare summary object to save in firebase
       tmpDone = await getDoneFromThatUser(senderID)
