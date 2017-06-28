@@ -483,7 +483,7 @@ const app = async () => {
             //remove questions done from questions that not yet answered
             removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 after remove= ", keysLeftForThatUser)
-
+ 
             //if user pause -> change to playing
             if (userState.state === "pause") {
               console.log("_________PAUSE__________")
