@@ -655,18 +655,18 @@ const app = async () => {
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
       console.log("_______keysLeftForThatUser______ = ", keysLeftForThatUser)
 
+      
+
       //ask whether user ready to play next question 
-
-
-
+      //if there are still questions left that have not done => create next button
       if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser.length > 0) {
-        // the array is defined and has at least one element
         let buttonNext = await createButton.createButtonNext(senderID)
         callSendAPI(buttonNext)
       }
+      //if there is no question left that have not done => create next round button
       else {
-          console.log("ask for new round")
-        nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
+        nextQuestion(senderID)
+        //nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
       }
 
 
