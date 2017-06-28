@@ -729,9 +729,10 @@ const app = async () => {
       sendTextMessage(senderID, "Finish!")
       state = "finish"
 
+      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
       let tmpRound = await getRoundFromThatUser(senderID)
       let tmpDone = await getDoneFromThatUser(senderID)
-      setState(senderID, { state, "round": tmpRound })
+      setState(senderID, { state, keysLeftForThatUser,"round": tmpRound, "done" : tmpDone })
       console.log("set state after = ", usersData)
       done = 0
       userScore = 0

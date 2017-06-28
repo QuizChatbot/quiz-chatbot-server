@@ -24,7 +24,7 @@ const calculateScoreForThatQuestion = (point, result, duration) => {
 }
 
 const calculateTotalScore = (totalQuestions) => {
-    let totalScore = totalQuestions * 10
+    let totalScore = totalQuestions * 15
     return totalScore
 }
 
