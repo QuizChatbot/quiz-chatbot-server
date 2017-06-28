@@ -428,11 +428,11 @@ const app = async () => {
             console.log("______state in else_________ = ", tmpRound)
             let tmpDone = await getDoneFromThatUser(senderID)
             console.log("______done in else_________ = ", tmpDone)
-            if(tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done" : tmpDone })
-            else  setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done" : tmpDone })
+            if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
+            else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
             userState = await getState(senderID)
           }
-  
+
           //user chat with bot for the first time
           if (userState.state.state === "initial") {
             if (!user) {
@@ -485,14 +485,14 @@ const app = async () => {
             //remove questions done from questions that not yet answered
             removeKeysDone(keysLeftForThatUser, keysDone)
             console.log("key left1 after remove= ", keysLeftForThatUser)
- 
+
             //if user pause -> change to playing
             if (userState.state === "pause") {
               console.log("_________PAUSE__________")
               let tmpDone = await getDoneFromThatUser(senderID)
               let tmpRound = await getRoundFromThatUser(senderID)
               console.log("tmpRound after pause= ", tmpRound)
-              setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done" : tmpDone })
+              setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
             }
             //if user playing
             else {
@@ -632,7 +632,7 @@ const app = async () => {
           timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
- 
+
 
 
       //keys = removeKeyThatAsked(currentQuestionKey)
@@ -643,10 +643,10 @@ const app = async () => {
       console.log("keyDone2 = ", keysDone)
       removeKeysDone(keysLeftForThatUser, keysDone)
       console.log("key left2 after remove= ", keysLeftForThatUser)
-      setState(senderID, { "state" : "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-      console.log("userData4 = ", usersData) 
+      setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
+      console.log("userData4 = ", usersData)
 
- 
+
 
       //prepare summary object to save in firebase
       tmpDone = await getDoneFromThatUser(senderID)
@@ -655,8 +655,13 @@ const app = async () => {
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
 
       //ask whether user ready to play next question 
-      let buttonNext = await createButton.createButtonNext(senderID)
-      callSendAPI(buttonNext)
+      if (keysLeftForThatUser == null) {
+        nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
+      }
+      else {
+        let buttonNext = await createButton.createButtonNext(senderID)
+        callSendAPI(buttonNext)
+      }
 
 
     }
@@ -724,7 +729,7 @@ const app = async () => {
     else {
 
       answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
-    
+
       //no key that matched question
       if (answerForEachQuestion == null) {
         console.log("Doesn't have this id in questions json")
