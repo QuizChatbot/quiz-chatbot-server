@@ -433,6 +433,7 @@ else {
             //user has been playing
             else if(tmpRound.state == "finish"){
               console.log("______state finish_________ = ")
+              tmpDone = 0
                setState(senderID, { "state" : "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
             }
             else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
