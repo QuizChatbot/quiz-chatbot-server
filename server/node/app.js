@@ -26,7 +26,7 @@ const app = async () => {
   let answerForEachQuestion
   let currentQuestionKey
   let startedAt
-  let round = 1
+  let round = 0
   let done = 0
   let skill = "es6"
   let userScore = 0
@@ -417,7 +417,7 @@ const app = async () => {
           //let round = 1
           if (userState == "initialize") {
             //set state in usersData
-            setState(senderID, { state, keysLeftForThatUser, "round": 1, done })
+            setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
             //get state of the user
             userState = await getState(senderID)
           }
@@ -576,11 +576,11 @@ const app = async () => {
     }
     else if (payload == '{"nextRound":false}') {
       //pause
-      let tmpDone = await getDoneFromThatUser(senderID)
-      let tmpRound = await getRoundFromThatUser(senderID)
-      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      setState(senderID, { keysLeftForThatUser, "state" : "pause", "done": tmpDone, "round": tmpRound })
-      sendTextMessage(senderID, "Come back when you're ready baby~ <3")
+      // let tmpDone = await getDoneFromThatUser(senderID)
+      // let tmpRound = await getRoundFromThatUser(senderID)
+      // let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+      // setState(senderID, { keysLeftForThatUser, "state" : "pause", "done": tmpDone, "round": tmpRound })
+      // sendTextMessage(senderID, "Come back when you're ready baby~ <3")
       sendTextMessage(senderID, "Bye Bye <3")
     }
 
