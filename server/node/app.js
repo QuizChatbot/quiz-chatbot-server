@@ -414,7 +414,7 @@ const app = async () => {
           console.log("user state = ", userState)
 
           //first time connect to bot
-          //let round = 1
+          //let round = 0
           if (userState == "initialize") {
             //set state in usersData
             setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
@@ -445,7 +445,7 @@ else {
           if (userState.state.state === "initial") {
             if (!user) {
               let userDetail = await getUserDetail(senderID)
-              user = userDetail
+              user = userDetail 
             }
             let firstName = user.first_name
             sendLetsQuiz(senderID, messageText, firstName)
@@ -591,7 +591,7 @@ else {
       let tmpRound = await getRoundFromThatUser(senderID)
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
       setState(senderID, { keysLeftForThatUser, "state" : "finish", "done": tmpDone, "round": tmpRound })
-      sendTextMessage(senderID, "Come back when you're ready baby~ <3")
+      sendTextMessage(senderID, "Come back when you're ready baby~")
       sendTextMessage(senderID, "Bye Bye <3")
     }
 
@@ -1332,10 +1332,6 @@ else {
       }
     }
     state = "playing"
-
-    // setState(recipientId, {state, keys, round})
-    // let testState =  await getState(recipientId)
-    // console.log("state of that user = ", testState)
     callSendAPI(messageData);
   }
 

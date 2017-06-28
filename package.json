@@ -29,10 +29,13 @@
     "lodash": "^4.17.4",
     "lodash.remove": "^4.7.0",
     "moment": "^2.18.1",
-    "request": "^2.81.0"
+    "request": "^2.81.0" 
   },
   "engines": {
     "node": "7.10.0",
     "npm": "4.2.0"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4"
   }
 }
