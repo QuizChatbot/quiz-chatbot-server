@@ -558,13 +558,13 @@ const app = async () => {
    * 
    */
   async function receivedPostback(event) {
-    let senderID = event.sender.id;
-    let recipientID = event.recipient.id;
-    let timeOfPostback = event.timestamp;
+    let senderID = event.sender.id
+    let recipientID = event.recipient.id
+    let timeOfPostback = event.timestamp
 
     // The 'payload' param is a developer-defined field which is set in a postback 
     // button for Structured Messages. 
-    let payload = event.postback.payload;
+    let payload = event.postback.payload
     console.log("Received postback for user %d and page %d with payload '%s' " +
       "at %d", senderID, recipientID, payload, timeOfPostback);
 
@@ -643,7 +643,7 @@ const app = async () => {
       console.log("keyDone2 = ", keysDone)
       removeKeysDone(keysLeftForThatUser, keysDone)
       console.log("key left2 after remove= ", keysLeftForThatUser)
-      setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
+      setState(senderID, { "state" : "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
       console.log("userData4 = ", usersData)
 
 
@@ -696,12 +696,10 @@ const app = async () => {
   }
 
   async function nextQuestion(senderID) {
-    //delete key of question that already asked from all keys
-    //keys = removeKeyThatAsked(currentQuestionKey)
-
     let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
     console.log("keysLeftForThatUser in nextQuestion after delete = ", keysLeftForThatUser)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
+
     //define current key = key of question about to ask
     currentQuestionKey = keyOfNextQuestion
     console.log("keyOfNextQuestion in nextQuestion = ", keyOfNextQuestion)
@@ -726,7 +724,7 @@ const app = async () => {
     else {
 
       answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
-      console.log(" answerForEachQuestion in nextQ = ", answerForEachQuestion)
+    
       //no key that matched question
       if (answerForEachQuestion == null) {
         console.log("Doesn't have this id in questions json")
@@ -756,11 +754,14 @@ const app = async () => {
   }
 
   const nextRound = (senderID, round, done, numberOfQuestions) => {
+    //if number of done questions equals to number of all questions
+    //then that round is complete -> round increase 
     if (done == numberOfQuestions) {
       round++
       setRound(senderID, round)
       console.log("usersData in nextRound= ", usersData)
     }
+    //create button ask for next round
     let buttonMessage = createButton.createButtonNextRound(senderID)
     callSendAPI(buttonMessage)
   }
