@@ -576,6 +576,9 @@ const app = async () => {
     }
     else if (payload == '{"nextRound":false}') {
       //pause
+      console.log("________Pause Next Round_____")
+      let test = await getState(senderID)
+      console.log("test = ", test)
       let tmpDone = await getDoneFromThatUser(senderID)
       let tmpRound = await getRoundFromThatUser(senderID)
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
