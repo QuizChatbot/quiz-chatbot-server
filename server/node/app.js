@@ -433,7 +433,7 @@ else {
             //user has been playing
             else if(tmpRound.state == "finish") setState(senderID, { "state" : "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
             else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
-            userState = await getState(senderID)
+            userState = await getState(senderID) 
           }
 
           //user chat with bot for the first time
