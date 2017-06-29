@@ -31,6 +31,7 @@ const app = async () => {
   let skill = "es6"
   let userScore = 0
   let usersData = {} //keep users sessions
+  let usersWelcome = {} //keep welcome states
 
 
 
@@ -97,6 +98,23 @@ const app = async () => {
       usersData[userId] = { receivedWelcome }
     } else {
       usersData[userId].receivedWelcome = receivedWelcome
+    }
+  }
+
+  async function setStateWelcome(userId, welcome) {
+    if (!usersData.hasOwnProperty(userId)) {
+      usersWelcome[userId] = { welcome }
+    } else {
+      usersWelcome[userId] = welcome
+    }
+    console.log('setStateWelcome = ', usersWelcome)
+  }
+
+  async function getStateWelcome(userId) {
+    if (!usersWelcome.hasOwnProperty(userId)) {
+      return flase
+    } else {
+      return usersWelcome[userId]
     }
   }
 
@@ -462,18 +480,18 @@ const app = async () => {
           user = userDetail
           let firstName = user.first_name
 
-          let tmpReceivedWelcome = await getReceivedWelcomeFromThatUser(senderID)
+          let tmpReceivedWelcome = await getStateWelcome(senderID)
           firebase.saveUserToFirebase(senderID, user)
 
           console.log("______UsersData______ = ", usersData)
           for (let userId in usersData) {
-            if (userId == senderID && (typeof tmpReceivedWelcome == 'undefined')) {
+            if (userId == senderID && !tmpReceivedWelcome) {
               tmpReceivedWelcome = true
-              setReceivedWelcome(senderID, {"receivedWelcome" : tmpReceivedWelcome})
+              setStateWelcome(senderID, tmpReceivedWelcome)
               console.log("UsersData receive welcome = ", usersData)
               sendLetsQuiz(senderID, messageText, firstName)
             }
-          } 
+          }
 
 
           //user chat with bot for the first time
