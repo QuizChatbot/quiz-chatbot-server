@@ -448,8 +448,11 @@ const app = async () => {
           let firstName = user.first_name
           firebase.saveUserToFirebase(senderID, user)
           console.log("______UsersData______ = ", usersData)
-          for(let i in usersData){
-            console.log("i = ", usersData[i])
+          for(let userId in usersData){
+            console.log("i = ", usersData[userId])
+            if(userId == senderID){
+              sendLetsQuiz(senderID, messageText,firstName)
+            }
           }
 
 
