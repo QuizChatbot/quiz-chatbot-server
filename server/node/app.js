@@ -112,7 +112,7 @@ const app = async () => {
 
   async function getStateWelcome(userId) {
     if (!usersWelcome.hasOwnProperty(userId)) {
-      return flase
+      return false
     } else {
       return usersWelcome[userId]
     }
