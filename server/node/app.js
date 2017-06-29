@@ -473,7 +473,7 @@ const app = async () => {
               console.log("UsersData receive welcome = ", usersData)
               sendLetsQuiz(senderID, messageText, firstName)
             }
-          }
+          } 
 
 
           //user chat with bot for the first time
