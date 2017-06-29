@@ -84,7 +84,7 @@ const getQuestionFromId = async (id) => {
     return result
 }
 
-const getAllQuestionKeys = () => new Promise(async (resolve) => {
+const getAllQuestionKeys = () => new Promise(async (resolve, reject) => {
     const db = admin.database()
     const ref = db.ref("/Quests")
 
@@ -94,6 +94,7 @@ const getAllQuestionKeys = () => new Promise(async (resolve) => {
         resolve(keys)
     }, (errorObject) => {
         console.log("Cannot get all question keys = " + errorObject.code)
+        reject(errorObject)
     })
 }) 
 
