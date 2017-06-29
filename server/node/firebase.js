@@ -158,8 +158,8 @@ const saveUserToFirebase = (senderID, user) => {
                     hasUser = true
                     return 
                 }
-            });
-        });
+            })
+        })
 
     //if firebase doesn't have user data
     ref = db.ref("/Developer/" + senderID)
