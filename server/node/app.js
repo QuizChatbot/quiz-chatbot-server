@@ -496,13 +496,13 @@ const app = async () => {
 
           //user chat with bot for the first time
           if (userState.state.state === "initial") {
-            if (!user) {
-              let userDetail = await getUserDetail(senderID)
-              user = userDetail
-            }
-            let firstName = user.first_name
-            //sendLetsQuiz(senderID, messageText, firstName)
-            firebase.saveUserToFirebase(senderID, user)
+            // if (!user) {
+            //   let userDetail = await getUserDetail(senderID)
+            //   user = userDetail
+            // }
+            // let firstName = user.first_name
+            // //sendLetsQuiz(senderID, messageText, firstName)
+            // firebase.saveUserToFirebase(senderID, user)
           }
 
           //when set state again, data format will change
