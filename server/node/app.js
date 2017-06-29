@@ -30,7 +30,7 @@ const app = async () => {
   let done = 0
   let skill = "es6"
   let userScore = 0
-  let usersData = {} //keep user sessions
+  let usersData = {} //keep users sessions
 
 
 
@@ -88,8 +88,8 @@ const app = async () => {
     let keys = await firebase.getAllQuestionKeys()
     return keys
   }
-  
- 
+
+
 
 
   // const getUserPSID = (senderID) => new Promise(async (resolve) => {
@@ -225,23 +225,23 @@ const app = async () => {
  * (sendAccountLinking) is pointed to this URL. 
  * 
  */
-  app.get('/authorize', function (req, res) {
-    var accountLinkingToken = req.query.account_linking_token;
-    var redirectURI = req.query.redirect_uri;
-    console.log("/Authorize tokem = ", accountLinkingToken)
-    // Authorization Code should be generated per user by the developer. This will 
-    // be passed to the Account Linking callback.
-    var authCode = "1234567890";
+  // app.get('/authorize', function (req, res) {
+  //   var accountLinkingToken = req.query.account_linking_token;
+  //   var redirectURI = req.query.redirect_uri;
+  //   console.log("/Authorize tokem = ", accountLinkingToken)
+  //   // Authorization Code should be generated per user by the developer. This will 
+  //   // be passed to the Account Linking callback.
+  //   var authCode = "1234567890";
 
-    // Redirect users to this URI on successful login
-    var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
+  //   // Redirect users to this URI on successful login
+  //   var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
 
-    res.render('authorize', {
-      accountLinkingToken: accountLinkingToken,
-      redirectURI: redirectURI,
-      redirectURISuccess: redirectURISuccess
-    });
-  });
+  //   res.render('authorize', {
+  //     accountLinkingToken: accountLinkingToken,
+  //     redirectURI: redirectURI,
+  //     redirectURISuccess: redirectURISuccess
+  //   });
+  // });
 
 
   /*
@@ -252,27 +252,27 @@ const app = async () => {
    * https://developers.facebook.com/docs/graph-api/webhooks#setup
    *
    */
-  function verifyRequestSignature(req, res, buf) {
-    var signature = req.headers["x-hub-signature"];
+  // function verifyRequestSignature(req, res, buf) {
+  //   var signature = req.headers["x-hub-signature"];
 
-    if (!signature) {
-      // For testing, let's log an error. In production, you should throw an 
-      // error.
-      console.error("Couldn't validate the signature.");
-    } else {
-      var elements = signature.split('=');
-      var method = elements[0];
-      var signatureHash = elements[1];
+  //   if (!signature) {
+  //     // For testing, let's log an error. In production, you should throw an 
+  //     // error.
+  //     console.error("Couldn't validate the signature.");
+  //   } else {
+  //     var elements = signature.split('=');
+  //     var method = elements[0];
+  //     var signatureHash = elements[1];
 
-      var expectedHash = crypto.createHmac('sha1', APP_SECRET)
-        .update(buf)
-        .digest('hex');
+  //     var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+  //       .update(buf)
+  //       .digest('hex');
 
-      if (signatureHash != expectedHash) {
-        throw new Error("Couldn't validate the request signature.");
-      }
-    }
-  }
+  //     if (signatureHash != expectedHash) {
+  //       throw new Error("Couldn't validate the request signature.");
+  //     }
+  //   }
+  // }
 
   /*
    * Authorization Event
@@ -282,26 +282,26 @@ const app = async () => {
    * https://developers.facebook.com/docs/messenger-platform/webhook-reference/authentication
    *
    */
-  function receivedAuthentication(event) {
-    var senderID = event.sender.id;
-    var recipientID = event.recipient.id;
-    var timeOfAuth = event.timestamp;
+  // function receivedAuthentication(event) {
+  //   var senderID = event.sender.id;
+  //   var recipientID = event.recipient.id;
+  //   var timeOfAuth = event.timestamp;
 
-    // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
-    // The developer can set this to an arbitrary value to associate the 
-    // authentication callback with the 'Send to Messenger' click event. This is
-    // a way to do account linking when the user clicks the 'Send to Messenger' 
-    // plugin.
-    var passThroughParam = event.optin.ref;
+  //   // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
+  //   // The developer can set this to an arbitrary value to associate the 
+  //   // authentication callback with the 'Send to Messenger' click event. This is
+  //   // a way to do account linking when the user clicks the 'Send to Messenger' 
+  //   // plugin.
+  //   var passThroughParam = event.optin.ref;
 
-    console.log("Received authentication for user %d and page %d with pass " +
-      "through param '%s' at %d", senderID, recipientID, passThroughParam,
-      timeOfAuth);
+  //   console.log("Received authentication for user %d and page %d with pass " +
+  //     "through param '%s' at %d", senderID, recipientID, passThroughParam,
+  //     timeOfAuth);
 
-    // When an authentication is received, we'll send a message back to the sender
-    // to let them know it was successful.
-    sendTextMessage(senderID, "Authentication successful");
-  }
+  //   // When an authentication is received, we'll send a message back to the sender
+  //   // to let them know it was successful.
+  //   sendTextMessage(senderID, "Authentication successful");
+  // }
 
   /*
    * Message Event
@@ -423,7 +423,7 @@ const app = async () => {
           }
 
           //when received welcome will setState again
-else {
+          else {
             let tmpRound = await getState(senderID)
             console.log("______state in else_________ = ", tmpRound)
             let tmpDone = await getDoneFromThatUser(senderID)
@@ -431,21 +431,29 @@ else {
             //user has been paused
             if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
             //user has been paused for next round
-            else if(tmpRound.state == "finish"){
+            else if (tmpRound.state == "finish") {
               console.log("______state finish_________ = ")
               tmpDone = 0
-               setState(senderID, { "state" : "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
+              setState(senderID, { "state": "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
             }
             //user has been playing
             else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
-            userState = await getState(senderID) 
+            userState = await getState(senderID)
           }
+
+
+          let userDetail = await getUserDetail(senderID)
+          user = userDetail
+
+          let firstName = user.first_name
+          firebase.saveUserToFirebase(senderID, user)
+
 
           //user chat with bot for the first time
           if (userState.state.state === "initial") {
             if (!user) {
               let userDetail = await getUserDetail(senderID)
-              user = userDetail 
+              user = userDetail
             }
             let firstName = user.first_name
             sendLetsQuiz(senderID, messageText, firstName)
@@ -590,7 +598,7 @@ else {
       let tmpDone = await getDoneFromThatUser(senderID)
       let tmpRound = await getRoundFromThatUser(senderID)
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      setState(senderID, { keysLeftForThatUser, "state" : "finish", "done": tmpDone, "round": tmpRound })
+      setState(senderID, { keysLeftForThatUser, "state": "finish", "done": tmpDone, "round": tmpRound })
       sendTextMessage(senderID, "Come back when you're ready baby~")
       sendTextMessage(senderID, "Bye Bye <3")
     }
@@ -671,7 +679,7 @@ else {
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
       console.log("_______keysLeftForThatUser______ = ", keysLeftForThatUser)
 
-      
+
 
       //ask whether user ready to play next question 
       //if there are still questions left that have not done => create next button
@@ -685,7 +693,7 @@ else {
         //nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
       }
 
- 
+
     }
 
   }
@@ -740,7 +748,7 @@ else {
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
       let tmpRound = await getRoundFromThatUser(senderID)
       let tmpDone = await getDoneFromThatUser(senderID)
-      setState(senderID, { state, keysLeftForThatUser,"round": tmpRound, "done" : tmpDone })
+      setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
       console.log("set state after = ", usersData)
       done = 0
       userScore = 0
