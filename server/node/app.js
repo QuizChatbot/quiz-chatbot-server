@@ -194,7 +194,7 @@ const app = async () => {
         resolve(json)
       })
       .catch((err) => {
-        console.log("Cannot get user information from facebook dued to ", err)
+        console.log("Cannot get user information from facebook : ", err)
         reject(err)
       })
   })

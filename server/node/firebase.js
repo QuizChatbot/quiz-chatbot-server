@@ -30,7 +30,7 @@ const getQuestionsFromFirebase = async () => {
             resolve(questionSnapshots)
         }, (errorObject) => {
             reject(errorObject)
-            console.log("The read failed: " + errorObject.code)
+            console.log("Cannot get questions from firebase : " + errorObject.code)
         })
     }).then((questionSnapshots) => {
         return questionSnapshots
@@ -51,12 +51,12 @@ const getAllAnswersFromQuestion = async (id) => {
             resolve(questionSnapshots)
         }, (errorObject) => {
             reject(errorObject)
-            console.log("The read failed: " + errorObject.code)
+            console.log("Cannot get all answers from question id : " + errorObject.code)
         })
     }).then(function (questionSnapshots) {
         return questionSnapshots
     }).catch(function (errorObject) {
-        return "The read failed: " + errorObject.code
+        return "Reject Cannot get all answers from question id : " + errorObject.code
     })
 
     //console.log('from promise', result)
@@ -73,18 +73,18 @@ const getQuestionFromId = async (id) => {
             resolve(questionSnapshots)
         }, (errorObject) => {
             reject(errorObject)
-            console.log("The read failed: " + errorObject.code)
+            console.log("Cannot get question from id : " + errorObject.code)
         })
     }).then(function (questionSnapshots) {
         return questionSnapshots
     }).catch(function (errorObject) {
-        return "The read failed: " + errorObject.code
+        return "Reject Cannot get question from id : " + errorObject.code
     })
 
     return result
 }
 
-const getAllQuestionKeys = () => new Promise(async (resolve) => {
+const getAllQuestionKeys = () => new Promise(async (resolve, reject) => {
     const db = admin.database()
     const ref = db.ref("/Quests")
 
@@ -93,14 +93,18 @@ const getAllQuestionKeys = () => new Promise(async (resolve) => {
         console.log("keys in getAllQuestionKeys =  " + keys)
         resolve(keys)
     }, (errorObject) => {
-        console.log("Cannot get keys = " + errorObject.code)
+        console.log("Cannot get all question keys : " + errorObject.code)
     })
 
+}).then((keySnapshots) => {
+    return keySnapshots
+}).catch((errorObject) => {
+    return "Reject Cannot get all question keys : " + errorObject
 })  
 
 //get key of questions already done by that user
 //query only question that done in that round
-const getQuestionDone = async (senderID, round) => new Promise(async (resolve) => {
+const getQuestionDone = async (senderID, round) => new Promise(async (resolve, reject) => {
     const db = admin.database()
     const ref = db.ref("/Developer/" + senderID)
     let keysDone = []
@@ -117,9 +121,12 @@ const getQuestionDone = async (senderID, round) => new Promise(async (resolve) =
         resolve(keysDone)
     }, (errorObject) => {
         console.log("Cannot get keys of questions that user already done  = " + errorObject.code)
-
+        reject(errorObject)
     })
-
+}).then((keysDone) => {
+    return keysDone
+}).catch((errorObject) => {
+    return "Reject Cannot get done question keys : " + errorObject
 })
 
 
