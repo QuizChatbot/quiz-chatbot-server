@@ -172,6 +172,7 @@ const saveSummaryToFirebase = (senderID, summary) => {
     ref.child("summary").child(summary.round).update({
         "round": summary.round,
         "done": summary.done,
+        "isDone" : summary.isDone,
         "keysQuestionLeft": summary.keysQuestionLeft,
         "skill": summary.skill,
         "grade": summary.grade,

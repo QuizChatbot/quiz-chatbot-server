@@ -31,7 +31,7 @@ const app = async () => {
   let skill = "es6"
   let userScore = 0
   let usersData = {} //keep users sessions
-  let usersWelcome = {} //keep welcome states
+  let usersWelcome = {} //keep welcome states for that user only
 
 
 
@@ -758,16 +758,18 @@ const app = async () => {
       console.log("post back tmpDone= ", tmpDone)
       if (postbackState.state === "playing") tmpDone++
       console.log("post back tmpDone after increase= ", tmpDone)
-      //check answer and ask next question
-      let result = checkAnswer(payload, answerForEachQuestion)
 
-      //send to calculate grade and score
+
+      //send to calculate grade and score for summary
       let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
       let totalScore = summary.calculateTotalScore(numberOfQuestions)
       let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
       userScore += scoreOfThatQuestion
       let grade = summary.calculateGrade(totalScore, userScore)
 
+
+      //check answer and ask next question
+      let result = checkAnswer(payload, answerForEachQuestion)
       // answer Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
@@ -800,7 +802,7 @@ const app = async () => {
 
       //prepare summary object to save in firebase
       tmpDone = await getDoneFromThatUser(senderID)
-      let preparedSummary = summary.prepareSummary(tmpDone, keysLeftForThatUser, tmpRound, skill, grade, userScore, totalScore)
+      let preparedSummary = summary.prepareSummary(tmpDone, numberOfQuestions, keysLeftForThatUser, tmpRound, skill, grade, userScore, totalScore)
       console.log("summary = ", preparedSummary)
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
       console.log("_______keysLeftForThatUser______ = ", keysLeftForThatUser)

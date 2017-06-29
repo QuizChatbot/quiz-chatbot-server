@@ -1,4 +1,4 @@
-const prepareSummary = (done, keys, round, skill, grade, score, totalScore) => {
+const prepareSummary = (done, numberOfQuestions,keys, round, skill, grade, score, totalScore) => {
     let summaryObj = {}
 
     summaryObj.done = done
@@ -8,6 +8,8 @@ const prepareSummary = (done, keys, round, skill, grade, score, totalScore) => {
     summaryObj.grade = grade
     summaryObj.score = score
     summaryObj.totalScore = totalScore
+    if(done == numberOfQuestions)   summaryObj.isDone = true
+    else    summaryObj.isDone = false
 
     return summaryObj
 }
