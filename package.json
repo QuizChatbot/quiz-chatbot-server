@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server/node/app.js",
     "lint": "jshint --exclude node_modules .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage",
+    "watch:test" : "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -37,5 +38,8 @@
   },
   "devDependencies": {
     "jest": "^20.0.4"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
