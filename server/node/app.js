@@ -31,7 +31,6 @@ const app = async () => {
   let skill = "es6"
   let userScore = 0
   let usersData = {} //keep users sessions
-  let receivedWelcome = false
 
 
 
@@ -86,7 +85,7 @@ const app = async () => {
   }
 
   async function getReceivedWelcomeFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
+    if (!usersData.hasOwnProperty(userId).hasOwnProperty(receivedWelcome)) {
       return "Initialize"
     } else {
       return usersData[userId].receivedWelcome
@@ -463,13 +462,13 @@ const app = async () => {
           user = userDetail
           let firstName = user.first_name
 
-          //let tmpReceivedWelcome = await getReceivedWelcomeFromThatUser(senderID)
+          let tmpReceivedWelcome = await getReceivedWelcomeFromThatUser(senderID)
           firebase.saveUserToFirebase(senderID, user)
           console.log("______UsersData______ = ", usersData)
           for (let userId in usersData) {
-            if (userId == senderID && !receivedWelcome) {
-              receivedWelcome = true
-              setReceivedWelcome(senderID, receivedWelcome)
+            if (userId == senderID && !tmpReceivedWelcome) {
+              tmpReceivedWelcome = true
+              setReceivedWelcome(senderID, {"receivedWelcome" : tmpReceivedWelcome})
               sendLetsQuiz(senderID, messageText, firstName)
             }
           }
