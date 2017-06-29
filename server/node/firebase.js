@@ -53,9 +53,9 @@ const getAllAnswersFromQuestion = async (id) => {
             reject(errorObject)
             console.log("Cannot get all answers from question id : " + errorObject.code)
         })
-    }).then(function (questionSnapshots) {
+    }).then((questionSnapshots) => {
         return questionSnapshots
-    }).catch(function (errorObject) {
+    }).catch((errorObject) => {
         return "Reject Cannot get all answers from question id : " + errorObject.code
     })
 
@@ -75,9 +75,9 @@ const getQuestionFromId = async (id) => {
             reject(errorObject)
             console.log("Cannot get question from id : " + errorObject.code)
         })
-    }).then(function (questionSnapshots) {
+    }).then((questionSnapshots) => {
         return questionSnapshots
-    }).catch(function (errorObject) {
+    }).catch((errorObject) => {
         return "Reject Cannot get question from id : " + errorObject.code
     })
 
@@ -96,10 +96,6 @@ const getAllQuestionKeys = () => new Promise(async (resolve, reject) => {
         console.log("Cannot get all question keys = " + errorObject.code)
         reject(errorObject)
     })
-}).then((keys) => {
-    return keys
-}).catch((errorObject) => {
-    return "Cannot get all questions'keys : " + errorObject.code
 })
 
 //get key of questions already done by that user
