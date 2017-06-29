@@ -464,10 +464,10 @@ const app = async () => {
 
           let tmpReceivedWelcome = await getReceivedWelcomeFromThatUser(senderID)
           firebase.saveUserToFirebase(senderID, user)
-          console.log("tmp receive welcome = ", tmpReceivedWelcome)
+
           console.log("______UsersData______ = ", usersData)
           for (let userId in usersData) {
-            if (userId == senderID && !tmpReceivedWelcome) {
+            if (userId == senderID && (typeof tmpReceivedWelcome == 'undefined')) {
               tmpReceivedWelcome = true
               setReceivedWelcome(senderID, {"receivedWelcome" : tmpReceivedWelcome})
               console.log("UsersData receive welcome = ", usersData)
