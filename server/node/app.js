@@ -120,7 +120,7 @@ const app = async () => {
 
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
-    return keys 
+    return keys
   }
 
 
@@ -182,7 +182,7 @@ const app = async () => {
   }
 
   // get user information from facebook
-  const getUserDetail = (senderID) => new Promise(async (resolve) => {
+  const getUserDetail = (senderID) => new Promise(async (resolve, reject) => {
     const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
     fetch(graph)
       .then(async function (response) {
@@ -192,6 +192,10 @@ const app = async () => {
         let json = await response.json()
         console.log("userDetail = ", json)
         resolve(json)
+      })
+      .catch((err) => {
+        console.log("Cannot get user information from facebook dued to ", err)
+        reject(err)
       })
   })
 
@@ -492,7 +496,7 @@ const app = async () => {
               sendLetsQuiz(senderID, messageText, firstName)
             }
           }
- 
+
 
           //user chat with bot for the first time
           if (userState.state.state === "initial") {
@@ -583,6 +587,7 @@ const app = async () => {
       console.log("______state in else_________ = ", tmpRound)
       let tmpDone = await getDoneFromThatUser(senderID)
       console.log("______done in else_________ = ", tmpDone)
+
       //user has been paused
       if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
       //user has been paused for next round
@@ -599,26 +604,27 @@ const app = async () => {
     //other users except the first user will add their profile to firebase
     let userDetail = await getUserDetail(senderID)
     user = userDetail
-
     let firstName = user.first_name
+
+    let tmpReceivedWelcome = await getStateWelcome(senderID)
     firebase.saveUserToFirebase(senderID, user)
+
+    console.log("______UsersData______ = ", usersData)
+    for (let userId in usersData) {
+      if (userId == senderID && !tmpReceivedWelcome) {
+        tmpReceivedWelcome = true
+        setStateWelcome(senderID, tmpReceivedWelcome)
+        console.log("UsersData receive welcome = ", usersData)
+        sendLetsQuiz(senderID, messageText, firstName)
+      }
+    }
 
 
     //user chat with bot for the first time
-    if (userState.state.state === "initial") {
-      if (!user) {
-        let userDetail = await getUserDetail(senderID)
-        user = userDetail
-      }
-      let firstName = user.first_name
-      sendLetsQuiz(senderID, messageText, firstName)
-      firebase.saveUserToFirebase(senderID, user)
-    }
 
     //when set state again, data format will change
     //already quiz with chatbot or user come back after pause
-    else if (userState.state === "playing" || userState.state === "pause") {
-
+    if (userState.state === "playing" || userState.state === "pause") {
 
       let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
       console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
@@ -808,7 +814,7 @@ const app = async () => {
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
       console.log("_______keysLeftForThatUser______ = ", keysLeftForThatUser)
 
- 
+
 
       //ask whether user ready to play next question 
       //if there are still questions left that have not done => create next button
@@ -819,7 +825,6 @@ const app = async () => {
       //if there is no question left that have not done => create next round button
       else {
         nextQuestion(senderID)
-        //nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
       }
 
 

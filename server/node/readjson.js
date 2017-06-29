@@ -14,7 +14,7 @@ const createButtonFromQuestionId = async (id) => {
   //but we will delete the 'subject' and 'question' key later'
   let buttons = []
 
-    choices.forEach(function (element) {
+    choices.forEach((element) => {
       buttons.push({
         type: "postback",
         title: element,
