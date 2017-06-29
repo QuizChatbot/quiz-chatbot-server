@@ -444,13 +444,13 @@ const app = async () => {
           //other users except the first user will add their profile to firebase
           let userDetail = await getUserDetail(senderID)
           user = userDetail
-
           let firstName = user.first_name
+          let receivedWelcome = false
           firebase.saveUserToFirebase(senderID, user)
           console.log("______UsersData______ = ", usersData)
           for(let userId in usersData){
-            console.log("i = ", usersData[userId])
-            if(userId == senderID){
+            if(userId == senderID && !receivedWelcome){
+              receivedWelcome = true
               sendLetsQuiz(senderID, messageText,firstName)
             }
           }
@@ -463,7 +463,7 @@ const app = async () => {
               user = userDetail
             }
             let firstName = user.first_name
-            sendLetsQuiz(senderID, messageText, firstName)
+            //sendLetsQuiz(senderID, messageText, firstName)
             firebase.saveUserToFirebase(senderID, user)
           }
 
