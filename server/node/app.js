@@ -31,6 +31,7 @@ const app = async () => {
   let skill = "es6"
   let userScore = 0
   let usersData = {} //keep users sessions
+  let receivedWelcome = false
 
 
 
@@ -81,6 +82,22 @@ const app = async () => {
       return "Initialize"
     } else {
       return usersData[userId].round
+    }
+  }
+
+  async function getReceivedWelcomeFromThatUser(userId) {
+    if (!usersData.hasOwnProperty(userId)) {
+      return "Initialize"
+    } else {
+      return usersData[userId].receivedWelcome
+    }
+  }
+
+  async function setReceivedWelcome(userId, receivedWelcome) {
+    if (!usersData.hasOwnProperty(userId)) {
+      usersData[userId] = { receivedWelcome }
+    } else {
+      usersData[userId].receivedWelcome = receivedWelcome
     }
   }
 
@@ -445,13 +462,15 @@ const app = async () => {
           let userDetail = await getUserDetail(senderID)
           user = userDetail
           let firstName = user.first_name
-          let receivedWelcome = false
+
+          //let tmpReceivedWelcome = await getReceivedWelcomeFromThatUser(senderID)
           firebase.saveUserToFirebase(senderID, user)
           console.log("______UsersData______ = ", usersData)
-          for(let userId in usersData){
-            if(userId == senderID && !receivedWelcome){
+          for (let userId in usersData) {
+            if (userId == senderID && !receivedWelcome) {
               receivedWelcome = true
-              sendLetsQuiz(senderID, messageText,firstName)
+              setReceivedWelcome(senderID, receivedWelcome)
+              sendLetsQuiz(senderID, messageText, firstName)
             }
           }
 
