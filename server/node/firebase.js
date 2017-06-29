@@ -96,7 +96,11 @@ const getAllQuestionKeys = () => new Promise(async (resolve, reject) => {
         console.log("Cannot get all question keys = " + errorObject.code)
         reject(errorObject)
     })
-}) 
+}).then((keys) => {
+    return keys
+}).catch((errorObject) => {
+    return "Cannot get all questions'keys : " + errorObject.code
+})
 
 //get key of questions already done by that user
 //query only question that done in that round

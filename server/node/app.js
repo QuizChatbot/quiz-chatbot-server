@@ -120,12 +120,7 @@ const app = async () => {
 
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
-    keys.then((result) => {
-      return result
-    })
-    .catch((err) => {
-      return "Cannot get all questions' keys : " + err
-    })
+    return keys
   }
 
 
