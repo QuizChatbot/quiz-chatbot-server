@@ -807,7 +807,7 @@ const app = async () => {
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
       console.log("_______keysLeftForThatUser______ = ", keysLeftForThatUser)
 
-
+ 
 
       //ask whether user ready to play next question 
       //if there are still questions left that have not done => create next button
