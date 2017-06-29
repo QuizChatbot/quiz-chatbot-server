@@ -760,6 +760,9 @@ const app = async () => {
       console.log("post back tmpDone after increase= ", tmpDone)
 
 
+      //check answer and ask next question
+      let result = checkAnswer(payload, answerForEachQuestion)
+
       //send to calculate grade and score for summary
       let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
       let totalScore = summary.calculateTotalScore(numberOfQuestions)
@@ -768,8 +771,6 @@ const app = async () => {
       let grade = summary.calculateGrade(totalScore, userScore)
 
 
-      //check answer and ask next question
-      let result = checkAnswer(payload, answerForEachQuestion)
       // answer Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
