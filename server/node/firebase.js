@@ -156,7 +156,7 @@ const saveUserToFirebase = (senderID, user) => {
                 if (childSnapshot.key == senderID) {
                     console.log("Already have user information")
                     hasUser = true
-                    return
+                    return 
                 }
             });
         });
