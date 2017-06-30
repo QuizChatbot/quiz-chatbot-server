@@ -423,10 +423,8 @@ const app = async () => {
 
        //get all question keys and save to usersData for that senderID
       let keysLeftForThatUser = await getKeys()
-
       // //get state of this user
       let user = await userClass.load(senderID)
-      console.log("user state = ", user)
 
       // //first time connect to bot, usersData is empty
       // //let round = 0
@@ -448,7 +446,7 @@ const app = async () => {
         //user has been playing
         else {
           user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-          console.log(user)
+          console.log("user playing = ",user)
         }
       }
 
