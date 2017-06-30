@@ -310,18 +310,18 @@ const app = async () => {
 
       //get state of this user
       let user = await userClass.load(senderID)
-      // console.log("user state = ", userState)
        console.log("user.state = ", user.state)
-        console.log("user.get(state) = ", user.get('state'))
 
       // //first time connect to bot, usersData is empty
       // //let round = 0
       if (user.state == "initialize") {
         console.log("init")
         //set state in usersData
-        setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
+        user.setState({state, keysLeftForThatUser, "round": 0, done})
+        console.log("user = ", user)
+        // setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
         //get state of the user
-        userState = await getState(senderID)
+        // userState = await getState(senderID)
       }
 
       // //when received welcome will setState again
