@@ -188,7 +188,6 @@ const app = async () => {
           throw new Error("Bad response from server")
         }
         let json = await response.json()
-        console.log("userDetail = ", json)
         resolve(json)
       })
       .catch((err) => {
@@ -459,7 +458,7 @@ const app = async () => {
       let userDetail = await getUserDetail(senderID)
       let firstName = userDetail.first_name
 
-      let tmpReceivedWelcome = user.getWelcome()
+      let tmpReceivedWelcome = await user.getWelcome()
       console.log("tmpReceivedWelcome = ", tmpReceivedWelcome)
       firebase.saveUserToFirebase(senderID, userDetail)
 
