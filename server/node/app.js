@@ -424,7 +424,7 @@ const app = async () => {
       //get all question keys and save to usersData for that senderID
       let keysLeftForThatUser = await getKeys()
       // //get state of this user
-      let user = await userClass.load(senderID)
+       user = await userClass.load(senderID)
 
       // //first time connect to bot, usersData is empty
       // //let round = 0
