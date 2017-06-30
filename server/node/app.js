@@ -561,7 +561,7 @@ const app = async () => {
     }
 
     //check for button next question
-    else if (payloadObj.nextQuestion) {
+    else if (payloadObj.nextQuestion === true) {
       //call next question
       nextQuestion(senderID)
     }
@@ -578,7 +578,7 @@ const app = async () => {
     }
 
     //Postback for normal questions
-    else {
+    else {console.log("postback question")
       //if in playing question state when receive postback 
       //number of questions that user already done increase
       if (user.state.state === "playing") {
