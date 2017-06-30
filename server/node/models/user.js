@@ -26,6 +26,13 @@ class User {
         })
     }
 
+    start(){
+        this.setState({
+            state: 'playing',
+            
+        })
+    }
+
     get(field) {
         return this.state[field]
     }
@@ -102,7 +109,7 @@ async function getReceivedWelcomeFromThatUser(userId) {
 
 async function setStateWelcome(userId, welcome) {
     if (!usersData.hasOwnProperty(userId)) {
-        usersWelcome[userId] = welcome
+        usersWelcome[userId] = {welcome}
     } else {
         usersWelcome[userId] = welcome
     }
