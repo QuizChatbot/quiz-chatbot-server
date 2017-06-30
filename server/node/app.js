@@ -460,6 +460,7 @@ const app = async () => {
       let firstName = userDetail.first_name
 
       let tmpReceivedWelcome = user.getWelcome()
+      console.log("tmpReceivedWelcome = ", tmpReceivedWelcome)
       firebase.saveUserToFirebase(senderID, userDetail)
 
       // for (let userId in usersData) {
