@@ -13,7 +13,7 @@ class User {
 
     setState(newState) {
         setState(this.userId, newState)
-        this.state = newState
+        //this.state = newState
     }
 
     startQuiz(questionKeys) {
