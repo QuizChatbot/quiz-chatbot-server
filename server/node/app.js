@@ -433,6 +433,7 @@ const app = async () => {
       if (user.state == "initialize") {
         //set state in usersData
         user.setState({ state, keysLeftForThatUser, "round": 0, done })
+        console.log("user initialize = ", user)
       }
 
       // //when received welcome will setState again
@@ -458,15 +459,6 @@ const app = async () => {
       let tmpReceivedWelcome = await user.getWelcome()
       console.log("tmpReceivedWelcome = ", tmpReceivedWelcome)
       firebase.saveUserToFirebase(senderID, userDetail)
-
-      // for (let userId in usersData) {
-      //   if (userId == senderID && !tmpReceivedWelcome) {
-      //     tmpReceivedWelcome = true
-      //     setStateWelcome(senderID, tmpReceivedWelcome)
-      //     console.log("UsersData receive welcome = ", usersData)
-      //     sendLetsQuiz(senderID, messageText, firstName)
-      //   }
-      // }
 
       if(!tmpReceivedWelcome){
         tmpReceivedWelcome = true
