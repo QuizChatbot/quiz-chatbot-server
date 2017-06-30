@@ -102,7 +102,7 @@ async function getReceivedWelcomeFromThatUser(userId) {
 
 async function setStateWelcome(userId, welcome) {
     if (!usersData.hasOwnProperty(userId)) {
-        usersWelcome[userId] = { welcome }
+        usersWelcome[userId] = welcome
     } else {
         usersWelcome[userId] = welcome
     }
