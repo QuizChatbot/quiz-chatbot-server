@@ -1,6 +1,6 @@
 let usersData = {}
 
-const load = (userId) => {
+const load = async (userId) => {
   return new User(userId, getState(userId))
 }
 
