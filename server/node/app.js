@@ -542,12 +542,12 @@ const app = async () => {
       "at %d", senderID, recipientID, payload, timeOfPostback)
 
     //check for button nextRound payload
-    if (payloadObj.nextRound) {
+    if (payloadObj.nextRound === true) {
       sendTextMessage(senderID, "Next Round!")
       let tmpRound = await getRoundFromThatUser(senderID)
       startNextRound(senderID, tmpRound)
     }
-    else if (!payloadObj.nextRound) {
+    else if (payloadObj.nextRound === false) {
       //pause
       console.log("________Pause Next Round_____")
       let test = await getState(senderID)
