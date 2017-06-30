@@ -565,7 +565,7 @@ const app = async () => {
       //call next question
       nextQuestion(senderID)
     }
-    else if (!payloadObj.nextQuestion) {
+    else if (payloadObj.nextQuestion === false) {
       //pause
       state = "pause"
       let tmpDone = await getDoneFromThatUser(senderID)
