@@ -4,7 +4,7 @@
   "description": "Get started example for Messenger Platform",
   "main": "server/node/app.js",
   "scripts": {
-    "start": "node server/node/app.js",
+    "start": "node server/node/main.js",
     "lint": "jshint --exclude node_modules .",
     "test": "jest --coverage",
     "watch:test" : "jest --watch"

@@ -1373,9 +1373,8 @@ const app = async () => {
     setGreetingText()
   })
 
-  module.exports = app
-
-
+  
 }
 
-app()
+module.exports = app
+
