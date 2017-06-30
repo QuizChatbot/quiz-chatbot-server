@@ -1,7 +1,7 @@
 let usersData = {}
 
 const load = async (userId) => {
-  return new User(userId, getState(userId))
+  return new User(userId, await getState(userId))
 }
 
 
@@ -50,9 +50,9 @@ async function setRound(userId, round) {
 
 async function getState(userId) {
     if (!usersData.hasOwnProperty(userId)) {
-        return await "initialize"
+        return "initialize"
     } else {
-        return await usersData[userId]
+        return usersData[userId]
     }
 }
 
