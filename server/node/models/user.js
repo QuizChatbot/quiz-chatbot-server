@@ -19,10 +19,10 @@ class User {
 
     startQuiz(questionKey) {
         this.setState({
-            keysLeftForThatUser: this.keysLeftForThatUser,
+            keysLeftForThatUser: this.state.keysLeftForThatUser,
             currentQuestionKey: questionKey,
-            done: this.done,
-            round: this.round,
+            done: this.state.done,
+            round: this.state.round,
             state: 'playing'
         })
     }
