@@ -46,6 +46,11 @@ class User {
         this.stateWelcome = stateWelcome
     }
 
+    setRound(round){
+        setRound(this.userId, round)
+        this.state.round = round
+    }
+
 
 }
 

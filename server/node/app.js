@@ -587,7 +587,7 @@ const app = async () => {
       console.log("user after done question= ", user)
 
       // //check answer and ask next question
-      let result = checkAnswer(payload, answerForEachQuestion)
+      let result = checkAnswer(payloadObj, answerForEachQuestion)
 
       //send to calculate grade and score for summary
       let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
@@ -719,12 +719,8 @@ const app = async () => {
   }
 
   function checkAnswer(payload, answerForEachQuestion) {
-    let userAnswerStr = payload
-    let userAnswerObj = JSON.parse(userAnswerStr)
-    console.log("check ansforeachQ = ", answerForEachQuestion)
-    console.log("check ans that user choose  = ", userAnswerObj)
     //the correct answer is always in first element of answers in json file
-    if (userAnswerObj.answer == answerForEachQuestion[0]) return true
+    if (payload.answer == answerForEachQuestion[0]) return true
     else return false
 
   }
@@ -752,34 +748,74 @@ const app = async () => {
   }
 
   async function nextQuestion(senderID) {
-    let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-    console.log("keysLeftForThatUser in nextQuestion after delete = ", keysLeftForThatUser)
-    let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
+    // let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+    // console.log("keysLeftForThatUser in nextQuestion after delete = ", keysLeftForThatUser)
+    // let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
+
+    // //define current key = key of question about to ask
+    // currentQuestionKey = keyOfNextQuestion
+    // console.log("keyOfNextQuestion in nextQuestion = ", keyOfNextQuestion)
+
+    // //no question left
+    // //finish that round
+    // if (keyOfNextQuestion == null) {
+    //   sendTextMessage(senderID, "Finish!")
+    //   state = "finish"
+
+    //   let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+    //   let tmpRound = await getRoundFromThatUser(senderID)
+    //   let tmpDone = await getDoneFromThatUser(senderID)
+    //   setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
+    //   console.log("set state after = ", usersData)
+    //   done = 0
+    //   userScore = 0
+
+    //   nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
+    // }
+
+    // //still has questions not answered
+    // else {
+
+    //   answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
+
+    //   //no key that matched question
+    //   if (answerForEachQuestion == null) {
+    //     console.log("Doesn't have this id in questions json")
+    //     return null
+    //   }
+
+    //   let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
+    //   let buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+
+    //   startedAt = utillArray.getMoment()
+
+    //   callSendAPI(buttonMessage)
+    // }
+
+
+
+
+    //TOFIX: user class
+    let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
 
     //define current key = key of question about to ask
     currentQuestionKey = keyOfNextQuestion
-    console.log("keyOfNextQuestion in nextQuestion = ", keyOfNextQuestion)
 
     //no question left
     //finish that round
     if (keyOfNextQuestion == null) {
       sendTextMessage(senderID, "Finish!")
       state = "finish"
+      user.setState({ state, "keysLeftForThatUser" : user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
 
-      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      let tmpRound = await getRoundFromThatUser(senderID)
-      let tmpDone = await getDoneFromThatUser(senderID)
-      setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-      console.log("set state after = ", usersData)
       done = 0
       userScore = 0
 
-      nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
+      nextRound(senderID, user.state.round, user.state.done, numberOfQuestions)
     }
 
     //still has questions not answered
     else {
-
       answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
 
       //no key that matched question
@@ -815,8 +851,9 @@ const app = async () => {
     //then that round is complete -> round increase 
     if (done == numberOfQuestions) {
       round++
-      setRound(senderID, round)
-      console.log("usersData in nextRound= ", usersData)
+      user.setRound(round)
+      //setRound(senderID, round)
+      //console.log("usersData in nextRound= ", usersData)
     }
     //create button ask for next round
     let buttonMessage = createButton.createButtonNextRound(senderID)
