@@ -537,11 +537,12 @@ const app = async () => {
     // button for Structured Messages. 
     let payload = event.postback.payload
     let payloadObj = JSON.parse(payload)
+    console.log("payloadOBJ = ", payloadObj)
     console.log("Received postback for user %d and page %d with payload '%s' " +
-      "at %d", senderID, recipientID, payload, timeOfPostback);
+      "at %d", senderID, recipientID, payload, timeOfPostback)
 
     //check for button nextRound payload
-    if (payloadObj.nextRound == true) {
+    if (payloadObj.nextRound) {
       sendTextMessage(senderID, "Next Round!")
       let tmpRound = await getRoundFromThatUser(senderID)
       startNextRound(senderID, tmpRound)
