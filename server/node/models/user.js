@@ -51,7 +51,6 @@ class User {
         this.state.round = round
     }
 
-
 }
 
 
@@ -80,37 +79,29 @@ async function getState(userId) {
     }
 }
 
-async function getKeysLeftForThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-        return "User answered all questions"
-    } else {
-        return usersData[userId].keysLeftForThatUser
-    }
-}
+// async function getKeysLeftForThatUser(userId) {
+//     if (!usersData.hasOwnProperty(userId)) {
+//         return "User answered all questions"
+//     } else {
+//         return usersData[userId].keysLeftForThatUser
+//     }
+// }
 
-async function getDoneFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-        return "Initialize"
-    } else {
-        return usersData[userId].done
-    }
-}
+// async function getDoneFromThatUser(userId) {
+//     if (!usersData.hasOwnProperty(userId)) {
+//         return "Initialize"
+//     } else {
+//         return usersData[userId].done
+//     }
+// }
 
-async function getRoundFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-        return "Initialize"
-    } else {
-        return usersData[userId].round
-    }
-}
-
-async function getReceivedWelcomeFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId).hasOwnProperty(receivedWelcome)) {
-        return "Initialize"
-    } else {
-        return usersData[userId].receivedWelcome
-    }
-}
+// async function getRoundFromThatUser(userId) {
+//     if (!usersData.hasOwnProperty(userId)) {
+//         return "Initialize"
+//     } else {
+//         return usersData[userId].round
+//     }
+// }
 
 async function setStateWelcome(userId, welcome) {
     if (!usersData.hasOwnProperty(userId)) {

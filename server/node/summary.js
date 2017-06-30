@@ -1,4 +1,4 @@
-const prepareSummary = (done, numberOfQuestions,keys, round, skill, grade, score, totalScore) => {
+const prepareSummary = (done, numberOfQuestions, keys, round, skill, grade, score, totalScore) => {
     let summaryObj = {}
 
     summaryObj.done = done
@@ -8,8 +8,8 @@ const prepareSummary = (done, numberOfQuestions,keys, round, skill, grade, score
     summaryObj.grade = grade
     summaryObj.score = score
     summaryObj.totalScore = totalScore
-    if(done == numberOfQuestions)   summaryObj.isDone = true
-    else    summaryObj.isDone = false
+    if (done == numberOfQuestions) summaryObj.isDone = true
+    else summaryObj.isDone = false
 
     return summaryObj
 }
@@ -31,22 +31,45 @@ const calculateTotalScore = (totalQuestions) => {
 }
 
 const calculateGrade = (totalScore, userScore) => {
-    let grade
-    if (userScore >= totalScore * 86 / 100) grade = 'A+'
-    else if (userScore >= totalScore * 83 / 100) grade = 'A'
-    else if (userScore >= totalScore * 80 / 100) grade = 'A-'
-    else if (userScore >= totalScore * 76 / 100) grade = 'B+'
-    else if (userScore >= totalScore * 73 / 100) grade = 'B'
-    else if (userScore >= totalScore * 70 / 100) grade = 'B-'
-    else if (userScore >= totalScore * 66 / 100) grade = 'C+'
-    else if (userScore >= totalScore * 63 / 100) grade = 'C'
-    else if (userScore >= totalScore * 60 / 100) grade = 'C-'
-    else if (userScore >= totalScore * 56 / 100) grade = 'D+'
-    else if (userScore >= totalScore * 53 / 100) grade = 'D'
-    else if (userScore >= totalScore * 50 / 100) grade = 'D-'
-    else grade = 'F'
+    if (userScore >= totalScore * 86 / 100) {
+        return 'A+'
+    }
+    else if (userScore >= totalScore * 83 / 100) {
+        return 'A'
+    }
+    else if (userScore >= totalScore * 80 / 100) {
+        return 'A-'
+    }
+    else if (userScore >= totalScore * 76 / 100) {
 
-    return grade
+        return 'B+'
+    }
+    else if (userScore >= totalScore * 73 / 100) {
+        return 'B'
+    }
+    else if (userScore >= totalScore * 70 / 100) {
+        return 'B-'
+    }
+    else if (userScore >= totalScore * 66 / 100) {
+        return 'C+'
+    }
+    else if (userScore >= totalScore * 63 / 100) {
+        return 'C'
+    }
+    else if (userScore >= totalScore * 60 / 100) {
+        return 'C-'
+    }
+    else if (userScore >= totalScore * 56 / 100) {
+        return 'D+'
+    }
+    else if (userScore >= totalScore * 53 / 100) {
+        return 'D'
+    }
+    else if (userScore >= totalScore * 50 / 100) {
+        return 'D-'
+    }
+
+    return 'F'
 }
 
 module.exports = { prepareSummary, calculateTotalScore, calculateGrade, calculateScoreForThatQuestion }
