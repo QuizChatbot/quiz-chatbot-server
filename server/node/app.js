@@ -494,20 +494,21 @@ const app = async () => {
         }
 
         // //shuffle keys of questions that have not answered
-        // let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
+         let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
+         user.startQuiz(shuffledKey)
+         console.log("user start quiz = ", user)
         // currentQuestionKey = shuffledKey
-        // answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-        // if (answerForEachQuestion == null) {
-        //   console.log("Doesn't have this id in questions database")
-        //   return null
-        // }
+        answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+        if (answerForEachQuestion == null) {
+          console.log("Doesn't have this id in questions database")
+          return null
+        }
 
         // //create button for that question
-        // const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-        // const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-        // startedAt = utillArray.getMoment()
-        // callSendAPI(buttonMessage)
-
+        const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+        const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+        startedAt = utillArray.getMoment()
+        callSendAPI(buttonMessage)
 
       }
     } else if (messageAttachments) {

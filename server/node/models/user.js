@@ -17,11 +17,12 @@ class User {
         this.state = newState
     }
 
-    startQuiz(questionKeys) {
+    startQuiz(questionKey) {
         this.setState({
-            questionKeys: questionKeys,
-            currentQuestionKey: utillArray.shuffleKeyFromQuestions(this.questionKeys),
-            done: 0,
+            keysLeftForThatUser: this.keysLeftForThatUser,
+            currentQuestionKey: questionKey,
+            done: this.done,
+            round: this.round,
             state: 'playing'
         })
     }
@@ -29,7 +30,6 @@ class User {
     start(){
         this.setState({
             state: 'playing',
-            
         })
     }
 
