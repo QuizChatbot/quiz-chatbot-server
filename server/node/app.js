@@ -468,50 +468,45 @@ const app = async () => {
 
       // //when set state again, data format will change
       // //already quiz with chatbot or user come back after pause
-      // else if (userState.state === "playing" || userState.state === "pause") {
+      else if (user.state.state === "playing" || user.state.state === "pause") {
 
-      //   let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      //   console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
+        let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+        console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
 
-      //   //get keys question that user done
-      //   let tmpRound = await getRoundFromThatUser(senderID)
-      //   let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
-      //   let test = await getState(senderID)
-      //   console.log("keyDone1 = ", keysDone)
-      //   console.log("test in pause/play = ", test)
+        //get keys question that user done
+        let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
+        console.log("keyDone1 = ", keysDone)
 
-      //   //remove questions done from questions that not yet answered
-      //   removeKeysDone(keysLeftForThatUser, keysDone)
-      //   console.log("key left1 after remove= ", keysLeftForThatUser)
+        //remove questions done from questions that not yet answered
+        removeKeysDone(user.state.keysLeftForThatUser, keysDone)
+        console.log("key left1 after remove= ", user.state.keysLeftForThatUser)
 
-      //   //if user pause -> change to playing
-      //   if (userState.state === "pause") {
-      //     console.log("_________PAUSE__________")
-      //     let tmpDone = await getDoneFromThatUser(senderID)
-      //     let tmpRound = await getRoundFromThatUser(senderID)
-      //     console.log("tmpRound after pause= ", tmpRound)
-      //     setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-      //   }
-      //   //if user playing
-      //   else {
-      //     setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
-      //   }
-      //   console.log("userData2 = ", usersData)
+        //if user pause -> change to playing
+        if (user.state.state === "pause") {
+          console.log("_________PAUSE__________")
+          setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
+        }
+        //if user playing
+        else {
+          console.log("playing")
+          console.log(user)
+          //setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
+        }
 
-      //   //shuffle keys of questions that have not answered
-      //   let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-      //   currentQuestionKey = shuffledKey
-      //   answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-      //   if (answerForEachQuestion == null) {
-      //     console.log("Doesn't have this id in questions database")
-      //     return null
-      //   }
+        // //shuffle keys of questions that have not answered
+        // let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
+        // currentQuestionKey = shuffledKey
+        // answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+        // if (answerForEachQuestion == null) {
+        //   console.log("Doesn't have this id in questions database")
+        //   return null
+        // }
 
-      //   //create button for that question
-      //   const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-      //   const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-      //   startedAt = utillArray.getMoment()
-      //   callSendAPI(buttonMessage)
+        // //create button for that question
+        // const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+        // const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+        // startedAt = utillArray.getMoment()
+        // callSendAPI(buttonMessage)
 
 
 
