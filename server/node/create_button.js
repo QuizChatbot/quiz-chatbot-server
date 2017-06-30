@@ -1,9 +1,5 @@
 const firebase = require('./firebase.js')
 
-const readQuestions = function () {
-  const questions = require('./questions.json')
-  return questions
-}
 
 const createButtonFromQuestionId = async (id) => {
   let question = await firebase.getQuestionFromId(id)
@@ -113,4 +109,4 @@ const createButtonFromQuestionId = async (id) => {
     return messageData
   }
 
-  module.exports = { readQuestions, createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext }
+  module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext }

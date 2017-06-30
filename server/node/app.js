@@ -9,7 +9,7 @@ const app = async () => {
     express = require('express'),
     https = require('https'),
     request = require('request'),
-    createButton = require('./readjson'),
+    createButton = require('./create_button'),
     utillArray = require('./utill_array'),
     firebase = require('./firebase'),
     tunnelConfig = require('./tunnel.json'),
@@ -564,112 +564,112 @@ const app = async () => {
     }
   }
 
-  const handleReceivedMessage = async (senderID) => {
-    //get all question keys and save to usersData for that senderID
-    let keysLeftForThatUser = await getKeys()
+  // const handleReceivedMessage = async (senderID) => {
+  //   //get all question keys and save to usersData for that senderID
+  //   let keysLeftForThatUser = await getKeys()
 
-    //get state of this user
-    let userState = await getState(senderID)
-    console.log("user state = ", userState)
+  //   //get state of this user
+  //   let userState = await getState(senderID)
+  //   console.log("user state = ", userState)
 
-    //first time connect to bot, usersData is empty
-    //let round = 0
-    if (userState == "initialize") {
-      //set state in usersData
-      setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
-      //get state of the user
-      userState = await getState(senderID)
-    }
+  //   //first time connect to bot, usersData is empty
+  //   //let round = 0
+  //   if (userState == "initialize") {
+  //     //set state in usersData
+  //     setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
+  //     //get state of the user
+  //     userState = await getState(senderID)
+  //   }
 
-    //when received welcome will setState again
-    else {
-      let tmpRound = await getState(senderID)
-      console.log("______state in else_________ = ", tmpRound)
-      let tmpDone = await getDoneFromThatUser(senderID)
-      console.log("______done in else_________ = ", tmpDone)
+  //   //when received welcome will setState again
+  //   else {
+  //     let tmpRound = await getState(senderID)
+  //     console.log("______state in else_________ = ", tmpRound)
+  //     let tmpDone = await getDoneFromThatUser(senderID)
+  //     console.log("______done in else_________ = ", tmpDone)
 
-      //user has been paused
-      if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-      //user has been paused for next round
-      else if (tmpRound.state == "finish") {
-        console.log("______state finish_________ = ")
-        tmpDone = 0
-        setState(senderID, { "state": "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-      }
-      //user has been playing
-      else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
-      userState = await getState(senderID)
-    }
+  //     //user has been paused
+  //     if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
+  //     //user has been paused for next round
+  //     else if (tmpRound.state == "finish") {
+  //       console.log("______state finish_________ = ")
+  //       tmpDone = 0
+  //       setState(senderID, { "state": "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
+  //     }
+  //     //user has been playing
+  //     else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
+  //     userState = await getState(senderID)
+  //   }
 
-    //other users except the first user will add their profile to firebase
-    let userDetail = await getUserDetail(senderID)
-    user = userDetail
-    let firstName = user.first_name
+  //   //other users except the first user will add their profile to firebase
+  //   let userDetail = await getUserDetail(senderID)
+  //   user = userDetail
+  //   let firstName = user.first_name
 
-    let tmpReceivedWelcome = await getStateWelcome(senderID)
-    firebase.saveUserToFirebase(senderID, user)
+  //   let tmpReceivedWelcome = await getStateWelcome(senderID)
+  //   firebase.saveUserToFirebase(senderID, user)
 
-    console.log("______UsersData______ = ", usersData)
-    for (let userId in usersData) {
-      if (userId == senderID && !tmpReceivedWelcome) {
-        tmpReceivedWelcome = true
-        setStateWelcome(senderID, tmpReceivedWelcome)
-        console.log("UsersData receive welcome = ", usersData)
-        sendLetsQuiz(senderID, messageText, firstName)
-      }
-    }
+  //   console.log("______UsersData______ = ", usersData)
+  //   for (let userId in usersData) {
+  //     if (userId == senderID && !tmpReceivedWelcome) {
+  //       tmpReceivedWelcome = true
+  //       setStateWelcome(senderID, tmpReceivedWelcome)
+  //       console.log("UsersData receive welcome = ", usersData)
+  //       sendLetsQuiz(senderID, messageText, firstName)
+  //     }
+  //   }
 
 
-    //user chat with bot for the first time
+  //   //user chat with bot for the first time
 
-    //when set state again, data format will change
-    //already quiz with chatbot or user come back after pause
-    if (userState.state === "playing" || userState.state === "pause") {
+  //   //when set state again, data format will change
+  //   //already quiz with chatbot or user come back after pause
+  //   if (userState.state === "playing" || userState.state === "pause") {
 
-      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
+  //     let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+  //     console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
 
-      //get keys question that user done
-      let tmpRound = await getRoundFromThatUser(senderID)
-      let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
-      let test = await getState(senderID)
-      console.log("keyDone1 = ", keysDone)
-      console.log("test in pause/play = ", test)
+  //     //get keys question that user done
+  //     let tmpRound = await getRoundFromThatUser(senderID)
+  //     let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
+  //     let test = await getState(senderID)
+  //     console.log("keyDone1 = ", keysDone)
+  //     console.log("test in pause/play = ", test)
 
-      //remove questions done from questions that not yet answered
-      removeKeysDone(keysLeftForThatUser, keysDone)
-      console.log("key left1 after remove= ", keysLeftForThatUser)
+  //     //remove questions done from questions that not yet answered
+  //     removeKeysDone(keysLeftForThatUser, keysDone)
+  //     console.log("key left1 after remove= ", keysLeftForThatUser)
 
-      //if user pause -> change to playing
-      if (userState.state === "pause") {
-        console.log("_________PAUSE__________")
-        let tmpDone = await getDoneFromThatUser(senderID)
-        let tmpRound = await getRoundFromThatUser(senderID)
-        console.log("tmpRound after pause= ", tmpRound)
-        setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-      }
-      //if user playing
-      else {
-        setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
-      }
-      console.log("userData2 = ", usersData)
+  //     //if user pause -> change to playing
+  //     if (userState.state === "pause") {
+  //       console.log("_________PAUSE__________")
+  //       let tmpDone = await getDoneFromThatUser(senderID)
+  //       let tmpRound = await getRoundFromThatUser(senderID)
+  //       console.log("tmpRound after pause= ", tmpRound)
+  //       setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
+  //     }
+  //     //if user playing
+  //     else {
+  //       setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
+  //     }
+  //     console.log("userData2 = ", usersData)
 
-      //shuffle keys of questions that have not answered
-      let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-      currentQuestionKey = shuffledKey
-      answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-      if (answerForEachQuestion == null) {
-        console.log("Doesn't have this id in questions database")
-        return null
-      }
+  //     //shuffle keys of questions that have not answered
+  //     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
+  //     currentQuestionKey = shuffledKey
+  //     answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+  //     if (answerForEachQuestion == null) {
+  //       console.log("Doesn't have this id in questions database")
+  //       return null
+  //     }
 
-      //create button for that question
-      const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-      const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-      startedAt = utillArray.getMoment()
-      callSendAPI(buttonMessage)
-    }
-  }
+  //     //create button for that question
+  //     const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+  //     const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+  //     startedAt = utillArray.getMoment()
+  //     callSendAPI(buttonMessage)
+  //   }
+  // }
 
 
   /*
@@ -679,24 +679,6 @@ const app = async () => {
    * these fields at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-delivered
    *
    */
-  // function receivedDeliveryConfirmation(event) {
-  //   var senderID = event.sender.id;
-  //   var recipientID = event.recipient.id;
-  //   var delivery = event.delivery;
-  //   var messageIDs = delivery.mids;
-  //   var watermark = delivery.watermark;
-  //   var sequenceNumber = delivery.seq;
-
-  //   if (messageIDs) {
-  //     messageIDs.forEach(function(messageID) {
-  //       console.log("Received delivery confirmation for message ID: %s", 
-  //         messageID);
-  //     });
-  //   }
-
-  //   console.log("All message before %d were delivered.", watermark);
-  // }
-
 
   /*
    * Postback Event
@@ -938,7 +920,7 @@ const app = async () => {
 
   const startNextRound = async (senderID, round) => {
     //ready to ask question
-    //reset state = 1
+    //reset state = playing
     state = "playing"
     let keysLeftForThatUser = await getKeys()
     console.log("keysLeftForThatUser next round = ", keysLeftForThatUser)
@@ -1030,23 +1012,23 @@ const app = async () => {
   //  * Send a Gif using the Send API.
   //  *
   //  */
-  function sendGifMessage(recipientId) {
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: "image",
-          payload: {
-            url: "https://static1.squarespace.com/static/572f8a5622482e952ab4082a/572f8c43859fd009b4395fef/572f8c60f8baf3257a30aac7/1462733922260/quicksilver+blue.gif?format=300w"
-          }
-        }
-      }
-    };
+  // function sendGifMessage(recipientId) {
+  //   var messageData = {
+  //     recipient: {
+  //       id: recipientId
+  //     },
+  //     message: {
+  //       attachment: {
+  //         type: "image",
+  //         payload: {
+  //           url: "https://static1.squarespace.com/static/572f8a5622482e952ab4082a/572f8c43859fd009b4395fef/572f8c60f8baf3257a30aac7/1462733922260/quicksilver+blue.gif?format=300w"
+  //         }
+  //       }
+  //     }
+  //   };
 
-    callSendAPI(messageData)
-  }
+  //   callSendAPI(messageData)
+  // }
 
   /*
    * Send audio using the Send API.
@@ -1223,72 +1205,7 @@ const app = async () => {
   //   callSendAPI(messageData);
   // }
 
-  // /*
-  //  * Send a receipt message using the Send API.
-  //  *
-  //  */
-  // function sendReceiptMessage(recipientId) {
-  //   // Generate a random receipt ID as the API requires a unique ID
-  //   var receiptId = "order" + Math.floor(Math.random()*1000);
-
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message:{
-  //       attachment: {
-  //         type: "template",
-  //         payload: {
-  //           template_type: "receipt",
-  //           recipient_name: "Peter Chang",
-  //           order_number: receiptId,
-  //           currency: "USD",
-  //           payment_method: "Visa 1234",        
-  //           timestamp: "1428444852", 
-  //           elements: [{
-  //             title: "Oculus Rift",
-  //             subtitle: "Includes: headset, sensor, remote",
-  //             quantity: 1,
-  //             price: 599.00,
-  //             currency: "USD",
-  //             image_url: SERVER_URL + "/assets/riftsq.png"
-  //           }, {
-  //             title: "Samsung Gear VR",
-  //             subtitle: "Frost White",
-  //             quantity: 1,
-  //             price: 99.99,
-  //             currency: "USD",
-  //             image_url: SERVER_URL + "/assets/gearvrsq.png"
-  //           }],
-  //           address: {
-  //             street_1: "1 Hacker Way",
-  //             street_2: "",
-  //             city: "Menlo Park",
-  //             postal_code: "94025",
-  //             state: "CA",
-  //             country: "US"
-  //           },
-  //           summary: {
-  //             subtotal: 698.99,
-  //             shipping_cost: 20.00,
-  //             total_tax: 57.67,
-  //             total_cost: 626.66
-  //           },
-  //           adjustments: [{
-  //             name: "New Customer Discount",
-  //             amount: -50
-  //           }, {
-  //             name: "$100 Off Coupon",
-  //             amount: -100
-  //           }]
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
+ 
   // /*
   //  * Send a message with Quick Reply buttons.
   //  *
@@ -1326,36 +1243,6 @@ const app = async () => {
   // /*
   //  * Send a read receipt to indicate the message has been read
   //  *
-  //  */
-  // function sendReadReceipt(recipientId) {
-  //   console.log("Sending a read receipt to mark message as seen");
-
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     sender_action: "mark_seen"
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  // /*
-  //  * Turn typing indicator on
-  //  *
-  //  */
-  // function sendTypingOn(recipientId) {
-  //   console.log("Turning typing indicator on");
-
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     sender_action: "typing_on"
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
 
   // /*
   //  * Turn typing indicator off
@@ -1378,28 +1265,28 @@ const app = async () => {
    * Send a message with the account linking call-to-action
    *
    */
-  function sendAccountLinking(recipientId) {
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: "Welcome. Link your account.",
-            buttons: [{
-              type: "account_link",
-              url: SERVER_URL + "/authorize"
-            }]
-          }
-        }
-      }
-    };
+  // function sendAccountLinking(recipientId) {
+  //   var messageData = {
+  //     recipient: {
+  //       id: recipientId
+  //     },
+  //     message: {
+  //       attachment: {
+  //         type: "template",
+  //         payload: {
+  //           template_type: "button",
+  //           text: "Welcome. Link your account.",
+  //           buttons: [{
+  //             type: "account_link",
+  //             url: SERVER_URL + "/authorize"
+  //           }]
+  //         }
+  //       }
+  //     }
+  //   };
 
-    callSendAPI(messageData);
-  }
+  //   callSendAPI(messageData);
+  // }
 
   /*
    * Call the Send API. The message data goes in the body. If successful, we'll 
@@ -1442,7 +1329,7 @@ const app = async () => {
         text: "Welcome to QuizChatbot!"
       }
     };
-    createGreetingApi(greetingData);
+    createGreetingApi(greetingData)
   }
 
   function createGreetingApi(messageData) {
@@ -1459,7 +1346,7 @@ const app = async () => {
         } else {
           console.error("Failed calling Thread Reference API", response.statusCode, response.statusMessage, body.error);
         }
-      });
+      })
   }
 
 
@@ -1474,7 +1361,7 @@ const app = async () => {
       }
     }
     state = "playing"
-    callSendAPI(messageData);
+    callSendAPI(messageData)
   }
 
 
@@ -1484,7 +1371,7 @@ const app = async () => {
   app.listen(app.get('port'), () => {
     console.log('Node app is running on port', app.get('port'))
     setGreetingText()
-  });
+  })
 
   module.exports = app
 

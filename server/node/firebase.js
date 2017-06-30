@@ -7,6 +7,7 @@ const connectToFirebase = () => {
     })
     return admin
 }
+
 const admin = connectToFirebase()
 
 //get total number of questions
@@ -41,6 +42,7 @@ const getQuestionsFromFirebase = async () => {
     return result
 }
 
+//get all answers from that question by id
 const getAllAnswersFromQuestion = async (id) => {
     var db = admin.database()
     var ref = db.ref("/Quests")
@@ -59,10 +61,10 @@ const getAllAnswersFromQuestion = async (id) => {
         return "Reject Cannot get all answers from question id : " + errorObject.code
     })
 
-    //console.log('from promise', result)
     return result
 }
 
+//get question by id
 const getQuestionFromId = async (id) => {
     var db = admin.database()
     var ref = db.ref("/Quests")
@@ -84,6 +86,7 @@ const getQuestionFromId = async (id) => {
     return result
 }
 
+//get all questions' keys from firebase
 const getAllQuestionKeys = () => new Promise(async (resolve, reject) => {
     const db = admin.database()
     const ref = db.ref("/Quests")
@@ -122,7 +125,7 @@ const getQuestionDone = async (senderID, round) => new Promise(async (resolve) =
 
 })
 
-
+//save result of answered question
 const saveResultToFirebase = async (senderID, prepareResult) => {
     let result = prepareResult[0]
     let keyQuestion = result.question

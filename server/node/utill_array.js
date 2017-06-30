@@ -1,5 +1,4 @@
 const _ = require('lodash')
-const array = require('lodash/array')
 const moment = require('moment')
 
 const shuffleKeyFromQuestions = (keys) => {
@@ -15,13 +14,11 @@ const shuffleKeyFromQuestions = (keys) => {
 }
 
 const startTimer = () => {
-    console.time('questionDuration');
-    
+    console.time('questionDuration')
 }
 
 const getMoment = () => {
-    return moment().format()
-    
+    return moment().format()   
 }
 
 const stopTimer = () => {
@@ -39,7 +36,5 @@ const calculateDuration = (startedAt, timeOfPostback) => {
     let duration = moment.duration(doneAt.diff(startedAt))
     return duration.asMilliseconds()
 }
-
-
 
 module.exports = { shuffleKeyFromQuestions, _, getFormattedDate, startTimer, stopTimer, getMoment, calculateDuration}

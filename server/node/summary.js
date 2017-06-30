@@ -16,7 +16,7 @@ const prepareSummary = (done, numberOfQuestions,keys, round, skill, grade, score
 //score for one question that user just answered 
 const calculateScoreForThatQuestion = (point, result, duration) => {
     let score = 0
-    //Correct
+    //If answer correctly
     if (result) {
         if (duration <= 60000) score = point + 5 //answer within 1 min
         else if (duration > 60000) score = point + 3 //answer not within 1 min
