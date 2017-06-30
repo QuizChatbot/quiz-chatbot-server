@@ -424,7 +424,7 @@ const app = async () => {
       //get all question keys and save to usersData for that senderID
       let keysLeftForThatUser = await getKeys()
       // //get state of this user
-       user = await userClass.load(senderID)
+      user = await userClass.load(senderID)
 
       // //first time connect to bot, usersData is empty
       // //let round = 0
@@ -443,7 +443,7 @@ const app = async () => {
         }
         //user has been paused for next round
         else if (user.state.state == "finish") {
-           user.setState({ "state": "pause", keysLeftForThatUser, "round": user.state.round, "done": 0 })
+          user.setState({ "state": "pause", keysLeftForThatUser, "round": user.state.round, "done": 0 })
           // console.log("______state finish_________ = ")
           // setState(senderID, { "state": "pause", keysLeftForThatUser, "round": user.round, "done": 0 })
         }
@@ -544,20 +544,26 @@ const app = async () => {
     //check for button nextRound payload
     if (payloadObj.nextRound === true) {
       sendTextMessage(senderID, "Next Round!")
-      let tmpRound = await getRoundFromThatUser(senderID)
-      startNextRound(senderID, tmpRound)
+      startNextRound(senderID, user.state.round)
+      // sendTextMessage(senderID, "Next Round!")
+      // let tmpRound = await getRoundFromThatUser(senderID)
+      // startNextRound(senderID, tmpRound)
     }
     else if (payloadObj.nextRound === false) {
-      //pause
-      console.log("________Pause Next Round_____")
-      let test = await getState(senderID)
-      console.log("test = ", test)
-      let tmpDone = await getDoneFromThatUser(senderID)
-      let tmpRound = await getRoundFromThatUser(senderID)
-      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      setState(senderID, { keysLeftForThatUser, "state": "finish", "done": tmpDone, "round": tmpRound })
+        //pause
+      setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
       sendTextMessage(senderID, "Come back when you're ready baby~")
       sendTextMessage(senderID, "Bye Bye <3")
+      // //pause
+      // console.log("________Pause Next Round_____")
+      // let test = await getState(senderID)
+      // console.log("test = ", test)
+      // let tmpDone = await getDoneFromThatUser(senderID)
+      // let tmpRound = await getRoundFromThatUser(senderID)
+      // let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+      // setState(senderID, { keysLeftForThatUser, "state": "finish", "done": tmpDone, "round": tmpRound })
+      // sendTextMessage(senderID, "Come back when you're ready baby~")
+      // sendTextMessage(senderID, "Bye Bye <3")
     }
 
     //check for button next question
@@ -568,13 +574,16 @@ const app = async () => {
     else if (payloadObj.nextQuestion === false) {
       //pause
       state = "pause"
-      let tmpDone = await getDoneFromThatUser(senderID)
-      let tmpRound = await getRoundFromThatUser(senderID)
-      console.log("________tmpRound________= ", tmpRound)
-      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      setState(senderID, { keysLeftForThatUser, state, "done": tmpDone, "round": tmpRound })
+      user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "done": user.state.done, "round": user.state.round })
       sendTextMessage(senderID, "Hell <3")
       sendTextMessage(senderID, "Come back when you're ready baby~")
+      // let tmpDone = await getDoneFromThatUser(senderID)
+      // let tmpRound = await getRoundFromThatUser(senderID)
+      // console.log("________tmpRound________= ", tmpRound)
+      // let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
+      // setState(senderID, { keysLeftForThatUser, state, "done": tmpDone, "round": tmpRound })
+      // sendTextMessage(senderID, "Hell <3")
+      // sendTextMessage(senderID, "Come back when you're ready baby~")
     }
 
     //Postback for normal questions
@@ -613,14 +622,16 @@ const app = async () => {
 
       let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
       removeKeysDone(user.state.keysLeftForThatUser, keysDone)
-      user.setState( { "state": "playing", "keysLeftForThatUser" : user.state.keysLeftForThatUser, "round": user.state.round, 
-                    "done": user.state.done })
+      user.setState({
+        "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round,
+        "done": user.state.done
+      })
 
 
 
       //prepare summary object to save in firebase
-      let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser, 
-                                                  user.state.round, skill, grade, userScore, totalScore)
+      let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
+        user.state.round, skill, grade, userScore, totalScore)
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
       console.log("_______keysLeftForThatUser______ = ", user.state.keysLeftForThatUser)
       let keysLeftForThatUser = user.state.keysLeftForThatUser
@@ -642,7 +653,7 @@ const app = async () => {
       //Original
 
 
-            // //if in question state when receive postback done = done +1 
+      // //if in question state when receive postback done = done +1 
       // //number of question user answered incresae 
       // let postbackState = await getState(senderID)
       // console.log("post back getState= ", postbackState.state)
@@ -806,7 +817,7 @@ const app = async () => {
     if (keyOfNextQuestion == null) {
       sendTextMessage(senderID, "Finish!")
       state = "finish"
-      user.setState({ state, "keysLeftForThatUser" : user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+      user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
 
       done = 0
       userScore = 0
@@ -865,8 +876,8 @@ const app = async () => {
     //reset state = playing
     state = "playing"
     let keysLeftForThatUser = await getKeys()
-    console.log("keysLeftForThatUser next round = ", keysLeftForThatUser)
-    setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })
+    user.setState({ state, keysLeftForThatUser, round, "done": 0 })
+    //setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })
 
     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     currentQuestionKey = shuffledKey
