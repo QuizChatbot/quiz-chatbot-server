@@ -579,15 +579,12 @@ const app = async () => {
 
     //Postback for normal questions
     else {
-      console.log("postback question")
-      console.log(user)
       //if in playing question state when receive postback 
       //number of questions that user already done increase
       if (user.state.state === "playing") {
         user.state.done++
       }
       console.log("user after done question= ", user)
-
 
       // //check answer and ask next question
       let result = checkAnswer(payload, answerForEachQuestion)
@@ -599,60 +596,50 @@ const app = async () => {
       userScore += scoreOfThatQuestion
       let grade = summary.calculateGrade(totalScore, userScore)
 
-
       // // answer Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
-        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt,
+        let preparedResult = await prepareResultForFirebase(payloadObj, answerForEachQuestion, result, startedAt,
           timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
       //answer Wrong
       else {
         sendTextMessage(senderID, "Bad dog!")
-        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt,
+        let preparedResult = await prepareResultForFirebase(payloadObj, answerForEachQuestion, result, startedAt,
           timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
 
-
-
-      // //keys = removeKeyThatAsked(currentQuestionKey)
-      // let tmpRound = await getRoundFromThatUser(senderID)
-      // let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      // console.log("key left2= ", keysLeftForThatUser)
-      // let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
-      // console.log("keyDone2 = ", keysDone)
-      // removeKeysDone(keysLeftForThatUser, keysDone)
-      // console.log("key left2 after remove= ", keysLeftForThatUser)
-      // setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-      // console.log("userData4 = ", usersData)
+      let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
+      removeKeysDone(user.state.keysLeftForThatUser, keysDone)
+      user.setState( { "state": "playing", "keysLeftForThatUser" : user.state.keysLeftForThatUser, "round": user.state.round, 
+                    "done": user.state.done })
 
 
 
-      // //prepare summary object to save in firebase
-      // tmpDone = await getDoneFromThatUser(senderID)
-      // let preparedSummary = summary.prepareSummary(tmpDone, numberOfQuestions, keysLeftForThatUser, tmpRound, skill, grade, userScore, totalScore)
-      // console.log("summary = ", preparedSummary)
-      // firebase.saveSummaryToFirebase(senderID, preparedSummary)
-      // console.log("_______keysLeftForThatUser______ = ", keysLeftForThatUser)
+      //prepare summary object to save in firebase
+      let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser, 
+                                                  user.state.round, skill, grade, userScore, totalScore)
+      firebase.saveSummaryToFirebase(senderID, preparedSummary)
+      console.log("_______keysLeftForThatUser______ = ", user.state.keysLeftForThatUser)
+      let keysLeftForThatUser = user.state.keysLeftForThatUser
+
+
+      //ask whether user ready to play next question 
+      //if there are still questions left that have not done => create next button
+      if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser.length > 0) {
+        let buttonNext = await createButton.createButtonNext(senderID)
+        callSendAPI(buttonNext)
+      }
+      //if there is no question left that have not done => create next round button
+      else {
+        nextQuestion(senderID)
+      }
 
 
 
-      // //ask whether user ready to play next question 
-      // //if there are still questions left that have not done => create next button
-      // if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser.length > 0) {
-      //   let buttonNext = await createButton.createButtonNext(senderID)
-      //   callSendAPI(buttonNext)
-      // }
-      // //if there is no question left that have not done => create next round button
-      // else {
-      //   nextQuestion(senderID)
-      // }
-
-
-
-      //TOFIX : user class
+      //Original
 
 
             // //if in question state when receive postback done = done +1 
@@ -747,16 +734,17 @@ const app = async () => {
     //in payload contain answer, question key, point
     let prepareObj = []
     //parse string to object
-    let userAnswerObj = JSON.parse(payload)
+    //let userAnswerObj = JSON.parse(payload)
+    let userAnswerObj = payload
     let doneAt = utillArray.getFormattedDate(timeOfPostback)
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
-    let round = await getRoundFromThatUser(senderID)
+
     //add key to userAnswerObj
     userAnswerObj.result = result
     userAnswerObj.doneAt = doneAt
     userAnswerObj.startedAt = startedAt
     userAnswerObj.duration = duration
-    userAnswerObj.round = round
+    userAnswerObj.round = user.state.round
     userAnswerObj.score = scoreOfThatQuestion
     prepareObj.push(userAnswerObj)
     console.log("result = ", prepareObj)
