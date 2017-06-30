@@ -578,7 +578,9 @@ const app = async () => {
     }
 
     //Postback for normal questions
-    else {console.log("postback question")
+    else {
+      console.log("postback question")
+      console.log(user)
       //if in playing question state when receive postback 
       //number of questions that user already done increase
       if (user.state.state === "playing") {
