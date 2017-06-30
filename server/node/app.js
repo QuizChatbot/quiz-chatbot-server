@@ -775,7 +775,7 @@ const app = async () => {
       let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
       userScore += scoreOfThatQuestion
       let grade = summary.calculateGrade(totalScore, userScore)
-
+ 
 
       // answer Correct
       if (result) {
