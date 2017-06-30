@@ -122,10 +122,6 @@ const app = async () => {
     let keys = await firebase.getAllQuestionKeys()
     return keys
   }
-
-
-
-
   // const getUserPSID = (senderID) => new Promise(async (resolve) => {
   //   const accountLinkingToken = "ART0rGA7_DePruzCsC6LWtN5Oapr5pt5DFFVHtsqsiyRkFsmUCqgkvVuFsDAoosdjhwSBgXOpSNtPnKxIPOEQvM6mKDwu7P2IStBlAIbIfLp1w"
   //   const pageAccessToken = 'EAADz9MihTvcBAIytXu2dASyZACO3IFrx2v5YQYjNBnZAXsgxohA3P0FUbQ87EAi7ojJLdqQiQ4VCZCTWe1ctTdKUabE2hLRbJ5yFMfPzjaQrRtpWgnVktLjOExjjTQdW5SZCZA1imL83x6iBECIkacm8IE6Tnwf4veTNvKuZCa8wZDZD'
@@ -259,89 +255,6 @@ const app = async () => {
   });
 
   /*
- * This path is used for account linking. The account linking call-to-action
- * (sendAccountLinking) is pointed to this URL. 
- * 
- */
-  // app.get('/authorize', function (req, res) {
-  //   var accountLinkingToken = req.query.account_linking_token;
-  //   var redirectURI = req.query.redirect_uri;
-  //   console.log("/Authorize tokem = ", accountLinkingToken)
-  //   // Authorization Code should be generated per user by the developer. This will 
-  //   // be passed to the Account Linking callback.
-  //   var authCode = "1234567890";
-
-  //   // Redirect users to this URI on successful login
-  //   var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
-
-  //   res.render('authorize', {
-  //     accountLinkingToken: accountLinkingToken,
-  //     redirectURI: redirectURI,
-  //     redirectURISuccess: redirectURISuccess
-  //   });
-  // });
-
-
-  /*
-   * Verify that the callback came from Facebook. Using the App Secret from 
-   * the App Dashboard, we can verify the signature that is sent with each 
-   * callback in the x-hub-signature field, located in the header.
-   *
-   * https://developers.facebook.com/docs/graph-api/webhooks#setup
-   *
-   */
-  // function verifyRequestSignature(req, res, buf) {
-  //   var signature = req.headers["x-hub-signature"];
-
-  //   if (!signature) {
-  //     // For testing, let's log an error. In production, you should throw an 
-  //     // error.
-  //     console.error("Couldn't validate the signature.");
-  //   } else {
-  //     var elements = signature.split('=');
-  //     var method = elements[0];
-  //     var signatureHash = elements[1];
-
-  //     var expectedHash = crypto.createHmac('sha1', APP_SECRET)
-  //       .update(buf)
-  //       .digest('hex');
-
-  //     if (signatureHash != expectedHash) {
-  //       throw new Error("Couldn't validate the request signature.");
-  //     }
-  //   }
-  // }
-
-  /*
-   * Authorization Event
-   *
-   * The value for 'optin.ref' is defined in the entry point. For the "Send to 
-   * Messenger" plugin, it is the 'data-ref' field. Read more at 
-   * https://developers.facebook.com/docs/messenger-platform/webhook-reference/authentication
-   *
-   */
-  // function receivedAuthentication(event) {
-  //   var senderID = event.sender.id;
-  //   var recipientID = event.recipient.id;
-  //   var timeOfAuth = event.timestamp;
-
-  //   // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
-  //   // The developer can set this to an arbitrary value to associate the 
-  //   // authentication callback with the 'Send to Messenger' click event. This is
-  //   // a way to do account linking when the user clicks the 'Send to Messenger' 
-  //   // plugin.
-  //   var passThroughParam = event.optin.ref;
-
-  //   console.log("Received authentication for user %d and page %d with pass " +
-  //     "through param '%s' at %d", senderID, recipientID, passThroughParam,
-  //     timeOfAuth);
-
-  //   // When an authentication is received, we'll send a message back to the sender
-  //   // to let them know it was successful.
-  //   sendTextMessage(senderID, "Authentication successful");
-  // }
-
-  /*
    * Message Event
    *
    * This event is called when a message is sent to your page. The 'message' 
@@ -390,60 +303,6 @@ const app = async () => {
     }
 
     if (messageText) {
-      switch (messageText) {
-        case 'image':
-          sendImageMessage(senderID)
-          break
-
-        case 'gif':
-          sendGifMessage(senderID)
-          break
-
-        case 'audio':
-          sendAudioMessage(senderID)
-          break
-
-        case 'video':
-          sendVideoMessage(senderID)
-          break
-
-        case 'file':
-          sendFileMessage(senderID)
-          break
-
-        case 'button':
-          sendButtonMessage(senderID)
-          break;
-
-        case 'generic':
-          sendGenericMessage(senderID)
-          break
-
-        case 'receipt':
-          sendReceiptMessage(senderID)
-          break
-
-        case 'quick reply':
-          sendQuickReply(senderID)
-          break
-
-        case 'read receipt':
-          sendReadReceipt(senderID)
-          break
-
-        case 'typing on':
-          sendTypingOn(senderID)
-          break
-
-        case 'typing off':
-          sendTypingOff(senderID)
-          break
-
-        case 'account linking':
-          sendAccountLinking(senderID)
-          break
-
-        default: {
           //get all question keys and save to usersData for that senderID
           let keysLeftForThatUser = await getKeys()
 
@@ -557,128 +416,13 @@ const app = async () => {
             callSendAPI(buttonMessage)
           }
 
-        }
-      }
+        
+      
     } else if (messageAttachments) {
       sendTextMessage(senderID, "Message with attachment received")
     }
   }
 
-  // const handleReceivedMessage = async (senderID) => {
-  //   //get all question keys and save to usersData for that senderID
-  //   let keysLeftForThatUser = await getKeys()
-
-  //   //get state of this user
-  //   let userState = await getState(senderID)
-  //   console.log("user state = ", userState)
-
-  //   //first time connect to bot, usersData is empty
-  //   //let round = 0
-  //   if (userState == "initialize") {
-  //     //set state in usersData
-  //     setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
-  //     //get state of the user
-  //     userState = await getState(senderID)
-  //   }
-
-  //   //when received welcome will setState again
-  //   else {
-  //     let tmpRound = await getState(senderID)
-  //     console.log("______state in else_________ = ", tmpRound)
-  //     let tmpDone = await getDoneFromThatUser(senderID)
-  //     console.log("______done in else_________ = ", tmpDone)
-
-  //     //user has been paused
-  //     if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-  //     //user has been paused for next round
-  //     else if (tmpRound.state == "finish") {
-  //       console.log("______state finish_________ = ")
-  //       tmpDone = 0
-  //       setState(senderID, { "state": "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-  //     }
-  //     //user has been playing
-  //     else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
-  //     userState = await getState(senderID)
-  //   }
-
-  //   //other users except the first user will add their profile to firebase
-  //   let userDetail = await getUserDetail(senderID)
-  //   user = userDetail
-  //   let firstName = user.first_name
-
-  //   let tmpReceivedWelcome = await getStateWelcome(senderID)
-  //   firebase.saveUserToFirebase(senderID, user)
-
-  //   console.log("______UsersData______ = ", usersData)
-  //   for (let userId in usersData) {
-  //     if (userId == senderID && !tmpReceivedWelcome) {
-  //       tmpReceivedWelcome = true
-  //       setStateWelcome(senderID, tmpReceivedWelcome)
-  //       console.log("UsersData receive welcome = ", usersData)
-  //       sendLetsQuiz(senderID, messageText, firstName)
-  //     }
-  //   }
-
-
-  //   //user chat with bot for the first time
-
-  //   //when set state again, data format will change
-  //   //already quiz with chatbot or user come back after pause
-  //   if (userState.state === "playing" || userState.state === "pause") {
-
-  //     let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-  //     console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
-
-  //     //get keys question that user done
-  //     let tmpRound = await getRoundFromThatUser(senderID)
-  //     let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
-  //     let test = await getState(senderID)
-  //     console.log("keyDone1 = ", keysDone)
-  //     console.log("test in pause/play = ", test)
-
-  //     //remove questions done from questions that not yet answered
-  //     removeKeysDone(keysLeftForThatUser, keysDone)
-  //     console.log("key left1 after remove= ", keysLeftForThatUser)
-
-  //     //if user pause -> change to playing
-  //     if (userState.state === "pause") {
-  //       console.log("_________PAUSE__________")
-  //       let tmpDone = await getDoneFromThatUser(senderID)
-  //       let tmpRound = await getRoundFromThatUser(senderID)
-  //       console.log("tmpRound after pause= ", tmpRound)
-  //       setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-  //     }
-  //     //if user playing
-  //     else {
-  //       setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
-  //     }
-  //     console.log("userData2 = ", usersData)
-
-  //     //shuffle keys of questions that have not answered
-  //     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-  //     currentQuestionKey = shuffledKey
-  //     answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-  //     if (answerForEachQuestion == null) {
-  //       console.log("Doesn't have this id in questions database")
-  //       return null
-  //     }
-
-  //     //create button for that question
-  //     const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-  //     const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-  //     startedAt = utillArray.getMoment()
-  //     callSendAPI(buttonMessage)
-  //   }
-  // }
-
-
-  /*
-   * Delivery Confirmation Event
-   *
-   * This event is sent to confirm the delivery of a message. Read more about 
-   * these fields at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-delivered
-   *
-   */
 
   /*
    * Postback Event
@@ -808,8 +552,6 @@ const app = async () => {
       else {
         nextQuestion(senderID)
       }
-
-
     }
 
   }
@@ -949,151 +691,16 @@ const app = async () => {
    * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
    * 
    */
-  function receivedMessageRead(event) {
-    var senderID = event.sender.id
-    var recipientID = event.recipient.id
+  // function receivedMessageRead(event) {
+  //   var senderID = event.sender.id
+  //   var recipientID = event.recipient.id
 
-    // All messages before watermark (a timestamp) or sequence have been seen.
-    var watermark = event.read.watermark
-    var sequenceNumber = event.read.seq
+  //   // All messages before watermark (a timestamp) or sequence have been seen.
+  //   var watermark = event.read.watermark
+  //   var sequenceNumber = event.read.seq
 
-    console.log("Received message read event for watermark %d and sequence " +
-      "number %d", watermark, sequenceNumber)
-  }
-
-
-
-  /*
-   * Account Link Event
-   *
-   * This event is called when the Link Account or UnLink Account action has been
-   * tapped.
-   * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
-   * 
-   */
-  async function receivedAccountLink(event) {
-    var senderID = event.sender.id
-    console.log("account linking token= ", event.account_linking_token)
-    var recipientID = event.recipient.id
-
-    var status = event.account_linking.status
-    var authCode = event.account_linking.authorization_code
-
-    console.log("Received account link event with for user %d with status %s " +
-      "and auth code %s ", senderID, status, authCode);
-
-    let resultPSID = await getUserPSID(senderID)
-    console.log("result in receivedAccountLink = ", resultPSID)
-  }
-
-  // /*
-  //  * Send an image using the Send API.
-  //  *
-  //  */
-  // function sendImageMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "image",
-  //         payload: {
-  //           url: SERVER_URL + "/assets/rift.png"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  // /*
-  //  * Send a Gif using the Send API.
-  //  *
-  //  */
-  // function sendGifMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "image",
-  //         payload: {
-  //           url: "https://static1.squarespace.com/static/572f8a5622482e952ab4082a/572f8c43859fd009b4395fef/572f8c60f8baf3257a30aac7/1462733922260/quicksilver+blue.gif?format=300w"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData)
-  // }
-
-  /*
-   * Send audio using the Send API.
-   *
-   */
-  // function sendAudioMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "audio",
-  //         payload: {
-  //           url: SERVER_URL + "/assets/sample.mp3"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData)
-  // }s
-
-  // /*
-  //  * Send a video using the Send API.
-  //  *
-  //  */
-  // function sendVideoMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "video",
-  //         payload: {
-  //           url: SERVER_URL + "/assets/allofus480.mov"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  // /*
-  //  * Send a file using the Send API.
-  //  *
-  //  */
-  // function sendFileMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "file",
-  //         payload: {
-  //           url: SERVER_URL + "/assets/test.txt"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
+  //   console.log("Received message read event for watermark %d and sequence " +
+  //     "number %d", watermark, sequenceNumber)
   // }
 
   /*
@@ -1150,143 +757,6 @@ const app = async () => {
 
     callSendAPI(messageData)
   }
-
-
-
-
-  /*
-   * Send a Structured Message (Generic Message type) using the Send API.
-   *
-   */
-  // function sendGenericMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "template",
-  //         payload: {
-  //           template_type: "generic",
-  //           elements: [{
-  //             title: "rift",
-  //             subtitle: "Next-generation virtual reality",
-  //             item_url: "https://www.oculus.com/en-us/rift/",               
-  //             image_url: SERVER_URL + "/assets/rift.png",
-  //             buttons: [{
-  //               type: "web_url",
-  //               url: "https://www.oculus.com/en-us/rift/",
-  //               title: "Open Web URL"
-  //             }, {
-  //               type: "postback",
-  //               title: "Call Postback",
-  //               payload: "Payload for first bubble",
-  //             }],
-  //           }, {
-  //             title: "touch",
-  //             subtitle: "Your Hands, Now in VR",
-  //             item_url: "https://www.oculus.com/en-us/touch/",               
-  //             image_url: SERVER_URL + "/assets/touch.png",
-  //             buttons: [{
-  //               type: "web_url",
-  //               url: "https://www.oculus.com/en-us/touch/",
-  //               title: "Open Web URL"
-  //             }, {
-  //               type: "postback",
-  //               title: "Call Postback",
-  //               payload: "Payload for second bubble",
-  //             }]
-  //           }]
-  //         }
-  //       }
-  //     }
-  //   };  
-
-  //   callSendAPI(messageData);
-  // }
-
- 
-  // /*
-  //  * Send a message with Quick Reply buttons.
-  //  *
-  //  */
-  // function sendQuickReply(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       text: "What's your favorite movie genre?",
-  //       quick_replies: [
-  //         {
-  //           "content_type":"text",
-  //           "title":"Action",
-  //           "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_ACTION"
-  //         },
-  //         {
-  //           "content_type":"text", 
-  //           "title":"Comedy",
-  //           "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_COMEDY"
-  //         },
-  //         {
-  //           "content_type":"text",
-  //           "title":"Drama",
-  //           "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRAMA"
-  //         }
-  //       ]
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  // /*
-  //  * Send a read receipt to indicate the message has been read
-  //  *
-
-  // /*
-  //  * Turn typing indicator off
-  //  *
-  //  */
-  // function sendTypingOff(recipientId) {
-  //   console.log("Turning typing indicator off");
-
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     sender_action: "typing_off"
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  /*
-   * Send a message with the account linking call-to-action
-   *
-   */
-  // function sendAccountLinking(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "template",
-  //         payload: {
-  //           template_type: "button",
-  //           text: "Welcome. Link your account.",
-  //           buttons: [{
-  //             type: "account_link",
-  //             url: SERVER_URL + "/authorize"
-  //           }]
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
 
   /*
    * Call the Send API. The message data goes in the body. If successful, we'll 
