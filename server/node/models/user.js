@@ -1,4 +1,5 @@
 let usersData = {}
+let usersWelcome = {}
 
 const load = async (userId) => {
   return new User(userId, await getState(userId))
@@ -13,7 +14,7 @@ class User {
 
     setState(newState) {
         setState(this.userId, newState)
-        //this.state = newState
+        this.state = newState
     }
 
     startQuiz(questionKeys) {
@@ -28,6 +29,17 @@ class User {
     get(field) {
         return this.state[field]
     }
+
+    getWelcome(){
+        return getStateWelcome(this.userId)
+    }
+
+    setStateWelcome(stateWelcome){
+        setStateWelcome(this.userId, stateWelcome)
+        this.stateWelcome = stateWelcome
+    }
+
+
 }
 
 
@@ -85,14 +97,6 @@ async function getReceivedWelcomeFromThatUser(userId) {
         return "Initialize"
     } else {
         return usersData[userId].receivedWelcome
-    }
-}
-
-async function setReceivedWelcome(userId, receivedWelcome) {
-    if (!usersData.hasOwnProperty(userId)) {
-        usersData[userId] = { receivedWelcome }
-    } else {
-        usersData[userId].receivedWelcome = receivedWelcome
     }
 }
 

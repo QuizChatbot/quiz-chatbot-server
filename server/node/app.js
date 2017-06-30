@@ -306,23 +306,20 @@ const app = async () => {
 
     if (messageText) {
       //get all question keys and save to usersData for that senderID
-      let keysLeftForThatUser = await getKeys()
+      // let keysLeftForThatUser = await getKeys()
 
-      //get state of this user
-      let user = await userClass.load(senderID)
-       console.log("user.state = ", user.state)
+      // //get state of this user
+      // let userState = await getState(senderID)
+      // console.log("user state = ", userState)
 
       // //first time connect to bot, usersData is empty
       // //let round = 0
-      if (user.state == "initialize") {
-        console.log("init")
-        //set state in usersData
-        user.setState({state, keysLeftForThatUser, "round": 0, done})
-        console.log("user = ", user)
-        // setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
-        //get state of the user
-        // userState = await getState(senderID)
-      }
+      // if (userState == "initialize") {
+      //   //set state in usersData
+      //   setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
+      //   //get state of the user
+      //   userState = await getState(senderID)
+      // }
 
       // //when received welcome will setState again
       // else {
@@ -421,23 +418,23 @@ const app = async () => {
       //   callSendAPI(buttonMessage)
       // }
 
+
+
       //TOFIX : Code review , use User and Question class
 
        //get all question keys and save to usersData for that senderID
-      // let keysLeftForThatUser = await getKeys()
+      let keysLeftForThatUser = await getKeys()
 
       // //get state of this user
-      // let userState = await getState(senderID)
-      // console.log("user state = ", userState)
+      let user = await userClass.load(senderID)
+      console.log("user state = ", user)
 
       // //first time connect to bot, usersData is empty
       // //let round = 0
-      // if (userState == "initialize") {
-      //   //set state in usersData
-      //   setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
-      //   //get state of the user
-      //   userState = await getState(senderID)
-      // }
+      if (user.state == "initialize") {
+        //set state in usersData
+        user.setState({ state, keysLeftForThatUser, "round": 0, done })
+      }
 
       // //when received welcome will setState again
       // else {
@@ -459,14 +456,12 @@ const app = async () => {
       // }
 
       // //other users except the first user will add their profile to firebase
-      // let userDetail = await getUserDetail(senderID)
-      // user = userDetail
-      // let firstName = user.first_name
+      let userDetail = await getUserDetail(senderID)
+      let firstName = userDetail.first_name
 
-      // let tmpReceivedWelcome = await getStateWelcome(senderID)
-      // firebase.saveUserToFirebase(senderID, user)
+      let tmpReceivedWelcome = user.getWelcome()
+      firebase.saveUserToFirebase(senderID, userDetail)
 
-      // console.log("______UsersData______ = ", usersData)
       // for (let userId in usersData) {
       //   if (userId == senderID && !tmpReceivedWelcome) {
       //     tmpReceivedWelcome = true
@@ -475,6 +470,12 @@ const app = async () => {
       //     sendLetsQuiz(senderID, messageText, firstName)
       //   }
       // }
+
+      if(!tmpReceivedWelcome){
+        tmpReceivedWelcome = true
+        user.setStateWelcome(tmpReceivedWelcome)
+        console.log("user after welcome = ", user)
+      }
 
 
       // //user chat with bot for the first time
