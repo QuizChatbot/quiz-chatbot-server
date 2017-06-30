@@ -436,23 +436,20 @@ const app = async () => {
       }
 
       // //when received welcome will setState again
-      // else {
-      //   let tmpRound = await getState(senderID)
-      //   console.log("______state in else_________ = ", tmpRound)
-      //   let tmpDone = await getDoneFromThatUser(senderID)
-      //   console.log("______done in else_________ = ", tmpDone)
-      //   //user has been paused
-      //   if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-      //   //user has been paused for next round
-      //   else if (tmpRound.state == "finish") {
-      //     console.log("______state finish_________ = ")
-      //     tmpDone = 0
-      //     setState(senderID, { "state": "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-      //   }
-      //   //user has been playing
-      //   else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
-      //   userState = await getState(senderID)
-      // }
+      else {
+        //user has been paused
+        if (user.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": user.round, "done": user.done })
+        //user has been paused for next round
+        else if (user.state == "finish") {
+          console.log("______state finish_________ = ")
+          setState(senderID, { "state": "pause", keysLeftForThatUser, "round": user.round, "done": 0 })
+        }
+        //user has been playing
+        else {
+          user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+          console.log(user)
+        }
+      }
 
       // //other users except the first user will add their profile to firebase
       let userDetail = await getUserDetail(senderID)
