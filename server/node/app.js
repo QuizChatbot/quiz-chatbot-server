@@ -312,7 +312,7 @@ const app = async () => {
       let user = await userClass.load(senderID)
       // console.log("user state = ", userState)
        console.log("user.state = ", user.state)
-        console.log("user.get(state) = ", user.get(state))
+        console.log("user.get(state) = ", user.get('state'))
 
       // //first time connect to bot, usersData is empty
       // //let round = 0

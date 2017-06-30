@@ -50,9 +50,9 @@ async function setRound(userId, round) {
 
 async function getState(userId) {
     if (!usersData.hasOwnProperty(userId)) {
-        return "initialize"
+        return await "initialize"
     } else {
-        return usersData[userId]
+        return await usersData[userId]
     }
 }
 
