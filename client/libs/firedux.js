@@ -184,7 +184,6 @@ export default class Firedux {
         if (error) return handleError(error)
         // localStorage.setItem('FIREBASE_TOKEN', (authData.token || authData.refreshToken))
         that.authData = authData
-        console.log(authData.user.uid)
         dispatch({ type: 'FIREBASE_LOGIN', uid: authData.user.uid, error })
         resolve(authData)
       }

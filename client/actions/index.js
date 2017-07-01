@@ -1,4 +1,4 @@
-import firedux, { firebaseApp } from '../store/firedux'
+import firedux, { firebaseApp as firebase } from '../store/firedux'
 import * as types from '../constants/ActionTypes'
 import { firebaseToArray } from '../utils'
 
@@ -32,6 +32,7 @@ export function login() {
   return (dispatch) => {
     firedux.login().then(res => {
       dispatch({ type: 'auth/complete' })
+      dispatch({ type: 'quest/set-quest-data' })
     })
   }
 }
@@ -49,9 +50,40 @@ export function init() {
     firedux.init().then(res => {
       if (res) {
         dispatch({ type: 'auth/complete' })
+        dispatch({ type: 'quest/set-quest-data' })
       }
     })
   }
+}
+
+export function getQuest() {
+  return (dispatch, getState) => {
+    const state = getState()
+    let quests = []
+    getQuests(state.firedux.data).then(questData => {
+      quests = questData
+      const uid = firebase.auth().currentUser.uid
+      // filter quests by owner before dispatch
+      quests.filter(isOwner.bind(null, uid))
+
+      console.log("quests af=", quests)
+    }).then(() => {
+      dispatch({ type: 'quest/set-quest-data', data: quests })
+    })
+  }
+}
+
+function isOwner(uid, quest, index, array) {
+  return quest.owner == uid
+}
+
+function getQuests(data) {
+  return new Promise((resolve, reject) => {
+    const { Quests } = data
+    const quests = firebaseToArray(Quests)
+    if (quests.length) resolve(quests)
+    else resolve([])
+  })
 }
 
 export function getDeveloper() {
@@ -62,6 +94,7 @@ export function getDeveloper() {
       developers = []
       devs.map(developer => { setDeveloperData(developers, developer) })
     }).then(() => {
+      // ** It must have a bug here!
       developers.sort((a, b) => { return b.maxSummary.score - a.maxSummary.score });
     }).then(() => {
       dispatch({ type: 'developer/set-developer-data', data: developers })
