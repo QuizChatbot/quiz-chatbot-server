@@ -8,7 +8,9 @@ import store from './store'
 import 'todomvc-app-css/index.css'
 import firedux from './store/firedux'
 
-firedux.watch('Quests')
+firedux.watch('Quests').then(() => {
+  store.dispatch(Actions.getQuest())
+})
 firedux.watch('Developer').then(() => {
   store.dispatch(Actions.getDeveloper())
 })
