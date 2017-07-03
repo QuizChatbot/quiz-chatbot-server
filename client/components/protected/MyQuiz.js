@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import HeaderQuiz from './HeaderQuiz'
-import MainSectionQuiz from './MainSectionQuiz'
+// import MainSectionQuiz from './MainSectionQuiz'
+import MainSectionQuiz from '../../containers/MainSectionQuiz.container'
 import store from '../../store'
 
 class MyQuiz extends Component {
