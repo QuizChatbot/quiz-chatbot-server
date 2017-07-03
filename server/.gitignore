@@ -62,6 +62,7 @@ typings/
 
 config/default.json
 config/tunnel.json
+node/config/quizchatbot-firebase-adminsdk.json
 test.js
 pids
 *.dat
