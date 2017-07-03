@@ -5,7 +5,6 @@ const load = async (userId) => {
   return new User(userId, await getState(userId))
 }
 
-
 class User {
     constructor(userId, initialState) {
         this.userId = userId
@@ -78,30 +77,6 @@ async function getState(userId) {
         return usersData[userId]
     }
 }
-
-// async function getKeysLeftForThatUser(userId) {
-//     if (!usersData.hasOwnProperty(userId)) {
-//         return "User answered all questions"
-//     } else {
-//         return usersData[userId].keysLeftForThatUser
-//     }
-// }
-
-// async function getDoneFromThatUser(userId) {
-//     if (!usersData.hasOwnProperty(userId)) {
-//         return "Initialize"
-//     } else {
-//         return usersData[userId].done
-//     }
-// }
-
-// async function getRoundFromThatUser(userId) {
-//     if (!usersData.hasOwnProperty(userId)) {
-//         return "Initialize"
-//     } else {
-//         return usersData[userId].round
-//     }
-// }
 
 async function setStateWelcome(userId, welcome) {
     if (!usersData.hasOwnProperty(userId)) {
