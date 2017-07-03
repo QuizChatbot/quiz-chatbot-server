@@ -37,8 +37,4 @@ MainSectionQuiz.propTypes = {
   actions: PropTypes.object.isRequired,
 }
 
-export default connect(
-  state => ({
-    quests: state.questData.quests
-  })
-)(MainSectionQuiz)
+export default MainSectionQuiz
