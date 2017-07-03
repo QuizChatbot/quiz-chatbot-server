@@ -6,7 +6,7 @@ const api = require('../localUserAPI')
 const load = async (senderId, keys) => {
     const oldState = await api.getState(senderId)
     if (oldState === null) {
-        await api.setState({ state: "initial", done: 0, round: 0, keysLeftForThatUser: keys })
+        await api.setState(senderId, { state: "initial", done: 0, round: 0, keysLeftForThatUser: keys })
     }
     let state = await api.getState(senderId)
 
