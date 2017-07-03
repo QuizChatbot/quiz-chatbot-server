@@ -1,7 +1,7 @@
 const utillArray = require('./utill_array')
 
 //set format of the result we want to save in firebase
-const prepareResultForFirebase = async (payload, answerForEachQuestion, result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID) => {
+const prepareResultForFirebase = async (payload, answerForEachQuestion, round, result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID) => {
     //in payload contain answer, question key, point
     let prepareObj = []
     let userAnswerObj = payload
@@ -13,7 +13,7 @@ const prepareResultForFirebase = async (payload, answerForEachQuestion, result, 
     userAnswerObj.doneAt = doneAt
     userAnswerObj.startedAt = startedAt
     userAnswerObj.duration = duration
-    userAnswerObj.round = user.state.round
+    userAnswerObj.round = round
     userAnswerObj.score = scoreOfThatQuestion
     prepareObj.push(userAnswerObj)
     console.log("result = ", prepareObj)
