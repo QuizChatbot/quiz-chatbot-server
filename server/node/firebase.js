@@ -3,7 +3,7 @@ const connectToFirebase = () => {
     let serviceAccount = require("./config/quizchatbot-firebase-adminsdk.json")
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
-        databaseURL: "https://quizchatbot-ce222.firebaseio.com/"
+        databaseURL: "https://quizchatbot-ce222.firebaseio.com"
     })
     return admin
 }
