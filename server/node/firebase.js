@@ -3,11 +3,11 @@ const connectToFirebase = () => {
     let serviceAccount = require("./config/quizchatbot-ce222-firebase-adminsdk.json")
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
-        databaseURL: "https://quizchatbot-ce222.firebaseio.com/"
+        databaseURL: "https://quizchatbot-ce222.firebaseio.com"
     })
     return admin
 }
-
+ 
 const admin = connectToFirebase()
 
 //get total number of questions
@@ -44,8 +44,8 @@ const getQuestionsFromFirebase = async () => {
 
 //get all answers from that question by id
 const getAllAnswersFromQuestion = async (id) => {
-    var db = admin.database()
-    var ref = db.ref("/Quests")
+    let db = admin.database()
+    let ref = db.ref("/Quests")
 
     const result = await new Promise(function (resolve, reject) {
         ref.child(id).child("choices").on("value", (snapshot) => {
@@ -66,8 +66,8 @@ const getAllAnswersFromQuestion = async (id) => {
 
 //get question by id
 const getQuestionFromId = async (id) => {
-    var db = admin.database()
-    var ref = db.ref("/Quests")
+    let db = admin.database()
+    let ref = db.ref("/Quests")
 
     const result = await new Promise(function (resolve, reject) {
         ref.child(id).on("value", (snapshot) => {
@@ -155,7 +155,6 @@ const saveUserToFirebase = (senderID, user) => {
     ref.once("value")
         .then((snapshot) => {
             snapshot.forEach((childSnapshot) => {
-                console.log("chilssnapshot = ", childSnapshot.key)
                 if (childSnapshot.key == senderID) {
                     console.log("Already have user information")
                     hasUser = true

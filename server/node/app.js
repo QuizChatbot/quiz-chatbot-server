@@ -1,4 +1,3 @@
-
 const app = async () => {
   require('es6-promise').polyfill();
   require('isomorphic-fetch');
@@ -13,13 +12,13 @@ const app = async () => {
     utillArray = require('./utill_array'),
     firebase = require('./firebase'),
     tunnelConfig = require('./tunnel.json'),
-    summary = require('./summary')
+    summary = require('./summary'),
+    userClass = require('./models/user'),
+    resultFirebase = require('./result')
 
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
 
-
-  //let keys = await getKeys()
   let numberOfQuestions = await firebase.getNumberOfQuestions()
   let user
   let results
@@ -33,119 +32,12 @@ const app = async () => {
   let usersData = {} //keep users sessions
   let usersWelcome = {} //keep welcome states for that user only
 
-
-
-
-  async function setState(userId, state) {
-    if (!usersData.hasOwnProperty(userId)) {
-      usersData[userId] = { state }
-    } else {
-      usersData[userId] = state
-    }
-    console.log('userData = ', usersData)
-  }
-
-  async function setRound(userId, round) {
-    if (!usersData.hasOwnProperty(userId)) {
-      usersData[userId] = { round }
-    } else {
-      usersData[userId].round = round
-    }
-  }
-
-  async function getState(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-      return "initialize"
-    } else {
-      return usersData[userId]
-    }
-  }
-
-  async function getKeysLeftForThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-      return "User answered all questions"
-    } else {
-      return usersData[userId].keysLeftForThatUser
-    }
-  }
-
-  async function getDoneFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-      return "Initialize"
-    } else {
-      return usersData[userId].done
-    }
-  }
-
-  async function getRoundFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-      return "Initialize"
-    } else {
-      return usersData[userId].round
-    }
-  }
-
-  async function getReceivedWelcomeFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId).hasOwnProperty(receivedWelcome)) {
-      return "Initialize"
-    } else {
-      return usersData[userId].receivedWelcome
-    }
-  }
-
-  async function setReceivedWelcome(userId, receivedWelcome) {
-    if (!usersData.hasOwnProperty(userId)) {
-      usersData[userId] = { receivedWelcome }
-    } else {
-      usersData[userId].receivedWelcome = receivedWelcome
-    }
-  }
-
-  async function setStateWelcome(userId, welcome) {
-    if (!usersData.hasOwnProperty(userId)) {
-      usersWelcome[userId] = { welcome }
-    } else {
-      usersWelcome[userId] = welcome
-    }
-    console.log('setStateWelcome = ', usersWelcome)
-  }
-
-  async function getStateWelcome(userId) {
-    if (!usersWelcome.hasOwnProperty(userId)) {
-      return false
-    } else {
-      return usersWelcome[userId]
-    }
-  }
-
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
     return keys
   }
 
-
-
-
-  // const getUserPSID = (senderID) => new Promise(async (resolve) => {
-  //   const accountLinkingToken = "ART0rGA7_DePruzCsC6LWtN5Oapr5pt5DFFVHtsqsiyRkFsmUCqgkvVuFsDAoosdjhwSBgXOpSNtPnKxIPOEQvM6mKDwu7P2IStBlAIbIfLp1w"
-  //   const pageAccessToken = 'EAADz9MihTvcBAIytXu2dASyZACO3IFrx2v5YQYjNBnZAXsgxohA3P0FUbQ87EAi7ojJLdqQiQ4VCZCTWe1ctTdKUabE2hLRbJ5yFMfPzjaQrRtpWgnVktLjOExjjTQdW5SZCZA1imL83x6iBECIkacm8IE6Tnwf4veTNvKuZCa8wZDZD'
-  //   const graph = `https://graph.facebook.com/v2.9/me?access_token=${pageAccessToken}\&fields=recipient\&account_linking_token=${accountLinkingToken}`
-  //   console.log("graph user PSID = ", graph);
-  //   fetch(graph)
-  //     .then(async function (response) {
-  //       if (response.status >= 400) {
-  //         throw new Error("Bad response from server");
-  //       }
-  //       let result = await response.json();
-  //       console.log("response psid = ", result);
-  //       resolve(result)
-  //     })
-
-  // })
-
-
-
-  var app = express()
+  let app = express()
   app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
@@ -190,7 +82,6 @@ const app = async () => {
           throw new Error("Bad response from server")
         }
         let json = await response.json()
-        console.log("userDetail = ", json)
         resolve(json)
       })
       .catch((err) => {
@@ -215,19 +106,19 @@ const app = async () => {
   //occur when user send something to bot
   app.post('/webhook', (req, res) => {
 
-    var data = req.body
+    let data = req.body
     // Make sure this is a page subscription
     if (data.object == 'page') {
       // Iterate over each entry
       // There may be multiple if batched
       data.entry.forEach(pageEntry => {
-        var pageID = pageEntry.id
-        var timeOfEvent = pageEntry.time
+        let pageID = pageEntry.id
+        let timeOfEvent = pageEntry.time
 
         // Iterate over each messaging event
         pageEntry.messaging.forEach(messagingEvent => {
           console.log("recieve mssg read")
-          console.log(messagingEvent.read)
+          console.log("mssg.read ", messagingEvent.read)
           console.log("receive mssg")
           //console.log(messagingEvent.message.text)
 
@@ -259,89 +150,6 @@ const app = async () => {
   });
 
   /*
- * This path is used for account linking. The account linking call-to-action
- * (sendAccountLinking) is pointed to this URL. 
- * 
- */
-  // app.get('/authorize', function (req, res) {
-  //   var accountLinkingToken = req.query.account_linking_token;
-  //   var redirectURI = req.query.redirect_uri;
-  //   console.log("/Authorize tokem = ", accountLinkingToken)
-  //   // Authorization Code should be generated per user by the developer. This will 
-  //   // be passed to the Account Linking callback.
-  //   var authCode = "1234567890";
-
-  //   // Redirect users to this URI on successful login
-  //   var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
-
-  //   res.render('authorize', {
-  //     accountLinkingToken: accountLinkingToken,
-  //     redirectURI: redirectURI,
-  //     redirectURISuccess: redirectURISuccess
-  //   });
-  // });
-
-
-  /*
-   * Verify that the callback came from Facebook. Using the App Secret from 
-   * the App Dashboard, we can verify the signature that is sent with each 
-   * callback in the x-hub-signature field, located in the header.
-   *
-   * https://developers.facebook.com/docs/graph-api/webhooks#setup
-   *
-   */
-  // function verifyRequestSignature(req, res, buf) {
-  //   var signature = req.headers["x-hub-signature"];
-
-  //   if (!signature) {
-  //     // For testing, let's log an error. In production, you should throw an 
-  //     // error.
-  //     console.error("Couldn't validate the signature.");
-  //   } else {
-  //     var elements = signature.split('=');
-  //     var method = elements[0];
-  //     var signatureHash = elements[1];
-
-  //     var expectedHash = crypto.createHmac('sha1', APP_SECRET)
-  //       .update(buf)
-  //       .digest('hex');
-
-  //     if (signatureHash != expectedHash) {
-  //       throw new Error("Couldn't validate the request signature.");
-  //     }
-  //   }
-  // }
-
-  /*
-   * Authorization Event
-   *
-   * The value for 'optin.ref' is defined in the entry point. For the "Send to 
-   * Messenger" plugin, it is the 'data-ref' field. Read more at 
-   * https://developers.facebook.com/docs/messenger-platform/webhook-reference/authentication
-   *
-   */
-  // function receivedAuthentication(event) {
-  //   var senderID = event.sender.id;
-  //   var recipientID = event.recipient.id;
-  //   var timeOfAuth = event.timestamp;
-
-  //   // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
-  //   // The developer can set this to an arbitrary value to associate the 
-  //   // authentication callback with the 'Send to Messenger' click event. This is
-  //   // a way to do account linking when the user clicks the 'Send to Messenger' 
-  //   // plugin.
-  //   var passThroughParam = event.optin.ref;
-
-  //   console.log("Received authentication for user %d and page %d with pass " +
-  //     "through param '%s' at %d", senderID, recipientID, passThroughParam,
-  //     timeOfAuth);
-
-  //   // When an authentication is received, we'll send a message back to the sender
-  //   // to let them know it was successful.
-  //   sendTextMessage(senderID, "Authentication successful");
-  // }
-
-  /*
    * Message Event
    *
    * This event is called when a message is sent to your page. The 'message' 
@@ -356,24 +164,24 @@ const app = async () => {
    * 
    */
   async function receivedMessage(event) {
-    var senderID = event.sender.id
-    var recipientID = event.recipient.id
-    var timeOfMessage = event.timestamp
-    var message = event.message
+    let senderID = event.sender.id
+    let recipientID = event.recipient.id
+    let timeOfMessage = event.timestamp
+    let message = event.message
 
     console.log("Received message for user %d and page %d at %d with message:",
       senderID, recipientID, timeOfMessage)
     console.log(JSON.stringify(message))
 
-    var isEcho = message.is_echo
-    var messageId = message.mid
-    var appId = message.app_id
-    var metadata = message.metadata
+    let isEcho = message.is_echo
+    let messageId = message.mid
+    let appId = message.app_id
+    let metadata = message.metadata
 
     // You may get a text or attachment but not both
-    var messageText = message.text
-    var messageAttachments = message.attachments
-    var quickReply = message.quick_reply
+    let messageText = message.text
+    let messageAttachments = message.attachments
+    let quickReply = message.quick_reply
 
     if (isEcho) {
       // Just logging message echoes to console
@@ -381,7 +189,7 @@ const app = async () => {
         messageId, appId, metadata)
       return
     } else if (quickReply) {
-      var quickReplyPayload = quickReply.payload;
+      let quickReplyPayload = quickReply.payload;
       console.log("Quick reply for mesage %s with payload %s",
         messageId, quickReplyPayload)
 
@@ -390,295 +198,97 @@ const app = async () => {
     }
 
     if (messageText) {
-      switch (messageText) {
-        case 'image':
-          sendImageMessage(senderID)
-          break
+      //TOFIX : Code review , use User and Question class
 
-        case 'gif':
-          sendGifMessage(senderID)
-          break
+      //get all question keys and save to usersData for that senderID
+      let keysLeftForThatUser = await getKeys()
+      // //get state of this user
+      user = await userClass.load(senderID)
 
-        case 'audio':
-          sendAudioMessage(senderID)
-          break
+      // //first time connect to bot, usersData is empty
+      // //let round = 0
+      if (user.state == "initialize") {
+        //set state in usersData
+        user.setState({ state, keysLeftForThatUser, "round": 0, done })
+        console.log("user initialize = ", user)
+      }
 
-        case 'video':
-          sendVideoMessage(senderID)
-          break
-
-        case 'file':
-          sendFileMessage(senderID)
-          break
-
-        case 'button':
-          sendButtonMessage(senderID)
-          break;
-
-        case 'generic':
-          sendGenericMessage(senderID)
-          break
-
-        case 'receipt':
-          sendReceiptMessage(senderID)
-          break
-
-        case 'quick reply':
-          sendQuickReply(senderID)
-          break
-
-        case 'read receipt':
-          sendReadReceipt(senderID)
-          break
-
-        case 'typing on':
-          sendTypingOn(senderID)
-          break
-
-        case 'typing off':
-          sendTypingOff(senderID)
-          break
-
-        case 'account linking':
-          sendAccountLinking(senderID)
-          break
-
-        default: {
-          //get all question keys and save to usersData for that senderID
-          let keysLeftForThatUser = await getKeys()
-
-          //get state of this user
-          let userState = await getState(senderID)
-          console.log("user state = ", userState)
-
-          //first time connect to bot, usersData is empty
-          //let round = 0
-          if (userState == "initialize") {
-            //set state in usersData
-            setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
-            //get state of the user
-            userState = await getState(senderID)
-          }
-
-          //when received welcome will setState again
-          else {
-            let tmpRound = await getState(senderID)
-            console.log("______state in else_________ = ", tmpRound)
-            let tmpDone = await getDoneFromThatUser(senderID)
-            console.log("______done in else_________ = ", tmpDone)
-            //user has been paused
-            if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-            //user has been paused for next round
-            else if (tmpRound.state == "finish") {
-              console.log("______state finish_________ = ")
-              tmpDone = 0
-              setState(senderID, { "state": "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-            }
-            //user has been playing
-            else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
-            userState = await getState(senderID)
-          }
-
-          //other users except the first user will add their profile to firebase
-          let userDetail = await getUserDetail(senderID)
-          user = userDetail
-          let firstName = user.first_name
-
-          let tmpReceivedWelcome = await getStateWelcome(senderID)
-          firebase.saveUserToFirebase(senderID, user)
-
-          console.log("______UsersData______ = ", usersData)
-          for (let userId in usersData) {
-            if (userId == senderID && !tmpReceivedWelcome) {
-              tmpReceivedWelcome = true
-              setStateWelcome(senderID, tmpReceivedWelcome)
-              console.log("UsersData receive welcome = ", usersData)
-              sendLetsQuiz(senderID, messageText, firstName)
-            }
-          }
-
-
-          //user chat with bot for the first time
-          if (userState.state.state === "initial") {
-            // if (!user) {
-            //   let userDetail = await getUserDetail(senderID)
-            //   user = userDetail
-            // }
-            // let firstName = user.first_name
-            // //sendLetsQuiz(senderID, messageText, firstName)
-            // firebase.saveUserToFirebase(senderID, user)
-          }
-
-          //when set state again, data format will change
-          //already quiz with chatbot or user come back after pause
-          else if (userState.state === "playing" || userState.state === "pause") {
-
-            let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-            console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
-
-            //get keys question that user done
-            let tmpRound = await getRoundFromThatUser(senderID)
-            let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
-            let test = await getState(senderID)
-            console.log("keyDone1 = ", keysDone)
-            console.log("test in pause/play = ", test)
-
-            //remove questions done from questions that not yet answered
-            removeKeysDone(keysLeftForThatUser, keysDone)
-            console.log("key left1 after remove= ", keysLeftForThatUser)
-
-            //if user pause -> change to playing
-            if (userState.state === "pause") {
-              console.log("_________PAUSE__________")
-              let tmpDone = await getDoneFromThatUser(senderID)
-              let tmpRound = await getRoundFromThatUser(senderID)
-              console.log("tmpRound after pause= ", tmpRound)
-              setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-            }
-            //if user playing
-            else {
-              setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
-            }
-            console.log("userData2 = ", usersData)
-
-            //shuffle keys of questions that have not answered
-            let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-            currentQuestionKey = shuffledKey
-            answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-            if (answerForEachQuestion == null) {
-              console.log("Doesn't have this id in questions database")
-              return null
-            }
-
-            //create button for that question
-            const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-            const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-            startedAt = utillArray.getMoment()
-            callSendAPI(buttonMessage)
-          }
-
+      // //when received welcome will setState again
+      else {
+        //user has been paused
+        if (user.state.state == "pause") {
+          user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
         }
+        //user has been paused for next round
+        else if (user.state.state == "finish") {
+          user.setState({ "state": "pause", keysLeftForThatUser, "round": user.state.round, "done": 0 })
+        }
+        //user has been playing
+        else {
+          user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+          console.log("user playing = ", user)
+        }
+      }
+
+      // //other users except the first user will add their profile to firebase
+      let userDetail = await getUserDetail(senderID)
+      let firstName = userDetail.first_name
+
+      let tmpReceivedWelcome = await user.getWelcome()
+      console.log("tmpReceivedWelcome = ", tmpReceivedWelcome)
+      firebase.saveUserToFirebase(senderID, userDetail)
+
+      if (!tmpReceivedWelcome) {
+        tmpReceivedWelcome = true
+        user.setStateWelcome(tmpReceivedWelcome)
+        console.log("user after welcome = ", user)
+        sendLetsQuiz(senderID, messageText, firstName)
+      }
+
+
+      // //when set state again, data format will change
+      // //already quiz with chatbot or user come back after pause
+      else if (user.state.state === "playing" || user.state.state === "pause") {
+
+        //get keys question that user done
+        let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
+
+        //remove questions done from questions that not yet answered
+        removeKeysDone(user.state.keysLeftForThatUser, keysDone)
+
+
+        //if user pause -> change to playing
+        if (user.state.state === "pause") {
+          console.log("_________PAUSE__________")
+          user.setState({ "state": "playing", "keysLeftForThatUser" : user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+        }
+        //if user playing
+        else {
+          console.log("playing")
+          console.log(user)
+        }
+
+        // //shuffle keys of questions that have not answered
+        let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
+        user.startQuiz(shuffledKey)
+        console.log("user start quiz = ", user)
+        answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+        if (answerForEachQuestion == null) {
+          console.log("Doesn't have this id in questions database")
+          return null
+        }
+        // //create button for that question
+        const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+        const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+        startedAt = utillArray.getMoment()
+        callSendAPI(buttonMessage)
+
       }
     } else if (messageAttachments) {
       sendTextMessage(senderID, "Message with attachment received")
     }
   }
 
-  // const handleReceivedMessage = async (senderID) => {
-  //   //get all question keys and save to usersData for that senderID
-  //   let keysLeftForThatUser = await getKeys()
-
-  //   //get state of this user
-  //   let userState = await getState(senderID)
-  //   console.log("user state = ", userState)
-
-  //   //first time connect to bot, usersData is empty
-  //   //let round = 0
-  //   if (userState == "initialize") {
-  //     //set state in usersData
-  //     setState(senderID, { state, keysLeftForThatUser, "round": 0, done })
-  //     //get state of the user
-  //     userState = await getState(senderID)
-  //   }
-
-  //   //when received welcome will setState again
-  //   else {
-  //     let tmpRound = await getState(senderID)
-  //     console.log("______state in else_________ = ", tmpRound)
-  //     let tmpDone = await getDoneFromThatUser(senderID)
-  //     console.log("______done in else_________ = ", tmpDone)
-
-  //     //user has been paused
-  //     if (tmpRound.state == "pause") setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-  //     //user has been paused for next round
-  //     else if (tmpRound.state == "finish") {
-  //       console.log("______state finish_________ = ")
-  //       tmpDone = 0
-  //       setState(senderID, { "state": "pause", keysLeftForThatUser, "round": tmpRound.round, "done": tmpDone })
-  //     }
-  //     //user has been playing
-  //     else setState(senderID, { state, keysLeftForThatUser, "round": tmpRound.state.round, "done": tmpDone })
-  //     userState = await getState(senderID)
-  //   }
-
-  //   //other users except the first user will add their profile to firebase
-  //   let userDetail = await getUserDetail(senderID)
-  //   user = userDetail
-  //   let firstName = user.first_name
-
-  //   let tmpReceivedWelcome = await getStateWelcome(senderID)
-  //   firebase.saveUserToFirebase(senderID, user)
-
-  //   console.log("______UsersData______ = ", usersData)
-  //   for (let userId in usersData) {
-  //     if (userId == senderID && !tmpReceivedWelcome) {
-  //       tmpReceivedWelcome = true
-  //       setStateWelcome(senderID, tmpReceivedWelcome)
-  //       console.log("UsersData receive welcome = ", usersData)
-  //       sendLetsQuiz(senderID, messageText, firstName)
-  //     }
-  //   }
-
-
-  //   //user chat with bot for the first time
-
-  //   //when set state again, data format will change
-  //   //already quiz with chatbot or user come back after pause
-  //   if (userState.state === "playing" || userState.state === "pause") {
-
-  //     let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-  //     console.log("keysLeftForThatUser in receivedMessage= ", keysLeftForThatUser)
-
-  //     //get keys question that user done
-  //     let tmpRound = await getRoundFromThatUser(senderID)
-  //     let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
-  //     let test = await getState(senderID)
-  //     console.log("keyDone1 = ", keysDone)
-  //     console.log("test in pause/play = ", test)
-
-  //     //remove questions done from questions that not yet answered
-  //     removeKeysDone(keysLeftForThatUser, keysDone)
-  //     console.log("key left1 after remove= ", keysLeftForThatUser)
-
-  //     //if user pause -> change to playing
-  //     if (userState.state === "pause") {
-  //       console.log("_________PAUSE__________")
-  //       let tmpDone = await getDoneFromThatUser(senderID)
-  //       let tmpRound = await getRoundFromThatUser(senderID)
-  //       console.log("tmpRound after pause= ", tmpRound)
-  //       setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-  //     }
-  //     //if user playing
-  //     else {
-  //       setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, done })
-  //     }
-  //     console.log("userData2 = ", usersData)
-
-  //     //shuffle keys of questions that have not answered
-  //     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-  //     currentQuestionKey = shuffledKey
-  //     answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-  //     if (answerForEachQuestion == null) {
-  //       console.log("Doesn't have this id in questions database")
-  //       return null
-  //     }
-
-  //     //create button for that question
-  //     const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-  //     const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-  //     startedAt = utillArray.getMoment()
-  //     callSendAPI(buttonMessage)
-  //   }
-  // }
-
-
-  /*
-   * Delivery Confirmation Event
-   *
-   * This event is sent to confirm the delivery of a message. Read more about 
-   * these fields at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-delivered
-   *
-   */
 
   /*
    * Postback Event
@@ -695,107 +305,82 @@ const app = async () => {
     // The 'payload' param is a developer-defined field which is set in a postback 
     // button for Structured Messages. 
     let payload = event.postback.payload
+    let payloadObj = JSON.parse(payload)
     console.log("Received postback for user %d and page %d with payload '%s' " +
-      "at %d", senderID, recipientID, payload, timeOfPostback);
+      "at %d", senderID, recipientID, payload, timeOfPostback)
 
     //check for button nextRound payload
-    if (payload == '{"nextRound":true}') {
+    if (payloadObj.nextRound === true) {
       sendTextMessage(senderID, "Next Round!")
-      let tmpRound = await getRoundFromThatUser(senderID)
-      startNextRound(senderID, tmpRound)
+      startNextRound(senderID, user.state.round)
     }
-    else if (payload == '{"nextRound":false}') {
-      //pause
-      console.log("________Pause Next Round_____")
-      let test = await getState(senderID)
-      console.log("test = ", test)
-      let tmpDone = await getDoneFromThatUser(senderID)
-      let tmpRound = await getRoundFromThatUser(senderID)
-      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      setState(senderID, { keysLeftForThatUser, "state": "finish", "done": tmpDone, "round": tmpRound })
+    else if (payloadObj.nextRound === false) {
+        //pause
+      user.setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
       sendTextMessage(senderID, "Come back when you're ready baby~")
       sendTextMessage(senderID, "Bye Bye <3")
     }
 
     //check for button next question
-    else if (payload == '{"nextQuestion":true}') {
+    else if (payloadObj.nextQuestion === true) {
       //call next question
       nextQuestion(senderID)
     }
-    else if (payload == '{"nextQuestion":false}') {
+    else if (payloadObj.nextQuestion === false) {
       //pause
       state = "pause"
-      let tmpDone = await getDoneFromThatUser(senderID)
-      let tmpRound = await getRoundFromThatUser(senderID)
-      console.log("________tmpRound________= ", tmpRound)
-      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      setState(senderID, { keysLeftForThatUser, state, "done": tmpDone, "round": tmpRound })
+      user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "done": user.state.done, "round": user.state.round })
       sendTextMessage(senderID, "Hell <3")
       sendTextMessage(senderID, "Come back when you're ready baby~")
     }
 
     //Postback for normal questions
     else {
-      //if in question state when receive postback done = done +1 
-      //number of question user answered incresae 
-      let postbackState = await getState(senderID)
-      console.log("post back getState= ", postbackState.state)
-
+      //if in playing question state when receive postback 
       //number of questions that user already done increase
-      let tmpDone = await getDoneFromThatUser(senderID)
-      console.log("post back tmpDone= ", tmpDone)
-      if (postbackState.state === "playing") tmpDone++
-      console.log("post back tmpDone after increase= ", tmpDone)
+      if (user.state.state === "playing") {
+        user.state.done++
+      }
+      console.log("user after done question= ", user)
 
-
-      //check answer and ask next question
-      let result = checkAnswer(payload, answerForEachQuestion)
+      // //check answer and ask next question
+      let result = checkAnswer(payloadObj, answerForEachQuestion)
 
       //send to calculate grade and score for summary
       let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
       let totalScore = summary.calculateTotalScore(numberOfQuestions)
-      let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(JSON.parse(payload).point, result, duration) //point for that question 
+      let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(payloadObj.point, result, duration) //point for that question 
       userScore += scoreOfThatQuestion
       let grade = summary.calculateGrade(totalScore, userScore)
- 
 
-      // answer Correct
+      // // answer Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
-        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt,
-          timeOfPostback, scoreOfThatQuestion, senderID)
+        let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
+                                      result, startedAt,timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
       //answer Wrong
       else {
         sendTextMessage(senderID, "Bad dog!")
-        let preparedResult = await prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt,
-          timeOfPostback, scoreOfThatQuestion, senderID)
+        let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
+                                      result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
 
-
-
-      //keys = removeKeyThatAsked(currentQuestionKey)
-      let tmpRound = await getRoundFromThatUser(senderID)
-      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      console.log("key left2= ", keysLeftForThatUser)
-      let keysDone = await firebase.getQuestionDone(senderID, tmpRound)
-      console.log("keyDone2 = ", keysDone)
-      removeKeysDone(keysLeftForThatUser, keysDone)
-      console.log("key left2 after remove= ", keysLeftForThatUser)
-      setState(senderID, { "state": "playing", keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-      console.log("userData4 = ", usersData)
-
-
+      let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
+      removeKeysDone(user.state.keysLeftForThatUser, keysDone)
+      user.setState({
+        "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round,
+        "done": user.state.done
+      })
 
       //prepare summary object to save in firebase
-      tmpDone = await getDoneFromThatUser(senderID)
-      let preparedSummary = summary.prepareSummary(tmpDone, numberOfQuestions, keysLeftForThatUser, tmpRound, skill, grade, userScore, totalScore)
-      console.log("summary = ", preparedSummary)
+      let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
+        user.state.round, skill, grade, userScore, totalScore)
       firebase.saveSummaryToFirebase(senderID, preparedSummary)
-      console.log("_______keysLeftForThatUser______ = ", keysLeftForThatUser)
-
+      console.log("_______keysLeftForThatUser______ = ", user.state.keysLeftForThatUser)
+      let keysLeftForThatUser = user.state.keysLeftForThatUser
 
 
       //ask whether user ready to play next question 
@@ -808,73 +393,39 @@ const app = async () => {
       else {
         nextQuestion(senderID)
       }
-
-
     }
 
   }
 
   function checkAnswer(payload, answerForEachQuestion) {
-    let userAnswerStr = payload
-    let userAnswerObj = JSON.parse(userAnswerStr)
-    console.log("check ansforeachQ = ", answerForEachQuestion)
-    console.log("check ans that user choose  = ", userAnswerObj)
     //the correct answer is always in first element of answers in json file
-    if (userAnswerObj.answer == answerForEachQuestion[0]) return true
+    if (payload.answer == answerForEachQuestion[0]) return true
     else return false
 
   }
 
-  //set format of the result we want to save in firebase
-  async function prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID) {
-    //in payload contain answer, question key, point
-    let prepareObj = []
-    //parse string to object
-    let userAnswerObj = JSON.parse(payload)
-    let doneAt = utillArray.getFormattedDate(timeOfPostback)
-    let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
-    let round = await getRoundFromThatUser(senderID)
-    //add key to userAnswerObj
-    userAnswerObj.result = result
-    userAnswerObj.doneAt = doneAt
-    userAnswerObj.startedAt = startedAt
-    userAnswerObj.duration = duration
-    userAnswerObj.round = round
-    userAnswerObj.score = scoreOfThatQuestion
-    prepareObj.push(userAnswerObj)
-    console.log("result = ", prepareObj)
-    return prepareObj
-  }
-
   async function nextQuestion(senderID) {
-    let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-    console.log("keysLeftForThatUser in nextQuestion after delete = ", keysLeftForThatUser)
-    let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
+    //TOFIX: user class
+    let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
 
     //define current key = key of question about to ask
     currentQuestionKey = keyOfNextQuestion
-    console.log("keyOfNextQuestion in nextQuestion = ", keyOfNextQuestion)
 
     //no question left
     //finish that round
     if (keyOfNextQuestion == null) {
       sendTextMessage(senderID, "Finish!")
       state = "finish"
+      user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
 
-      let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-      let tmpRound = await getRoundFromThatUser(senderID)
-      let tmpDone = await getDoneFromThatUser(senderID)
-      setState(senderID, { state, keysLeftForThatUser, "round": tmpRound, "done": tmpDone })
-      console.log("set state after = ", usersData)
       done = 0
       userScore = 0
 
-      nextRound(senderID, tmpRound, tmpDone, numberOfQuestions)
+      nextRound(senderID, user.state.round, user.state.done, numberOfQuestions)
     }
 
     //still has questions not answered
     else {
-
       answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
 
       //no key that matched question
@@ -892,15 +443,8 @@ const app = async () => {
     }
   }
 
-  //delete key of question that already asked
-  function removeKeyThatAsked(currentQuestionKey) {
-    utillArray._.remove(keys, function (key) {
-      return key === currentQuestionKey
-    })
-    return keys
-  }
-
   //remove array from array
+  //remove questions'keys that already done 
   const removeKeysDone = (keys, keysDone) => {
     utillArray._.pullAll(keys, keysDone)
   }
@@ -910,8 +454,7 @@ const app = async () => {
     //then that round is complete -> round increase 
     if (done == numberOfQuestions) {
       round++
-      setRound(senderID, round)
-      console.log("usersData in nextRound= ", usersData)
+      user.setRound(round)
     }
     //create button ask for next round
     let buttonMessage = createButton.createButtonNextRound(senderID)
@@ -923,8 +466,7 @@ const app = async () => {
     //reset state = playing
     state = "playing"
     let keysLeftForThatUser = await getKeys()
-    console.log("keysLeftForThatUser next round = ", keysLeftForThatUser)
-    setState(senderID, { state, keysLeftForThatUser, round, "done": 0 })
+    user.setState({ state, keysLeftForThatUser, round, "done": 0 })
 
     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     currentQuestionKey = shuffledKey
@@ -943,165 +485,11 @@ const app = async () => {
   }
 
   /*
-   * Message Read Event
-   *
-   * This event is called when a previously-sent message has been read.
-   * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
-   * 
-   */
-  function receivedMessageRead(event) {
-    var senderID = event.sender.id
-    var recipientID = event.recipient.id
-
-    // All messages before watermark (a timestamp) or sequence have been seen.
-    var watermark = event.read.watermark
-    var sequenceNumber = event.read.seq
-
-    console.log("Received message read event for watermark %d and sequence " +
-      "number %d", watermark, sequenceNumber)
-  }
-
-
-
-  /*
-   * Account Link Event
-   *
-   * This event is called when the Link Account or UnLink Account action has been
-   * tapped.
-   * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
-   * 
-   */
-  async function receivedAccountLink(event) {
-    var senderID = event.sender.id
-    console.log("account linking token= ", event.account_linking_token)
-    var recipientID = event.recipient.id
-
-    var status = event.account_linking.status
-    var authCode = event.account_linking.authorization_code
-
-    console.log("Received account link event with for user %d with status %s " +
-      "and auth code %s ", senderID, status, authCode);
-
-    let resultPSID = await getUserPSID(senderID)
-    console.log("result in receivedAccountLink = ", resultPSID)
-  }
-
-  // /*
-  //  * Send an image using the Send API.
-  //  *
-  //  */
-  // function sendImageMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "image",
-  //         payload: {
-  //           url: SERVER_URL + "/assets/rift.png"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  // /*
-  //  * Send a Gif using the Send API.
-  //  *
-  //  */
-  // function sendGifMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "image",
-  //         payload: {
-  //           url: "https://static1.squarespace.com/static/572f8a5622482e952ab4082a/572f8c43859fd009b4395fef/572f8c60f8baf3257a30aac7/1462733922260/quicksilver+blue.gif?format=300w"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData)
-  // }
-
-  /*
-   * Send audio using the Send API.
-   *
-   */
-  // function sendAudioMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "audio",
-  //         payload: {
-  //           url: SERVER_URL + "/assets/sample.mp3"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData)
-  // }s
-
-  // /*
-  //  * Send a video using the Send API.
-  //  *
-  //  */
-  // function sendVideoMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "video",
-  //         payload: {
-  //           url: SERVER_URL + "/assets/allofus480.mov"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  // /*
-  //  * Send a file using the Send API.
-  //  *
-  //  */
-  // function sendFileMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "file",
-  //         payload: {
-  //           url: SERVER_URL + "/assets/test.txt"
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  /*
    * Send a text message using the Send API.
    *
    */
   function sendTextMessage(recipientId, messageText) {
-    var messageData = {
+    let messageData = {
       recipient: {
         id: recipientId
       },
@@ -1109,184 +497,11 @@ const app = async () => {
         text: messageText,
         metadata: "DEVELOPER_DEFINED_METADATA"
       }
-    };
-
-
-    callSendAPI(messageData)
-  }
-
-  /*
-   * Send a button message using the Send API.
-   *
-   */
-  function sendButtonMessage(recipientId) {
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: "What are you?",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.oculus.com/en-us/rift/",
-              title: "Dog"
-            }, {
-              type: "postback",
-              title: "Cat",
-              payload: "DEVELOPER_DEFINED_PAYLOAD"
-            }, {
-              type: "phone_number",
-              title: "Meow",
-              payload: "+16505551234"
-            }]
-          }
-        }
-      }
-    };
+    }
 
     callSendAPI(messageData)
   }
 
-
-
-
-  /*
-   * Send a Structured Message (Generic Message type) using the Send API.
-   *
-   */
-  // function sendGenericMessage(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "template",
-  //         payload: {
-  //           template_type: "generic",
-  //           elements: [{
-  //             title: "rift",
-  //             subtitle: "Next-generation virtual reality",
-  //             item_url: "https://www.oculus.com/en-us/rift/",               
-  //             image_url: SERVER_URL + "/assets/rift.png",
-  //             buttons: [{
-  //               type: "web_url",
-  //               url: "https://www.oculus.com/en-us/rift/",
-  //               title: "Open Web URL"
-  //             }, {
-  //               type: "postback",
-  //               title: "Call Postback",
-  //               payload: "Payload for first bubble",
-  //             }],
-  //           }, {
-  //             title: "touch",
-  //             subtitle: "Your Hands, Now in VR",
-  //             item_url: "https://www.oculus.com/en-us/touch/",               
-  //             image_url: SERVER_URL + "/assets/touch.png",
-  //             buttons: [{
-  //               type: "web_url",
-  //               url: "https://www.oculus.com/en-us/touch/",
-  //               title: "Open Web URL"
-  //             }, {
-  //               type: "postback",
-  //               title: "Call Postback",
-  //               payload: "Payload for second bubble",
-  //             }]
-  //           }]
-  //         }
-  //       }
-  //     }
-  //   };  
-
-  //   callSendAPI(messageData);
-  // }
-
- 
-  // /*
-  //  * Send a message with Quick Reply buttons.
-  //  *
-  //  */
-  // function sendQuickReply(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       text: "What's your favorite movie genre?",
-  //       quick_replies: [
-  //         {
-  //           "content_type":"text",
-  //           "title":"Action",
-  //           "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_ACTION"
-  //         },
-  //         {
-  //           "content_type":"text", 
-  //           "title":"Comedy",
-  //           "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_COMEDY"
-  //         },
-  //         {
-  //           "content_type":"text",
-  //           "title":"Drama",
-  //           "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRAMA"
-  //         }
-  //       ]
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  // /*
-  //  * Send a read receipt to indicate the message has been read
-  //  *
-
-  // /*
-  //  * Turn typing indicator off
-  //  *
-  //  */
-  // function sendTypingOff(recipientId) {
-  //   console.log("Turning typing indicator off");
-
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     sender_action: "typing_off"
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
-
-  /*
-   * Send a message with the account linking call-to-action
-   *
-   */
-  // function sendAccountLinking(recipientId) {
-  //   var messageData = {
-  //     recipient: {
-  //       id: recipientId
-  //     },
-  //     message: {
-  //       attachment: {
-  //         type: "template",
-  //         payload: {
-  //           template_type: "button",
-  //           text: "Welcome. Link your account.",
-  //           buttons: [{
-  //             type: "account_link",
-  //             url: SERVER_URL + "/authorize"
-  //           }]
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   callSendAPI(messageData);
-  // }
 
   /*
    * Call the Send API. The message data goes in the body. If successful, we'll 
@@ -1294,7 +509,6 @@ const app = async () => {
    *
    */
   function callSendAPI(messageData) {
-    //startedAt = utillArray.getMoment() //get started time
     request({
       uri: 'https://graph.facebook.com/v2.6/me/messages',
       qs: { access_token: PAGE_ACCESS_TOKEN },
@@ -1304,8 +518,8 @@ const app = async () => {
     },
       (error, response, body) => {
         if (!error && response.statusCode == 200) {
-          var recipientId = body.recipient_id
-          var messageId = body.message_id
+          let recipientId = body.recipient_id
+          let messageId = body.message_id
 
           if (messageId) {
             console.log("Successfully sent message with id %s to recipient %s",
@@ -1323,7 +537,7 @@ const app = async () => {
 
   //Greeting message
   function setGreetingText() {
-    var greetingData = {
+    let greetingData = {
       setting_type: "greeting",
       greeting: {
         text: "Welcome to QuizChatbot!"
@@ -1351,7 +565,7 @@ const app = async () => {
 
 
   async function sendLetsQuiz(recipientId, messageText, firstName) {
-    var messageData = {
+    let messageData = {
       recipient: {
         id: recipientId
       },
@@ -1372,10 +586,7 @@ const app = async () => {
     console.log('Node app is running on port', app.get('port'))
     setGreetingText()
   })
-
-  module.exports = app
-
-
 }
 
-app()
+module.exports = app
+

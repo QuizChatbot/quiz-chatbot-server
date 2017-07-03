@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">28.57% </span>
+        <span class="strong">76.92% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>14/49</span>
+        <span class='fraction'>40/52</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">16.67% </span>
+        <span class="strong">90.63% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>5/30</span>
+        <span class='fraction'>29/32</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">50% </span>
+        <span class="strong">75% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>2/4</span>
+        <span class='fraction'>3/4</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">34.29% </span>
+        <span class="strong">70.27% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>12/35</span>
+        <span class='fraction'>26/37</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line medium'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -92,9 +92,13 @@
 47
 48
 49
-50</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+50
+51
+52</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -124,24 +128,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">const prepareSummary = <span class="fstat-no" title="function not covered" >(d</span>one, keys, round, skill, grade, score, totalScore) =&gt; {
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">const prepareSummary = <span class="fstat-no" title="function not covered" >(d</span>one, numberOfQuestions,keys, round, skill, grade, score, totalScore) =&gt; {
     let summaryObj = <span class="cstat-no" title="statement not covered" >{}</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    summaryObj.done = done</span>
@@ -151,13 +155,15 @@
 <span class="cstat-no" title="statement not covered" >    summaryObj.grade = grade</span>
 <span class="cstat-no" title="statement not covered" >    summaryObj.score = score</span>
 <span class="cstat-no" title="statement not covered" >    summaryObj.totalScore = totalScore</span>
+<span class="cstat-no" title="statement not covered" >    if(done == numberOfQuestions)   <span class="cstat-no" title="statement not covered" >summaryObj.isDone = true</span></span>
+    else    <span class="cstat-no" title="statement not covered" >summaryObj.isDone = false</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return summaryObj</span>
 }
 //score for one question that user just answered 
 const calculateScoreForThatQuestion = (point, result, duration) =&gt; {
     let score = 0
-    //Correct
+    //If answer correctly
     if (result) {
         if (duration &lt;= 60000) score = point + 5 //answer within 1 min
         else <span class="missing-if-branch" title="else path not taken" >E</span>if (duration &gt; 60000) score = point + 3 //answer not within 1 min
@@ -171,23 +177,23 @@ const calculateTotalScore = (totalQuestions) =&gt; {
     return totalScore
 }
 &nbsp;
-const calculateGrade = <span class="fstat-no" title="function not covered" >(t</span>otalScore, userScore) =&gt; {
+const calculateGrade = (totalScore, userScore) =&gt; {
     let grade
-<span class="cstat-no" title="statement not covered" >    if (userScore &gt;= totalScore * 86 / 100) <span class="cstat-no" title="statement not covered" >grade = 'A+'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 83 / 100) <span class="cstat-no" title="statement not covered" >grade = 'A'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 80 / 100) <span class="cstat-no" title="statement not covered" >grade = 'A-'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 76 / 100) <span class="cstat-no" title="statement not covered" >grade = 'B+'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 73 / 100) <span class="cstat-no" title="statement not covered" >grade = 'B'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 70 / 100) <span class="cstat-no" title="statement not covered" >grade = 'B-'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 66 / 100) <span class="cstat-no" title="statement not covered" >grade = 'C+'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 63 / 100) <span class="cstat-no" title="statement not covered" >grade = 'C'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 60 / 100) <span class="cstat-no" title="statement not covered" >grade = 'C-'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 56 / 100) <span class="cstat-no" title="statement not covered" >grade = 'D+'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 53 / 100) <span class="cstat-no" title="statement not covered" >grade = 'D'</span></span>
-    else <span class="cstat-no" title="statement not covered" >if (userScore &gt;= totalScore * 50 / 100) <span class="cstat-no" title="statement not covered" >grade = 'D-'</span></span>
-    else <span class="cstat-no" title="statement not covered" >grade = 'F'</span>
+    if (userScore &gt;= totalScore * 86 / 100) grade = 'A+'
+    else if (userScore &gt;= totalScore * 83 / 100) grade = 'A'
+    else if (userScore &gt;= totalScore * 80 / 100) grade = 'A-'
+    else if (userScore &gt;= totalScore * 76 / 100) grade = 'B+'
+    else if (userScore &gt;= totalScore * 73 / 100) grade = 'B'
+    else if (userScore &gt;= totalScore * 70 / 100) grade = 'B-'
+    else if (userScore &gt;= totalScore * 66 / 100) grade = 'C+'
+    else if (userScore &gt;= totalScore * 63 / 100) grade = 'C'
+    else if (userScore &gt;= totalScore * 60 / 100) grade = 'C-'
+    else if (userScore &gt;= totalScore * 56 / 100) grade = 'D+'
+    else if (userScore &gt;= totalScore * 53 / 100) grade = 'D'
+    else if (userScore &gt;= totalScore * 50 / 100) grade = 'D-'
+    else grade = 'F'
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return grade</span>
+    return grade
 }
 &nbsp;
 module.exports = { prepareSummary, calculateTotalScore, calculateGrade, calculateScoreForThatQuestion }</pre></td></tr>
@@ -196,7 +202,7 @@ module.exports = { prepareSummary, calculateTotalScore, calculateGrade, calculat
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed Jun 28 2017 19:15:50 GMT+0700 (SE Asia Standard Time)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Jun 30 2017 14:24:51 GMT+0700 (SE Asia Standard Time)
 </div>
 </div>
 <script src="prettify.js"></script>

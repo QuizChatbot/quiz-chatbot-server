@@ -1,10 +1,11 @@
 const firebase = require('./firebase.js')
-
+const utillArray = require('./utill_array')
 
 const createButtonFromQuestionId = async (id) => {
   let question = await firebase.getQuestionFromId(id)
   console.log("questions in createButtonFromQuestionId = ", question)
-  let choices = question.choices
+  //shuffle choices
+  let choices = utillArray.shuffleChoices(question.choices)
   console.log("choices in createButtonFromQuestionId = ", choices)
   //push key and value to button 
   //but we will delete the 'subject' and 'question' key later'
@@ -34,7 +35,7 @@ const createButtonFromQuestionId = async (id) => {
     delete buttons.subject
     delete buttons.question
 
-    var messageData = {
+    let messageData = {
       recipient: {
         id: recipientId
       },
