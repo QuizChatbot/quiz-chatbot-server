@@ -9,7 +9,7 @@ export function addQuiz(quiz) {
       choices: [quiz.choice_0, quiz.choice_1, quiz.choice_2],
       owner: "5LrhuhQtqDfempxq8B9zGpqiiK42",
       skills: "es6",
-      point: 10,
+      point: 15,
       createdAt: Date(),
       updatedAt: Date(),
     })
@@ -22,25 +22,27 @@ export function deleteQuiz(id) {
 
 export function editQuiz(id, quiz, isChoice) {
   return () => {
-    isChoice ? firedux.update(`Quests/${id}/choices`, quiz) : firedux.update(`Quests/${id}`, quiz)
-    firedux.update(`Quests/${id}`, { updatedAt: Date() })
+    isChoice ?
+      firedux.update(`Quests/${id}/choices`, quiz)
+      : firedux.update(`Quests/${id}`, quiz)
+    firedux.update(`Quests/${id}`, {
+      updatedAt: Date()
+    })
   }
 }
 
 export function login() {
   return (dispatch) => {
-    firedux.login().then(res => {
+    firedux.login().then(() => {
       dispatch({ type: 'auth/complete' })
-      // firedux.watch('Quests').then(() => getQuest())
       firedux.watch('Quests').then(() => getQuest())
-      // dispatch({ type: 'quest/set-quest-data' })
     })
   }
 }
 
 export function logout() {
   return (dispatch) => {
-    firedux.logout().then(res => {
+    firedux.logout().then(() => {
       dispatch({ type: 'auth/fail' })
     })
   }
@@ -52,7 +54,6 @@ export function init() {
       if (res) {
         dispatch({ type: 'auth/complete' })
         firedux.watch('Quests').then(() => getQuest())
-        // dispatch({ type: 'quest/set-quest-data' })
       }
     })
   }
@@ -61,20 +62,14 @@ export function init() {
 export function getQuest() {
   return (dispatch, getState) => {
     const state = getState()
-    console.log("getQuest state=", state)
     let quests = []
     getQuests(state.firedux.data).then(questData => {
       quests = questData
-      console.log("questData=", questData)
     }).then(() => {
       dispatch({ type: 'quest/set-quest-data', data: quests })
     })
   }
 }
-
-// function isOwner(uid, quest, index, array) {
-//   return quest.owner == uid
-// }
 
 function getQuests(data) {
   return new Promise((resolve, reject) => {
@@ -91,7 +86,9 @@ export function getDeveloper() {
     let developers = []
     getDevelopers(state.firedux.data).then(devs => {
       developers = []
-      devs.map(developer => { setDeveloperData(developers, developer) })
+      devs.map(developer => {
+        setDeveloperData(developers, developer)
+      })
     }).then(() => {
       developers.sort((a, b) => { return b.maxSummary.score - a.maxSummary.score });
     }).then(() => {

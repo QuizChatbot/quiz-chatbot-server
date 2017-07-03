@@ -9,24 +9,12 @@ class MainSectionQuiz extends Component {
     super(props, context)
   }
 
-  // getQuests() {
-  //   let { Quests } = this.props.firedux.data
-  //   return firebaseToArray(Quests)
-  // }
-
-  // renderFooterQuiz(completedCount) {
-  //   let quests = this.getQuests()
-  //   const activeCount = quests.length - completedCount
-  // if (quests.length) {
-  //   return (<FooterQuiz activeCount={activeCount} />)
-  // }
-  // }
+  renderFooterQuiz(quizCount) {
+    return (<FooterQuiz quizCount={quizCount} />)
+  }
 
   render() {
     const { actions } = this.props
-    // let quests = this.getQuests()
-    // quests.sort(function (a, b) { return (b.updatedAt > a.updatedAt) ? 1 : ((a.updatedAt > b.updatedAt) ? -1 : 0); })
-    // const completedCount = quests.reduce((count, quest) => quest.completed ? count + 1 : count, 0)
 
     return (
       <section className="main">
@@ -35,12 +23,13 @@ class MainSectionQuiz extends Component {
             ? (<div>No Quizzes</div>)
             : (<ul className="todo-list">
               {this.props.quests.map(quest =>
-                <QuizItem key={quest.id} quest={quest} {...actions} />)}
+                <QuizItem key={quest.id} quest={quest} {...actions} />
+              )}
+              {this.renderFooterQuiz(this.props.quests.length)}
             </ul>))
         }
       </section>
     )
-    // {this.renderFooterQuiz(completedCount)}
   }
 }
 

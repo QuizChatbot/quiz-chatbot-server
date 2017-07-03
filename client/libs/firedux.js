@@ -126,21 +126,11 @@ export default class Firedux {
   }
   init() {
     const { dispatch } = this
-    // const that = this
     return new Promise((resolve, reject) => {
       if (this.v3) {
         const auth = this.auth()
         auth.onAuthStateChanged(user => {
           if (user) {
-            // let authData = {
-            //   credential: {
-            //     provider: "facebook.com",
-            //     providerId: "facebook.com"
-            //   },
-            //   operationType: "signIn",
-            //   user: user
-            // }
-            // console.log("authData=", authData)
             dispatch({
               type: 'FIREBASE_VALIDATE_USER',
               uid: user.uid,
@@ -149,25 +139,8 @@ export default class Firedux {
             })
             resolve(user)
           }
-          // else {
-          //   dispatch({ type: 'FIREBASE_VALIDATE_USER', authData: null, authError: null })
-          //   reject(new Error('FIREBASE_LOGOUT'))
-          // }
         })
       }
-
-      // console.log("after this.v3")
-
-      // listen for auth changes
-      // if (isFunction(this.ref.onAuth)) {
-      //   this.ref.onAuth(function (authData) {
-      //     if (!authData) {
-      //       dispatch({ type: 'FIREBASE_VALIDATE_USER', authData: null, authError: null })
-      //       reject(new Error('FIREBASE_LOGOUT'))
-      //     }
-      //     resolve(authData)
-      //   })
-      // }
     })
   }
   login() {
