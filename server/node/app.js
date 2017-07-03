@@ -250,9 +250,6 @@ const app = async () => {
       // //already quiz with chatbot or user come back after pause
       else if (user.state.state === "playing" || user.state.state === "pause") {
 
-        // let keysLeftForThatUser = await getKeysLeftForThatUser(senderID)
-    
-
         //get keys question that user done
         let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
 
@@ -309,7 +306,6 @@ const app = async () => {
     // button for Structured Messages. 
     let payload = event.postback.payload
     let payloadObj = JSON.parse(payload)
-    console.log("payloadOBJ = ", payloadObj)
     console.log("Received postback for user %d and page %d with payload '%s' " +
       "at %d", senderID, recipientID, payload, timeOfPostback)
 
@@ -379,8 +375,6 @@ const app = async () => {
         "done": user.state.done
       })
 
-
-
       //prepare summary object to save in firebase
       let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
         user.state.round, skill, grade, userScore, totalScore)
@@ -449,15 +443,8 @@ const app = async () => {
     }
   }
 
-  //delete key of question that already asked
-  function removeKeyThatAsked(currentQuestionKey) {
-    utillArray._.remove(keys, function (key) {
-      return key === currentQuestionKey
-    })
-    return keys
-  }
-
   //remove array from array
+  //remove questions'keys that already done 
   const removeKeysDone = (keys, keysDone) => {
     utillArray._.pullAll(keys, keysDone)
   }
