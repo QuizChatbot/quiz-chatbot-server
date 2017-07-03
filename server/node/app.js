@@ -105,12 +105,6 @@ const app = async () => {
   //occur when user send something to bot
   app.post('/webhook', (req, res) => {
 
-    // //get all question keys and save to usersData for that senderID
-    //   let keysLeftForThatUser = await getKeys()
-    //   // //get state of this user
-    //   let user = await userClass.load(senderID)
-    console.log("Req = ", req)
-    console.log("req.body = ", req.body)
     let data = req.body
     // Make sure this is a page subscription
     if (data.object == 'page') {
@@ -122,23 +116,24 @@ const app = async () => {
 
         // Iterate over each messaging event
         pageEntry.messaging.forEach(messagingEvent => {
-          console.log("mssg event = ", messagingEvent)
-          console.log("optin = ", messagingEvent.optin)
-
           console.log("recieve mssg read")
           console.log("mssg.read ", messagingEvent.read)
           console.log("receive mssg")
-          //console.log(messagingEvent.message.text)
+
+          //get all question keys and save to usersData for that senderID
+          let keysLeftForThatUser = await getKeys()
+          // //get state of this user
+          let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser)
 
 
           if (messagingEvent.optin) {
             receivedAuthentication(messagingEvent)
           } else if (messagingEvent.message) {
-            receivedMessage(messagingEvent)
+            receivedMessage(messagingEvent, user)
           } else if (messagingEvent.delivery) {
             receivedDeliveryConfirmation(messagingEvent);
           } else if (messagingEvent.postback) {
-            receivedPostback(messagingEvent)
+            receivedPostback(messagingEvent, user)
           } else if (messagingEvent.read) {
             receivedMessageRead(messagingEvent)
           } else if (messagingEvent.account_linking) {
@@ -171,11 +166,12 @@ const app = async () => {
    * then we'll simply confirm that we've received the attachment.
    * 
    */
-  async function receivedMessage(event) {
+  async function receivedMessage(event, user) {
     let senderID = event.sender.id
     let recipientID = event.recipient.id
     let timeOfMessage = event.timestamp
     let message = event.message
+    console.log("user test = ", user)
 
     console.log("Received message for user %d and page %d at %d with message:",
       senderID, recipientID, timeOfMessage)
@@ -268,7 +264,7 @@ const app = async () => {
         //if user pause -> change to playing
         if (user.state.state === "pause") {
           console.log("_________PAUSE__________")
-          user.setState({ "state": "playing", "keysLeftForThatUser" : user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+          user.setState({ "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
         }
         //if user playing
         else {
@@ -305,11 +301,11 @@ const app = async () => {
    * https://developers.facebook.com/docs/messenger-platform/webhook-reference/postback-received
    * 
    */
-  async function receivedPostback(event) {
+  async function receivedPostback(event, user) {
     let senderID = event.sender.id
     let recipientID = event.recipient.id
     let timeOfPostback = event.timestamp
-
+    console.log("user test 2 = ", user)
     // The 'payload' param is a developer-defined field which is set in a postback 
     // button for Structured Messages. 
     let payload = event.postback.payload
@@ -323,7 +319,7 @@ const app = async () => {
       startNextRound(senderID, user.state.round)
     }
     else if (payloadObj.nextRound === false) {
-        //pause
+      //pause
       user.setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
       sendTextMessage(senderID, "Come back when you're ready baby~")
       sendTextMessage(senderID, "Bye Bye <3")
@@ -365,14 +361,14 @@ const app = async () => {
       if (result) {
         sendTextMessage(senderID, "Good dog!")
         let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
-                                      result, startedAt,timeOfPostback, scoreOfThatQuestion, senderID)
+          result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
       //answer Wrong
       else {
         sendTextMessage(senderID, "Bad dog!")
         let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
-                                      result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID)
+          result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
 

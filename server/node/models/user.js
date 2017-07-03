@@ -3,14 +3,21 @@ const api = require('../localUserAPI')
 let usersData = {}
 let usersWelcome = {}
 
-const load = async (senderId) => {
-  return new User(senderId, await api.getState(senderId))
+const oldState = await api.getState(senderId)
+
+const load = async (senderId, keys) => {
+    if(usersData.hasOwnProperty(senderId)){
+        return usersData[senderId]
+    }
+  else{
+      return new User(senderId, oldState || {state : "initial", done : 0, round : 0, keysLeftForThatUser : keys}
+  }
 }
 
 class User {
-    constructor(senderId, initialState) {
+    constructor(senderId, state) {
         this.senderId = senderId
-        this.state = initialState
+        this.state = state
     }
 
     setState(newState) {
