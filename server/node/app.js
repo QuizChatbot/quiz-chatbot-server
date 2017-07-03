@@ -171,8 +171,6 @@ const app = async () => {
     let recipientID = event.recipient.id
     let timeOfMessage = event.timestamp
     let message = event.message
-     console.log("____receive____")
-    console.log("user test = ", user)
 
     console.log("Received message for user %d and page %d at %d with message:",
       senderID, recipientID, timeOfMessage)
@@ -188,109 +186,169 @@ const app = async () => {
     let messageAttachments = message.attachments
     let quickReply = message.quick_reply
 
-    if (isEcho) {
-      // Just logging message echoes to console
-      console.log("Received echo for message %s and app %d with metadata %s",
-        messageId, appId, metadata)
-      return
-    } else if (quickReply) {
-      let quickReplyPayload = quickReply.payload;
-      console.log("Quick reply for mesage %s with payload %s",
-        messageId, quickReplyPayload)
-
-      sendTextMessage(senderID, "Quick reply tapped");
-      return
-    }
-
     if (messageText) {
-      //TOFIX : Code review , use User and Question class
+      handleReceivedMessage(user, messageText)
+      // //TOFIX : Code review , use User and Question class
 
-      //get all question keys and save to usersData for that senderID
-      let keysLeftForThatUser = await getKeys()
-      // //get state of this user
-      let user = await userClass.load(senderID)
+      // // //first time connect to bot, usersData is empty
+      // // //let round = 0
+      // if (user.state == "initialize") {
+      //   //set state in usersData
+      //   user.setState({ state, keysLeftForThatUser, "round": 0, done })
+      //   console.log("user initialize = ", user)
+      // }
 
-      // //first time connect to bot, usersData is empty
-      // //let round = 0
-      if (user.state == "initialize") {
-        //set state in usersData
-        user.setState({ state, keysLeftForThatUser, "round": 0, done })
-        console.log("user initialize = ", user)
-      }
+      // // //when received welcome will setState again
+      // else {
+      //   //user has been paused
+      //   if (user.state.state == "pause") {
+      //     user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+      //   }
+      //   //user has been paused for next round
+      //   else if (user.state.state == "finish") {
+      //     user.setState({ "state": "pause", keysLeftForThatUser, "round": user.state.round, "done": 0 })
+      //   }
+      //   //user has been playing
+      //   else {
+      //     user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+      //     console.log("user playing = ", user)
+      //   }
+      // }
 
-      // //when received welcome will setState again
-      else {
-        //user has been paused
-        if (user.state.state == "pause") {
-          user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-        }
-        //user has been paused for next round
-        else if (user.state.state == "finish") {
-          user.setState({ "state": "pause", keysLeftForThatUser, "round": user.state.round, "done": 0 })
-        }
-        //user has been playing
-        else {
-          user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-          console.log("user playing = ", user)
-        }
-      }
+      // // //other users except the first user will add their profile to firebase
+      // let userDetail = await getUserDetail(senderID)
+      // let firstName = userDetail.first_name
 
-      // //other users except the first user will add their profile to firebase
-      let userDetail = await getUserDetail(senderID)
-      let firstName = userDetail.first_name
+      // let tmpReceivedWelcome = await user.getWelcome()
+      // console.log("tmpReceivedWelcome = ", tmpReceivedWelcome)
+      // firebase.saveUserToFirebase(senderID, userDetail)
 
-      let tmpReceivedWelcome = await user.getWelcome()
-      console.log("tmpReceivedWelcome = ", tmpReceivedWelcome)
-      firebase.saveUserToFirebase(senderID, userDetail)
-
-      if (!tmpReceivedWelcome) {
-        tmpReceivedWelcome = true
-        user.setStateWelcome(tmpReceivedWelcome)
-        console.log("user after welcome = ", user)
-        sendLetsQuiz(senderID, messageText, firstName)
-      }
+      // if (!tmpReceivedWelcome) {
+      //   tmpReceivedWelcome = true
+      //   user.setStateWelcome(tmpReceivedWelcome)
+      //   console.log("user after welcome = ", user)
+      //   sendLetsQuiz(senderID, messageText, firstName)
+      // }
 
 
-      // //when set state again, data format will change
-      // //already quiz with chatbot or user come back after pause
-      else if (user.state.state === "playing" || user.state.state === "pause") {
+      // // //when set state again, data format will change
+      // // //already quiz with chatbot or user come back after pause
+      // else if (user.state.state === "playing" || user.state.state === "pause") {
 
-        //get keys question that user done
-        let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
+      //   //get keys question that user done
+      //   let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
 
-        //remove questions done from questions that not yet answered
-        removeKeysDone(user.state.keysLeftForThatUser, keysDone)
+      //   //remove questions done from questions that not yet answered
+      //   removeKeysDone(user.state.keysLeftForThatUser, keysDone)
 
 
-        //if user pause -> change to playing
-        if (user.state.state === "pause") {
-          console.log("_________PAUSE__________")
-          user.setState({ "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-        }
-        //if user playing
-        else {
-          console.log("playing")
-          console.log(user)
-        }
+      //   //if user pause -> change to playing
+      //   if (user.state.state === "pause") {
+      //     console.log("_________PAUSE__________")
+      //     user.setState({ "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+      //   }
+      //   //if user playing
+      //   else {
+      //     console.log("playing")
+      //     console.log(user)
+      //   }
 
-        // //shuffle keys of questions that have not answered
-        let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-        user.startQuiz(shuffledKey)
-        console.log("user start quiz = ", user)
-        answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-        if (answerForEachQuestion == null) {
-          console.log("Doesn't have this id in questions database")
-          return null
-        }
-        // //create button for that question
-        const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-        const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-        startedAt = utillArray.getMoment()
-        callSendAPI(buttonMessage)
+      //   // //shuffle keys of questions that have not answered
+      //   let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
+      //   user.startQuiz(shuffledKey)
+      //   console.log("user start quiz = ", user)
+      //   answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+      //   if (answerForEachQuestion == null) {
+      //     console.log("Doesn't have this id in questions database")
+      //     return null
+      //   }
+      //   // //create button for that question
+      //   const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+      //   const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+      //   startedAt = utillArray.getMoment()
+      //   callSendAPI(buttonMessage)
 
-      }
+      // }
     } else if (messageAttachments) {
       sendTextMessage(senderID, "Message with attachment received")
+    }
+  }
+
+  const handleReceivedMessage = async (user, messageText) => {
+    // //first time connect to bot, usersData is empty
+    // //let round = 0
+    // if (user.state == "initialize") {
+    //   //set state in usersData
+    //   user.setState({ state, keysLeftForThatUser, "round": 0, done })
+    //   console.log("user initialize = ", user)
+    // }
+
+    // // //when received welcome will setState again
+    // else {
+    //   //user has been paused
+    //   if (user.state.state == "pause") {
+    //     user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+    //   }
+    //   //user has been paused for next round
+    //   else if (user.state.state == "finish") {
+    //     user.setState({ "state": "pause", keysLeftForThatUser, "round": user.state.round, "done": 0 })
+    //   }
+    //   //user has been playing
+    //   else {
+    //     user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+    //     console.log("user playing = ", user)
+    //   }
+    // }
+
+    // //other users except the first user will add their profile to firebase
+    let userDetail = await getUserDetail(user.senderID)
+    let firstName = userDetail.first_name
+    firebase.saveUserToFirebase(user.senderID, userDetail)
+
+    if (user.state.welcomed === false) {
+      user.setStateWelcome(tmpReceivedWelcome)
+      console.log("user after welcome = ", user)
+      sendLetsQuiz(user.senderID, messageText, firstName)
+    }
+
+
+    // //when set state again, data format will change
+    // //already quiz with chatbot or user come back after pause
+    else if (user.state.state === "playing" || user.state.state === "pause") {
+
+      //get keys question that user done
+      let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
+
+      //remove questions done from questions that not yet answered
+      removeKeysDone(user.state.keysLeftForThatUser, keysDone)
+
+
+      //if user pause -> change to playing
+      if (user.state.state === "pause") {
+        console.log("_________PAUSE__________")
+        user.setState({ "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+      }
+      //if user playing
+      else {
+        console.log("playing")
+        console.log(user)
+      }
+
+      // //shuffle keys of questions that have not answered
+      let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
+      user.startQuiz(shuffledKey)
+      console.log("user start quiz = ", user)
+      answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+      if (answerForEachQuestion == null) {
+        console.log("Doesn't have this id in questions database")
+        return null
+      }
+      // //create button for that question
+      const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+      const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+      startedAt = utillArray.getMoment()
+      callSendAPI(buttonMessage)
+
     }
   }
 

@@ -1,45 +1,46 @@
 let usersData = {}
 let usersWelcome = {}
 
-async function setState(userId, state) {
-    if (!usersData.hasOwnProperty(userId)) {
-        usersData[userId] = state 
+async function setState(senderID, state) {
+    if (!usersData.hasOwnProperty(senderID)) {
+        usersData[senderID] = state 
     } else {
-        usersData[userId] = state
+        usersData[senderID] = state
     }
     console.log('userData = ', usersData)
 }
 
-async function setRound(userId, round) {
-    if (usersData.hasOwnProperty(userId) === false) {
-        usersData[userId] = { round }
+async function setRound(senderID, round) {
+    if (usersData.hasOwnProperty(senderID) === false) {
+        usersData[senderID] = { round }
     } else {
-        usersData[userId].round = round
+        usersData[senderID].round = round
     }
 }
 
-async function getState(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
+async function getState(senderID) {
+    if (!usersData.hasOwnProperty(senderID)) {
         return null
     } else {
-        return usersData[userId]
+        return usersData[senderID]
     }
 }
 
-async function setStateWelcome(userId, welcome) {
-    if (!usersData.hasOwnProperty(userId)) {
-        usersWelcome[userId] = {welcome}
-    } else {
-        usersWelcome[userId] = welcome
-    }
-    console.log('setStateWelcome = ', usersWelcome)
+async function setStateWelcome(senderID, welcome) {
+    // if (!usersData.hasOwnProperty(senderID)) {
+    //     usersWelcome[senderID] = {welcome}
+    // } else {
+    //     usersWelcome[senderID] = welcome
+    // }
+
+    usersData[senderID].state.welcomed = welcome
 }
 
-async function getStateWelcome(userId) {
-    if (!usersWelcome.hasOwnProperty(userId)) {
+async function getStateWelcome(senderID) {
+    if (!usersWelcome.hasOwnProperty(senderID)) {
         return false
     } else {
-        return usersWelcome[userId]
+        return usersWelcome[senderID]
     }
 }
 
