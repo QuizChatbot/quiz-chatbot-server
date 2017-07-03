@@ -20,7 +20,6 @@ const app = async () => {
   // console.log("config ", config, tunnelConfig)
 
   let numberOfQuestions = await firebase.getNumberOfQuestions()
-  let user
   let results
   let answerForEachQuestion
   let currentQuestionKey
@@ -105,6 +104,11 @@ const app = async () => {
 
   //occur when user send something to bot
   app.post('/webhook', (req, res) => {
+
+    // //get all question keys and save to usersData for that senderID
+    //   let keysLeftForThatUser = await getKeys()
+    //   // //get state of this user
+    //   let user = await userClass.load(senderID)
 
     let data = req.body
     // Make sure this is a page subscription
@@ -203,7 +207,7 @@ const app = async () => {
       //get all question keys and save to usersData for that senderID
       let keysLeftForThatUser = await getKeys()
       // //get state of this user
-      user = await userClass.load(senderID)
+      let user = await userClass.load(senderID)
 
       // //first time connect to bot, usersData is empty
       // //let round = 0

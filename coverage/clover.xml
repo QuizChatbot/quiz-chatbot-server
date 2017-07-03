@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1499073689960" clover="3.2.0">
-  <project timestamp="1499073689960" name="All files">
+<coverage generated="1499074798511" clover="3.2.0">
+  <project timestamp="1499074798511" name="All files">
     <metrics statements="48" coveredstatements="48" conditionals="32" coveredconditionals="30" methods="4" coveredmethods="4" elements="84" coveredelements="82" complexity="0" loc="48" ncloc="48" packages="1" files="1" classes="1">
       <file name="summary.js" path="D:\Repository\quiz-chatbot\server\node\summary.js">
         <metrics statements="48" coveredstatements="48" conditionals="32" coveredconditionals="30" methods="4" coveredmethods="4"/>
