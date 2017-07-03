@@ -44,8 +44,8 @@ const getQuestionsFromFirebase = async () => {
 
 //get all answers from that question by id
 const getAllAnswersFromQuestion = async (id) => {
-    var db = admin.database()
-    var ref = db.ref("/Quests")
+    let db = admin.database()
+    let ref = db.ref("/Quests")
 
     const result = await new Promise(function (resolve, reject) {
         ref.child(id).child("choices").on("value", (snapshot) => {
@@ -66,8 +66,8 @@ const getAllAnswersFromQuestion = async (id) => {
 
 //get question by id
 const getQuestionFromId = async (id) => {
-    var db = admin.database()
-    var ref = db.ref("/Quests")
+    let db = admin.database()
+    let ref = db.ref("/Quests")
 
     const result = await new Promise(function (resolve, reject) {
         ref.child(id).on("value", (snapshot) => {

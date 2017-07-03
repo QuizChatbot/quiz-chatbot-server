@@ -34,7 +34,7 @@ const createButtonFromQuestionId = async (id) => {
     delete buttons.subject
     delete buttons.question
 
-    var messageData = {
+    let messageData = {
       recipient: {
         id: recipientId
       },

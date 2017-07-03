@@ -22,7 +22,6 @@ const app = async () => {
   let u1 = await userClass.load('1475112222554339')
   console.log("u1 = ", u1)
 
-  //let keys = await getKeys()
   let numberOfQuestions = await firebase.getNumberOfQuestions()
   let user
   let results
@@ -33,10 +32,8 @@ const app = async () => {
   let done = 0
   let skill = "es6"
   let userScore = 0
-  let usersData = {} //keep users sessions
-  let usersWelcome = {} //keep welcome states for that user only
-
-
+  // let usersData = {} //keep users sessions
+  // let usersWelcome = {} //keep welcome states for that user only
 
 
   async function setState(userId, state) {
@@ -144,7 +141,7 @@ const app = async () => {
 
 
 
-  var app = express()
+  let app = express()
   app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
@@ -213,14 +210,14 @@ const app = async () => {
   //occur when user send something to bot
   app.post('/webhook', (req, res) => {
 
-    var data = req.body
+    let data = req.body
     // Make sure this is a page subscription
     if (data.object == 'page') {
       // Iterate over each entry
       // There may be multiple if batched
       data.entry.forEach(pageEntry => {
-        var pageID = pageEntry.id
-        var timeOfEvent = pageEntry.time
+        let pageID = pageEntry.id
+        let timeOfEvent = pageEntry.time
 
         // Iterate over each messaging event
         pageEntry.messaging.forEach(messagingEvent => {
@@ -271,24 +268,24 @@ const app = async () => {
    * 
    */
   async function receivedMessage(event) {
-    var senderID = event.sender.id
-    var recipientID = event.recipient.id
-    var timeOfMessage = event.timestamp
-    var message = event.message
+    let senderID = event.sender.id
+    let recipientID = event.recipient.id
+    let timeOfMessage = event.timestamp
+    let message = event.message
 
     console.log("Received message for user %d and page %d at %d with message:",
       senderID, recipientID, timeOfMessage)
     console.log(JSON.stringify(message))
 
-    var isEcho = message.is_echo
-    var messageId = message.mid
-    var appId = message.app_id
-    var metadata = message.metadata
+    let isEcho = message.is_echo
+    let messageId = message.mid
+    let appId = message.app_id
+    let metadata = message.metadata
 
     // You may get a text or attachment but not both
-    var messageText = message.text
-    var messageAttachments = message.attachments
-    var quickReply = message.quick_reply
+    let messageText = message.text
+    let messageAttachments = message.attachments
+    let quickReply = message.quick_reply
 
     if (isEcho) {
       // Just logging message echoes to console
@@ -296,7 +293,7 @@ const app = async () => {
         messageId, appId, metadata)
       return
     } else if (quickReply) {
-      var quickReplyPayload = quickReply.payload;
+      let quickReplyPayload = quickReply.payload;
       console.log("Quick reply for mesage %s with payload %s",
         messageId, quickReplyPayload)
 
@@ -855,12 +852,12 @@ const app = async () => {
    * 
    */
   // function receivedMessageRead(event) {
-  //   var senderID = event.sender.id
-  //   var recipientID = event.recipient.id
+  //   let senderID = event.sender.id
+  //   let recipientID = event.recipient.id
 
   //   // All messages before watermark (a timestamp) or sequence have been seen.
-  //   var watermark = event.read.watermark
-  //   var sequenceNumber = event.read.seq
+  //   let watermark = event.read.watermark
+  //   let sequenceNumber = event.read.seq
 
   //   console.log("Received message read event for watermark %d and sequence " +
   //     "number %d", watermark, sequenceNumber)
@@ -871,7 +868,7 @@ const app = async () => {
    *
    */
   function sendTextMessage(recipientId, messageText) {
-    var messageData = {
+    let messageData = {
       recipient: {
         id: recipientId
       },
@@ -879,47 +876,11 @@ const app = async () => {
         text: messageText,
         metadata: "DEVELOPER_DEFINED_METADATA"
       }
-    };
-
-
-    callSendAPI(messageData)
-  }
-
-  /*
-   * Send a button message using the Send API.
-   *
-   */
-  function sendButtonMessage(recipientId) {
-    var messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: "What are you?",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.oculus.com/en-us/rift/",
-              title: "Dog"
-            }, {
-              type: "postback",
-              title: "Cat",
-              payload: "DEVELOPER_DEFINED_PAYLOAD"
-            }, {
-              type: "phone_number",
-              title: "Meow",
-              payload: "+16505551234"
-            }]
-          }
-        }
-      }
-    };
+    }
 
     callSendAPI(messageData)
   }
+
 
   /*
    * Call the Send API. The message data goes in the body. If successful, we'll 
@@ -937,8 +898,8 @@ const app = async () => {
     },
       (error, response, body) => {
         if (!error && response.statusCode == 200) {
-          var recipientId = body.recipient_id
-          var messageId = body.message_id
+          let recipientId = body.recipient_id
+          let messageId = body.message_id
 
           if (messageId) {
             console.log("Successfully sent message with id %s to recipient %s",
@@ -956,7 +917,7 @@ const app = async () => {
 
   //Greeting message
   function setGreetingText() {
-    var greetingData = {
+    let greetingData = {
       setting_type: "greeting",
       greeting: {
         text: "Welcome to QuizChatbot!"
@@ -984,7 +945,7 @@ const app = async () => {
 
 
   async function sendLetsQuiz(recipientId, messageText, firstName) {
-    var messageData = {
+    let messageData = {
       recipient: {
         id: recipientId
       },
