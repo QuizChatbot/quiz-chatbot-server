@@ -67,8 +67,9 @@ describe('calculateGrade from totalScore and userScore', () => {
     })
 }) 
 
-// describe('prepareSummary to save to firebase', () => {
-//     test('calculate score for that question => Correct , duration < 1min, point 10', () => {
-//         expect(summary.calculateScoreForThatQuestion(10, true, 4806)).toBe(15)
-//     })
-// })
+describe('prepareSummary to save to firebase', () => {
+    test('summary for: 2 done, 4 questions, 2 keys left, 0 round, ES6 skill, grade D', () => {
+        let prepareSummary = summary.prepareSummary(2, 4, ['key1', 'key2'], 0, 'es6', 'D', 25, 45)
+        expect(prepareSummary.toMatchSnapshot())
+    })
+})
