@@ -7,7 +7,7 @@ const connectToFirebase = () => {
     })
     return admin
 }
-
+ 
 const admin = connectToFirebase()
 
 //get total number of questions
