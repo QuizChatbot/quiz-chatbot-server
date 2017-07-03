@@ -60,6 +60,8 @@ typings/
 # dotenv environment variables file
 .env
 
+config/default.json
+config/tunnel.json
 test.js
 pids
 *.dat
