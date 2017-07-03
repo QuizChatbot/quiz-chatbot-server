@@ -32,91 +32,90 @@ const app = async () => {
   let done = 0
   let skill = "es6"
   let userScore = 0
-  // let usersData = {} //keep users sessions
-  // let usersWelcome = {} //keep welcome states for that user only
+  let usersData = {} //keep users sessions
+  let usersWelcome = {} //keep welcome states for that user only
+  
+  // async function setState(userId, state) {
+  //   if (!usersData.hasOwnProperty(userId)) {
+  //     usersData[userId] = { state }
+  //   } else {
+  //     usersData[userId] = state
+  //   }
+  //   console.log('userData = ', usersData)
+  // }
 
+  // async function setRound(userId, round) {
+  //   if (!usersData.hasOwnProperty(userId)) {
+  //     usersData[userId] = { round }
+  //   } else {
+  //     usersData[userId].round = round
+  //   }
+  // }
 
-  async function setState(userId, state) {
-    if (!usersData.hasOwnProperty(userId)) {
-      usersData[userId] = { state }
-    } else {
-      usersData[userId] = state
-    }
-    console.log('userData = ', usersData)
-  }
+  // async function getState(userId) {
+  //   if (!usersData.hasOwnProperty(userId)) {
+  //     return "initialize"
+  //   } else {
+  //     return usersData[userId]
+  //   }
+  // }
 
-  async function setRound(userId, round) {
-    if (!usersData.hasOwnProperty(userId)) {
-      usersData[userId] = { round }
-    } else {
-      usersData[userId].round = round
-    }
-  }
+  // async function getKeysLeftForThatUser(userId) {
+  //   if (!usersData.hasOwnProperty(userId)) {
+  //     return "User answered all questions"
+  //   } else {
+  //     return usersData[userId].keysLeftForThatUser
+  //   }
+  // }
 
-  async function getState(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-      return "initialize"
-    } else {
-      return usersData[userId]
-    }
-  }
+  // async function getDoneFromThatUser(userId) {
+  //   if (!usersData.hasOwnProperty(userId)) {
+  //     return "Initialize"
+  //   } else {
+  //     return usersData[userId].done
+  //   }
+  // }
 
-  async function getKeysLeftForThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-      return "User answered all questions"
-    } else {
-      return usersData[userId].keysLeftForThatUser
-    }
-  }
+  // async function getRoundFromThatUser(userId) {
+  //   if (!usersData.hasOwnProperty(userId)) {
+  //     return "Initialize"
+  //   } else {
+  //     return usersData[userId].round
+  //   }
+  // }
 
-  async function getDoneFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-      return "Initialize"
-    } else {
-      return usersData[userId].done
-    }
-  }
+  // async function getReceivedWelcomeFromThatUser(userId) {
+  //   if (!usersData.hasOwnProperty(userId).hasOwnProperty(receivedWelcome)) {
+  //     return "Initialize"
+  //   } else {
+  //     return usersData[userId].receivedWelcome
+  //   }
+  // }
 
-  async function getRoundFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-      return "Initialize"
-    } else {
-      return usersData[userId].round
-    }
-  }
+  // async function setReceivedWelcome(userId, receivedWelcome) {
+  //   if (!usersData.hasOwnProperty(userId)) {
+  //     usersData[userId] = { receivedWelcome }
+  //   } else {
+  //     usersData[userId].receivedWelcome = receivedWelcome
+  //   }
+  // }
 
-  async function getReceivedWelcomeFromThatUser(userId) {
-    if (!usersData.hasOwnProperty(userId).hasOwnProperty(receivedWelcome)) {
-      return "Initialize"
-    } else {
-      return usersData[userId].receivedWelcome
-    }
-  }
+  // async function setStateWelcome(userId, welcome) {
+  //   if (!usersData.hasOwnProperty(userId)) {
+  //     usersWelcome[userId] = { welcome }
+  //   } else {
+  //     usersWelcome[userId] = welcome
+  //   }
+  //   console.log('setStateWelcome = ', usersWelcome)
+  // }
 
-  async function setReceivedWelcome(userId, receivedWelcome) {
-    if (!usersData.hasOwnProperty(userId)) {
-      usersData[userId] = { receivedWelcome }
-    } else {
-      usersData[userId].receivedWelcome = receivedWelcome
-    }
-  }
-
-  async function setStateWelcome(userId, welcome) {
-    if (!usersData.hasOwnProperty(userId)) {
-      usersWelcome[userId] = { welcome }
-    } else {
-      usersWelcome[userId] = welcome
-    }
-    console.log('setStateWelcome = ', usersWelcome)
-  }
-
-  async function getStateWelcome(userId) {
-    if (!usersWelcome.hasOwnProperty(userId)) {
-      return false
-    } else {
-      return usersWelcome[userId]
-    }
-  }
+  // async function getStateWelcome(userId) {
+  //   if (!usersWelcome.hasOwnProperty(userId)) {
+  //     return false
+  //   } else {
+  //     return usersWelcome[userId]
+  //   }
+  // }
 
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
