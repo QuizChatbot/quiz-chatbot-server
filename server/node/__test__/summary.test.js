@@ -67,19 +67,19 @@ describe('calculateGrade from totalScore and userScore', () => {
     })
 })
 
-describe('prepareSummary to save to firebase', () => {
-    test('summary for: 2 done, 4 questions, 2 keys left, 0 round, ES6 skill, grade D', () => {
-        let prepareSummary = summary.prepareSummary(2, 4, ['key1', 'key2'], 0, 'es6', 'D', 25, 45)
-        expect(prepareSummary).toEqual({
-            done : 2,
-            round : 4,
-            keysQuestionLeft : ['key1', 'key2'],
-            skill : 'es6',
-            grade : 'D',
-            score : 25,
-            totalScore : 45,
-            isDone : false
-        })
-        // expect(prepareSummary.toMatchSnapshot())
-    })
-})
+// describe('prepareSummary to save to firebase', () => {
+//     test('summary for: 2 done, 4 questions, 2 keys left, 0 round, ES6 skill, grade D', () => {
+//         let prepareSummary = summary.prepareSummary(2, 4, ['key1', 'key2'], 0, 'es6', 'D', 25, 45)
+//         expect(prepareSummary).toEqual({
+//             done : 2,
+//             round : 4,
+//             keysQuestionLeft : ['key1', 'key2'],
+//             skill : 'es6',
+//             grade : 'D',
+//             score : 25,
+//             totalScore : 45,
+//             isDone : false
+//         })
+//         // expect(prepareSummary.toMatchSnapshot())
+//     })
+// })

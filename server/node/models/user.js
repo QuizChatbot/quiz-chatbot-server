@@ -3,15 +3,16 @@ const api = require('../localUserAPI')
 let usersData = {}
 let usersWelcome = {}
 
-const oldState = await api.getState(senderId)
 
 const load = async (senderId, keys) => {
-    if(usersData.hasOwnProperty(senderId)){
-        return usersData[senderId]
+    const oldState = await api.getState(senderId)
+    if (oldState === null) {
+        await api.setState({ state: "initial", done: 0, round: 0, keysLeftForThatUser: keys })
     }
-  else{
-      return new User(senderId, oldState || {state : "initial", done : 0, round : 0, keysLeftForThatUser : keys}
-  }
+    let state = await api.getState(senderId)
+
+    return new User(senderId, state)
+
 }
 
 class User {
@@ -45,21 +46,21 @@ class User {
         return this.state[field]
     }
 
-    getWelcome(){
+    getWelcome() {
         return api.getStateWelcome(this.senderId)
     }
 
-    setStateWelcome(stateWelcome){
+    setStateWelcome(stateWelcome) {
         api.setStateWelcome(this.senderId, stateWelcome)
         this.stateWelcome = stateWelcome
     }
 
-    setRound(round){
+    setRound(round) {
         api.setRound(this.senderId, round)
         this.state.round = round
     }
 
 }
 
-module.exports = {load}
+module.exports = { load }
 

@@ -8,7 +8,7 @@ async function setState(userId, state) {
 }
 
 async function setRound(userId, round) {
-    if (!usersData.hasOwnProperty(userId)) {
+    if (usersData.hasOwnProperty(userId) === false) {
         usersData[userId] = { round }
     } else {
         usersData[userId].round = round
@@ -17,7 +17,7 @@ async function setRound(userId, round) {
 
 async function getState(userId) {
     if (!usersData.hasOwnProperty(userId)) {
-        return "initialize"
+        return null
     } else {
         return usersData[userId]
     }

@@ -115,7 +115,7 @@ const app = async () => {
         let timeOfEvent = pageEntry.time
 
         // Iterate over each messaging event
-        pageEntry.messaging.forEach(messagingEvent => {
+        pageEntry.messaging.forEach(async messagingEvent => {
           console.log("recieve mssg read")
           console.log("mssg.read ", messagingEvent.read)
           console.log("receive mssg")
@@ -123,7 +123,13 @@ const app = async () => {
           //get all question keys and save to usersData for that senderID
           let keysLeftForThatUser = await getKeys()
           // //get state of this user
+          try{
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser)
+
+          }
+          catch(err){
+            console.log(err)
+          }
 
 
           if (messagingEvent.optin) {
@@ -139,7 +145,7 @@ const app = async () => {
           } else if (messagingEvent.account_linking) {
             receivedAccountLink(messagingEvent)
           } else {
-            console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+            console.log("Webhook received unknown messagingEvent: ", messagingEvent)
           }
         });
       });
