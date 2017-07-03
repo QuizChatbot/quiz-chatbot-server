@@ -34,7 +34,7 @@ const app = async () => {
   let userScore = 0
   let usersData = {} //keep users sessions
   let usersWelcome = {} //keep welcome states for that user only
-  
+
   // async function setState(userId, state) {
   //   if (!usersData.hasOwnProperty(userId)) {
   //     usersData[userId] = { state }
@@ -481,7 +481,7 @@ const app = async () => {
         //if user pause -> change to playing
         if (user.state.state === "pause") {
           console.log("_________PAUSE__________")
-          setState(senderID, { "state": "playing", "keysLeftForThatUser" : user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+          user.setState({ "state": "playing", "keysLeftForThatUser" : user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
         }
         //if user playing
         else {
@@ -538,7 +538,7 @@ const app = async () => {
     }
     else if (payloadObj.nextRound === false) {
         //pause
-      setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
+      user.setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
       sendTextMessage(senderID, "Come back when you're ready baby~")
       sendTextMessage(senderID, "Bye Bye <3")
     }
