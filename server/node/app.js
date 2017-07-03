@@ -110,6 +110,7 @@ const app = async () => {
     //   // //get state of this user
     //   let user = await userClass.load(senderID)
     console.log("Req = ", req)
+    console.log("req.body = ", req.body)
     let data = req.body
     // Make sure this is a page subscription
     if (data.object == 'page') {
@@ -121,6 +122,9 @@ const app = async () => {
 
         // Iterate over each messaging event
         pageEntry.messaging.forEach(messagingEvent => {
+          console.log("mssg event = ", messagingEvent)
+          console.log("optin = ", messagingEvent.optin)
+
           console.log("recieve mssg read")
           console.log("mssg.read ", messagingEvent.read)
           console.log("receive mssg")
