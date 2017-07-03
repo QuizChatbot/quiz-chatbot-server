@@ -306,7 +306,7 @@ const app = async () => {
     firebase.saveUserToFirebase(user.senderID, userDetail)
 
     if (user.state.welcomed === false) {
-      user.setStateWelcome(tmpReceivedWelcome)
+      user.welcome()
       console.log("user after welcome = ", user)
       sendLetsQuiz(user.senderID, messageText, firstName)
     }
