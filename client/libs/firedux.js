@@ -1,4 +1,5 @@
 import Firebase from 'firebase'
+import { firebaseApp as firebase } from '../store/firedux'
 import { isFunction, isObject, omit, get } from 'lodash'
 import updeep from 'updeep'
 import * as Actions from '../actions'
@@ -228,35 +229,47 @@ export default class Firedux {
     })
   }
   watch(path, onComplete) {
-    console.log("path:", path)
     const { dispatch } = this
     return new Promise((resolve) => {
-      // if (this.watching[path]) {
-      // // debug('already watching', path)
-      //   return false
-      // }
-      // this.watching[path] = true
-      // debug('DISPATCH WATCH', path)
-      this.ref.child(path).on('value', snapshot => {
-        // debug('GOT WATCHED VALUE', path, snapshot.val())
-        // TODO: Make watches smart enough to ignore pending updates, e.g. not replace
-        //  a path that has been removed locally but is queued for remote delete?
-        dispatch({
-          type: 'FIREBASE_WATCH',
-          path: path,
-          snapshot: snapshot
-        })
-
-        switch (path) {
-          case "Developer":
+      switch (path) {
+        case "Developer":
+          this.ref.child(path).on('value', snapshot => {
+            dispatch({
+              type: 'FIREBASE_WATCH',
+              path: path,
+              snapshot: snapshot
+            })
             dispatch(Actions.getDeveloper())
-            break
-          default: break
-        }
 
-        if (onComplete) onComplete(snapshot)
-        resolve({ snapshot: snapshot })
-      })
+            // if (onComplete) onComplete(snapshot)
+            resolve({ snapshot: snapshot })
+          })
+          resolve({})
+          break
+        case "Quests":
+          firebase.auth().currentUser && (
+            this.ref.child(path)
+              .orderByChild("owner")
+              .equalTo(firebase.auth().currentUser.uid)
+              // .orderBy("lastEditAt")
+              .on('value', (snapshot) => {
+                dispatch({
+                  type: 'FIREBASE_WATCH',
+                  path: path,
+                  snapshot: snapshot
+                })
+                dispatch(Actions.getQuest())
+
+                // if (onComplete) onComplete(snapshot)
+                resolve({ snapshot: snapshot })
+              })
+          )
+          resolve({})
+          break
+        default:
+          resolve({})
+          break
+      }
     })
   }
   get(path, onComplete) {

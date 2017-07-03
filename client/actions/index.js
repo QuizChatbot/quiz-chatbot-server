@@ -31,7 +31,9 @@ export function login() {
   return (dispatch) => {
     firedux.login().then(res => {
       dispatch({ type: 'auth/complete' })
-      dispatch({ type: 'quest/set-quest-data' })
+      // firedux.watch('Quests').then(() => getQuest())
+      firedux.watch('Quests').then(() => getQuest())
+      // dispatch({ type: 'quest/set-quest-data' })
     })
   }
 }
@@ -49,7 +51,8 @@ export function init() {
     firedux.init().then(res => {
       if (res) {
         dispatch({ type: 'auth/complete' })
-        dispatch({ type: 'quest/set-quest-data' })
+        firedux.watch('Quests').then(() => getQuest())
+        // dispatch({ type: 'quest/set-quest-data' })
       }
     })
   }
@@ -58,14 +61,11 @@ export function init() {
 export function getQuest() {
   return (dispatch, getState) => {
     const state = getState()
+    console.log("getQuest state=", state)
     let quests = []
     getQuests(state.firedux.data).then(questData => {
       quests = questData
-      // const uid = firebase.auth().currentUser.uid
-      // filter quests by owner before dispatch
-      // quests.filter(isOwner.bind(null, uid))
-
-      // console.log("quests af=", quests)
+      console.log("questData=", questData)
     }).then(() => {
       dispatch({ type: 'quest/set-quest-data', data: quests })
     })

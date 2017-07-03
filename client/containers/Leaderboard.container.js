@@ -9,4 +9,8 @@ firedux.watch('Developer').then(() => {
   store.dispatch(Actions.getDeveloper())
 })
 
+firedux.watch('Quests').then(() => {
+  store.dispatch(Actions.getQuest())
+})
+
 export default withFiredux(Leaderboard)
