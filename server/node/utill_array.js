@@ -13,6 +13,17 @@ const shuffleKeyFromQuestions = (keys) => {
     }
 }
 
+const shuffleChoices = (choices) => {
+    if (choices == null) {
+        console.log("choices are null")
+        return null
+    }
+    else {
+        let shuffled = _.shuffle(choices)
+        return shuffled
+    }
+}
+
 const startTimer = () => {
     console.time('questionDuration')
 }
@@ -37,4 +48,4 @@ const calculateDuration = (startedAt, timeOfPostback) => {
     return duration.asMilliseconds()
 }
 
-module.exports = { shuffleKeyFromQuestions, _, getFormattedDate, startTimer, stopTimer, getMoment, calculateDuration}
+module.exports = { shuffleKeyFromQuestions, _, getFormattedDate, startTimer, stopTimer, getMoment, calculateDuration, shuffleChoices}
