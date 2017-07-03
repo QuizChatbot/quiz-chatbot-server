@@ -14,7 +14,8 @@ const app = async () => {
     firebase = require('./firebase'),
     tunnelConfig = require('./tunnel.json'),
     summary = require('./summary'),
-    userClass = require('./models/user')
+    userClass = require('./models/user'),
+    resultFirebase = require('/result')
 
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
@@ -224,7 +225,7 @@ const app = async () => {
         // Iterate over each messaging event
         pageEntry.messaging.forEach(messagingEvent => {
           console.log("recieve mssg read")
-          console.log(messagingEvent.read)
+          console.log("mssg.read ", messagingEvent.read)
           console.log("receive mssg")
           //console.log(messagingEvent.message.text)
 
@@ -581,14 +582,14 @@ const app = async () => {
       // // answer Correct
       if (result) {
         sendTextMessage(senderID, "Good dog!")
-        let preparedResult = await prepareResultForFirebase(payloadObj, answerForEachQuestion, result, startedAt,
+        let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, result, startedAt,
           timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
       //answer Wrong
       else {
         sendTextMessage(senderID, "Bad dog!")
-        let preparedResult = await prepareResultForFirebase(payloadObj, answerForEachQuestion, result, startedAt,
+        let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, result, startedAt,
           timeOfPostback, scoreOfThatQuestion, senderID)
         firebase.saveResultToFirebase(senderID, preparedResult)
       }
@@ -707,28 +708,6 @@ const app = async () => {
     if (payload.answer == answerForEachQuestion[0]) return true
     else return false
 
-  }
-
-  //set format of the result we want to save in firebase
-  async function prepareResultForFirebase(payload, answerForEachQuestion, result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID) {
-    //in payload contain answer, question key, point
-    let prepareObj = []
-    //parse string to object
-    //let userAnswerObj = JSON.parse(payload)
-    let userAnswerObj = payload
-    let doneAt = utillArray.getFormattedDate(timeOfPostback)
-    let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
-
-    //add key to userAnswerObj
-    userAnswerObj.result = result
-    userAnswerObj.doneAt = doneAt
-    userAnswerObj.startedAt = startedAt
-    userAnswerObj.duration = duration
-    userAnswerObj.round = user.state.round
-    userAnswerObj.score = scoreOfThatQuestion
-    prepareObj.push(userAnswerObj)
-    console.log("result = ", prepareObj)
-    return prepareObj 
   }
 
   async function nextQuestion(senderID) {

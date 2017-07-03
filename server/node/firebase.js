@@ -155,7 +155,6 @@ const saveUserToFirebase = (senderID, user) => {
     ref.once("value")
         .then((snapshot) => {
             snapshot.forEach((childSnapshot) => {
-                console.log("chilssnapshot = ", childSnapshot.key)
                 if (childSnapshot.key == senderID) {
                     console.log("Already have user information")
                     hasUser = true
