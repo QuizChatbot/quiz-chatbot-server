@@ -1,6 +1,7 @@
 import Firebase from 'firebase'
 import { isFunction, isObject, omit, get } from 'lodash'
 import updeep from 'updeep'
+import * as Actions from '../actions'
 
 const localStorage = typeof window === 'object' ? window.localStorage : null
 
@@ -227,13 +228,14 @@ export default class Firedux {
     })
   }
   watch(path, onComplete) {
+    console.log("path:", path)
     const { dispatch } = this
     return new Promise((resolve) => {
-      if (this.watching[path]) {
-        // // debug('already watching', path)
-        return false
-      }
-      this.watching[path] = true
+      // if (this.watching[path]) {
+      // // debug('already watching', path)
+      //   return false
+      // }
+      // this.watching[path] = true
       // debug('DISPATCH WATCH', path)
       this.ref.child(path).on('value', snapshot => {
         // debug('GOT WATCHED VALUE', path, snapshot.val())
@@ -244,6 +246,13 @@ export default class Firedux {
           path: path,
           snapshot: snapshot
         })
+
+        switch (path) {
+          case "Developer":
+            dispatch(Actions.getDeveloper())
+            break
+          default: break
+        }
 
         if (onComplete) onComplete(snapshot)
         resolve({ snapshot: snapshot })

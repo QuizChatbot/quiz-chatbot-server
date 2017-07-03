@@ -62,20 +62,20 @@ export function getQuest() {
     let quests = []
     getQuests(state.firedux.data).then(questData => {
       quests = questData
-      const uid = firebase.auth().currentUser.uid
+      // const uid = firebase.auth().currentUser.uid
       // filter quests by owner before dispatch
-      quests.filter(isOwner.bind(null, uid))
+      // quests.filter(isOwner.bind(null, uid))
 
-      console.log("quests af=", quests)
+      // console.log("quests af=", quests)
     }).then(() => {
       dispatch({ type: 'quest/set-quest-data', data: quests })
     })
   }
 }
 
-function isOwner(uid, quest, index, array) {
-  return quest.owner == uid
-}
+// function isOwner(uid, quest, index, array) {
+//   return quest.owner == uid
+// }
 
 function getQuests(data) {
   return new Promise((resolve, reject) => {
@@ -94,7 +94,6 @@ export function getDeveloper() {
       developers = []
       devs.map(developer => { setDeveloperData(developers, developer) })
     }).then(() => {
-      // ** It must have a bug here!
       developers.sort((a, b) => { return b.maxSummary.score - a.maxSummary.score });
     }).then(() => {
       dispatch({ type: 'developer/set-developer-data', data: developers })
