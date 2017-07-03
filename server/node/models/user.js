@@ -52,7 +52,7 @@ class User {
 
     welcome() {
         api.setStateWelcome(this.senderID, true)
-        //this.state.welcomed = true
+        this.state.welcomed = true
     }
 
 }
