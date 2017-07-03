@@ -728,7 +728,7 @@ const app = async () => {
     userAnswerObj.score = scoreOfThatQuestion
     prepareObj.push(userAnswerObj)
     console.log("result = ", prepareObj)
-    return prepareObj
+    return prepareObj 
   }
 
   async function nextQuestion(senderID) {
