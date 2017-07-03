@@ -123,13 +123,7 @@ const app = async () => {
           //get all question keys and save to usersData for that senderID
           let keysLeftForThatUser = await getKeys()
           // //get state of this user
-          try{
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser)
-
-          }
-          catch(err){
-            console.log(err)
-          }
 
 
           if (messagingEvent.optin) {
@@ -177,6 +171,7 @@ const app = async () => {
     let recipientID = event.recipient.id
     let timeOfMessage = event.timestamp
     let message = event.message
+     console.log("____receive____")
     console.log("user test = ", user)
 
     console.log("Received message for user %d and page %d at %d with message:",
