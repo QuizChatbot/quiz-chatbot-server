@@ -1,3 +1,6 @@
+let usersData = {}
+let usersWelcome = {}
+
 async function setState(userId, state) {
     if (!usersData.hasOwnProperty(userId)) {
         usersData[userId] = state 

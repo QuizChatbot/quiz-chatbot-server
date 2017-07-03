@@ -1,7 +1,6 @@
 const api = require('../localUserAPI')
 
-let usersData = {}
-let usersWelcome = {}
+
 
 
 const load = async (senderId, keys) => {
