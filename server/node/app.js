@@ -109,7 +109,7 @@ const app = async () => {
     //   let keysLeftForThatUser = await getKeys()
     //   // //get state of this user
     //   let user = await userClass.load(senderID)
-
+    console.log("Req = ", req)
     let data = req.body
     // Make sure this is a page subscription
     if (data.object == 'page') {
