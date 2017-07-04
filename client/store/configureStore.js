@@ -15,13 +15,13 @@ export default function configureStore(initialState) {
 
   firedux.dispatch = store.dispatch
 
-  if (module.hot) {
-    // Enable Webpack hot module replacement for reducers
-    module.hot.accept('../reducers', () => {
-      const nextReducer = require('../reducers').default
-      store.replaceReducer(nextReducer)
-    })
-  }
+  // if (module.hot) {
+  //   // Enable Webpack hot module replacement for reducers
+  //   module.hot.accept('../reducers', () => {
+  //     const nextReducer = require('../reducers').default
+  //     store.replaceReducer(nextReducer)
+  //   })
+  // }
 
   return store
 }
