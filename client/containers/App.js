@@ -8,6 +8,16 @@ import MyQuiz from './MyQuiz.container'
 import Page404 from './404.container'
 import * as QuizActions from '../actions'
 
+function PrivateRoute ({component: Component, authed}) {
+  return (
+    <Route
+      render={(props) => authed === true
+        ? <Component {...props} />
+        : <Redirect to={{pathname: '/', state: {from: props.location}}} />}
+    />
+  )
+}
+
 class App extends Component {
   constructor() {
     super();
@@ -35,8 +45,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/"
               component={(props) => <Leaderboard {...props} />} />
-            <Route exact path="/myQuiz"
-              component={(props) => <MyQuiz {...props} />} />
+              <PrivateRoute path='/myQuiz' component={(props) => <MyQuiz {...props} />} />
             <Route render={() => <Page404 />} />
           </Switch>
         </div>
