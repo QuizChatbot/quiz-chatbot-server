@@ -318,7 +318,7 @@ const app = async () => {
 
     // //when set state again, data format will change
     // //already quiz with chatbot or user come back after pause
-    else if (user.state.state === "playing" || user.state.state === "pause") {
+    else if (user.state.state === "playing" || user.state.state === "pause" || user.state.state === "finish") {
       console.log("playing")
       console.log("user playing = ", user)
       //get keys question that user done
@@ -332,7 +332,12 @@ const app = async () => {
       if (user.state.state === "pause") {
         console.log("_________PAUSE__________")
         user.resume()
-        // user.setState({ "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+      }
+      else if (user.state.state === "finish") {
+        let keysLeftForThatUser = await getKeys()
+        user = await userClass.load(user.senderID, keysLeftForThatUser)
+        user.playing()
+        console.log("user after finish = ", user)
       }
 
       // //shuffle keys of questions that have not answered
@@ -470,7 +475,7 @@ const app = async () => {
     }
     else if (payloadObj.nextRound === false) {
       //pause finish
-      user.pause()
+      user.finish()
       //user.setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
       sendTextMessage(user.senderID, "Come back when you're ready baby~")
       sendTextMessage(user.senderID, "Bye Bye <3")
@@ -615,7 +620,7 @@ const app = async () => {
     if (user.state.done == numberOfQuestions) {
       round++
       user.setRound(round)
-       console.log("round increase= ", user.state.round)
+      console.log("round increase= ", user.state.round)
     }
     //create button ask for next round
     let buttonMessage = createButton.createButtonNextRound(user.senderID)
