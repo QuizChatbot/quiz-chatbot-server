@@ -1,4 +1,5 @@
 import Firebase from 'firebase'
+import { firebaseApp as firebase } from '../store/firedux'
 import { isFunction, isObject, omit, get } from 'lodash'
 import updeep from 'updeep'
 import * as Actions from '../actions'
@@ -125,21 +126,11 @@ export default class Firedux {
   }
   init() {
     const { dispatch } = this
-    // const that = this
     return new Promise((resolve, reject) => {
       if (this.v3) {
         const auth = this.auth()
         auth.onAuthStateChanged(user => {
           if (user) {
-            // let authData = {
-            //   credential: {
-            //     provider: "facebook.com",
-            //     providerId: "facebook.com"
-            //   },
-            //   operationType: "signIn",
-            //   user: user
-            // }
-            // console.log("authData=", authData)
             dispatch({
               type: 'FIREBASE_VALIDATE_USER',
               uid: user.uid,
@@ -148,25 +139,8 @@ export default class Firedux {
             })
             resolve(user)
           }
-          // else {
-          //   dispatch({ type: 'FIREBASE_VALIDATE_USER', authData: null, authError: null })
-          //   reject(new Error('FIREBASE_LOGOUT'))
-          // }
         })
       }
-
-      // console.log("after this.v3")
-
-      // listen for auth changes
-      // if (isFunction(this.ref.onAuth)) {
-      //   this.ref.onAuth(function (authData) {
-      //     if (!authData) {
-      //       dispatch({ type: 'FIREBASE_VALIDATE_USER', authData: null, authError: null })
-      //       reject(new Error('FIREBASE_LOGOUT'))
-      //     }
-      //     resolve(authData)
-      //   })
-      // }
     })
   }
   login() {
@@ -228,35 +202,47 @@ export default class Firedux {
     })
   }
   watch(path, onComplete) {
-    console.log("path:", path)
     const { dispatch } = this
     return new Promise((resolve) => {
-      // if (this.watching[path]) {
-      // // debug('already watching', path)
-      //   return false
-      // }
-      // this.watching[path] = true
-      // debug('DISPATCH WATCH', path)
-      this.ref.child(path).on('value', snapshot => {
-        // debug('GOT WATCHED VALUE', path, snapshot.val())
-        // TODO: Make watches smart enough to ignore pending updates, e.g. not replace
-        //  a path that has been removed locally but is queued for remote delete?
-        dispatch({
-          type: 'FIREBASE_WATCH',
-          path: path,
-          snapshot: snapshot
-        })
-
-        switch (path) {
-          case "Developer":
+      switch (path) {
+        case "Developer":
+          this.ref.child(path).on('value', snapshot => {
+            dispatch({
+              type: 'FIREBASE_WATCH',
+              path: path,
+              snapshot: snapshot
+            })
             dispatch(Actions.getDeveloper())
-            break
-          default: break
-        }
 
-        if (onComplete) onComplete(snapshot)
-        resolve({ snapshot: snapshot })
-      })
+            // if (onComplete) onComplete(snapshot)
+            resolve({ snapshot: snapshot })
+          })
+          resolve({})
+          break
+        case "Quests":
+          firebase.auth().currentUser && (
+            this.ref.child(path)
+              .orderByChild("owner")
+              .equalTo(firebase.auth().currentUser.uid)
+              // .orderBy("lastEditAt")
+              .on('value', (snapshot) => {
+                dispatch({
+                  type: 'FIREBASE_WATCH',
+                  path: path,
+                  snapshot: snapshot
+                })
+                dispatch(Actions.getQuest())
+
+                // if (onComplete) onComplete(snapshot)
+                resolve({ snapshot: snapshot })
+              })
+          )
+          resolve({})
+          break
+        default:
+          resolve({})
+          break
+      }
     })
   }
   get(path, onComplete) {

@@ -2,17 +2,18 @@ import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import App from './containers/App'
-import * as Actions from './actions'
 import store from './store'
-import 'todomvc-app-css/index.css'
 import firedux from './store/firedux'
+import * as Actions from './actions'
+import App from './containers/App'
+import 'todomvc-app-css/index.css'
+
+firedux.watch('Developer').then(() => {
+  store.dispatch(Actions.getDeveloper())
+})
 
 firedux.watch('Quests').then(() => {
   store.dispatch(Actions.getQuest())
-})
-firedux.watch('Developer').then(() => {
-  store.dispatch(Actions.getDeveloper())
 })
 
 render(

@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import HeaderQuiz from './HeaderQuiz'
-import MainSectionQuiz from './MainSectionQuiz'
+import MainSectionQuiz from '../../containers/MainSectionQuiz.container'
 import store from '../../store'
 
 class MyQuiz extends Component {
@@ -10,7 +10,7 @@ class MyQuiz extends Component {
       <div>
         <HeaderQuiz addQuiz={actions.addQuiz} />
         Your Questions:
-        <MainSectionQuiz actions={actions} firedux={firedux} />
+        <MainSectionQuiz actions={actions} />
       </div>
     )
   }

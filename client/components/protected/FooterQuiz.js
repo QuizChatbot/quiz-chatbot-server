@@ -2,12 +2,12 @@ import React, { PropTypes, Component } from 'react'
 import classnames from 'classnames'
 
 class Footer extends Component {
-  renderTodoCount() {
-    const { activeCount } = this.props
-    const itemWord = activeCount === 1 ? 'item' : 'items'
+  renderQuizCount() {
+    const { quizCount } = this.props
+    const itemWord = quizCount === 1 ? 'item' : 'items'
     return (
       <span className="todo-count">
-        <strong>{activeCount || 'No'}</strong> {itemWord} left
+        <strong>{quizCount || 'No'}</strong> {itemWord}
       </span>
     )
   }
@@ -15,14 +15,14 @@ class Footer extends Component {
   render() {
     return (
       <footer className="footer">
-        {this.renderTodoCount()}
+        {this.renderQuizCount()}
       </footer>
     )
   }
 }
 
 Footer.propTypes = {
-  activeCount: PropTypes.number.isRequired,
+  quizCount: PropTypes.number.isRequired,
 }
 
 export default Footer
