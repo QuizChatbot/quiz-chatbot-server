@@ -24,12 +24,8 @@ const app = async () => {
   let answerForEachQuestion
   let currentQuestionKey
   let startedAt
-  let round = 0
-  let done = 0
   let skill = "es6"
   let userScore = 0
-  let usersData = {} //keep users sessions
-  let usersWelcome = {} //keep welcome states for that user only
 
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
@@ -188,87 +184,6 @@ const app = async () => {
 
     if (messageText) {
       handleReceivedMessage(user, messageText)
-      // //TOFIX : Code review , use User and Question class
-
-      // // //first time connect to bot, usersData is empty
-      // // //let round = 0
-      // if (user.state == "initialize") {
-      //   //set state in usersData
-      //   user.setState({ state, keysLeftForThatUser, "round": 0, done })
-      //   console.log("user initialize = ", user)
-      // }
-
-      // // //when received welcome will setState again
-      // else {
-      //   //user has been paused
-      //   if (user.state.state == "pause") {
-      //     user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-      //   }
-      //   //user has been paused for next round
-      //   else if (user.state.state == "finish") {
-      //     user.setState({ "state": "pause", keysLeftForThatUser, "round": user.state.round, "done": 0 })
-      //   }
-      //   //user has been playing
-      //   else {
-      //     user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-      //     console.log("user playing = ", user)
-      //   }
-      // }
-
-      // // //other users except the first user will add their profile to firebase
-      // let userDetail = await getUserDetail(senderID)
-      // let firstName = userDetail.first_name
-
-      // let tmpReceivedWelcome = await user.getWelcome()
-      // console.log("tmpReceivedWelcome = ", tmpReceivedWelcome)
-      // firebase.saveUserToFirebase(senderID, userDetail)
-
-      // if (!tmpReceivedWelcome) {
-      //   tmpReceivedWelcome = true
-      //   user.setStateWelcome(tmpReceivedWelcome)
-      //   console.log("user after welcome = ", user)
-      //   sendLetsQuiz(senderID, messageText, firstName)
-      // }
-
-
-      // // //when set state again, data format will change
-      // // //already quiz with chatbot or user come back after pause
-      // else if (user.state.state === "playing" || user.state.state === "pause") {
-
-      //   //get keys question that user done
-      //   let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
-
-      //   //remove questions done from questions that not yet answered
-      //   removeKeysDone(user.state.keysLeftForThatUser, keysDone)
-
-
-      //   //if user pause -> change to playing
-      //   if (user.state.state === "pause") {
-      //     console.log("_________PAUSE__________")
-      //     user.setState({ "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-      //   }
-      //   //if user playing
-      //   else {
-      //     console.log("playing")
-      //     console.log(user)
-      //   }
-
-      //   // //shuffle keys of questions that have not answered
-      //   let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-      //   user.startQuiz(shuffledKey)
-      //   console.log("user start quiz = ", user)
-      //   answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-      //   if (answerForEachQuestion == null) {
-      //     console.log("Doesn't have this id in questions database")
-      //     return null
-      //   }
-      //   // //create button for that question
-      //   const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-      //   const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-      //   startedAt = utillArray.getMoment()
-      //   callSendAPI(buttonMessage)
-
-      // }
     } else if (messageAttachments) {
       sendTextMessage(senderID, "Message with attachment received")
     }
@@ -303,7 +218,6 @@ const app = async () => {
     // }
 
     // //other users except the first user will add their profile to firebase
-    console.log("user playing = ", user)
     let userDetail = await getUserDetail(user.senderID)
     let firstName = userDetail.first_name
     firebase.saveUserToFirebase(user.senderID, userDetail)
@@ -311,7 +225,6 @@ const app = async () => {
     if (user.state.welcomed === false) {
       user.welcome()
       user.playing()
-      console.log("user after welcome = ", user)
       sendLetsQuiz(user.senderID, messageText, firstName)
     }
 
@@ -335,7 +248,6 @@ const app = async () => {
       }
       else if (user.state.state === "finish") {
         let keysLeftForThatUser = await getKeys()
-        //user = await userClass.load(user.senderID, keysLeftForThatUser)
         user.playing(keysLeftForThatUser)
         console.log("user after finish = ", user)
       }
@@ -378,93 +290,6 @@ const app = async () => {
       "at %d", senderID, recipientID, payload, timeOfPostback)
 
     handleReceivedPostback(user, payloadObj, timeOfPostback)
-
-    //check for button nextRound payload
-    // if (payloadObj.nextRound === true) {
-    //   sendTextMessage(senderID, "Next Round!")
-    //   startNextRound(senderID, user.state.round)
-    // }
-    // else if (payloadObj.nextRound === false) {
-    //   //pause
-    //   user.setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
-    //   sendTextMessage(senderID, "Come back when you're ready baby~")
-    //   sendTextMessage(senderID, "Bye Bye <3")
-    // }
-
-    // //check for button next question
-    // else if (payloadObj.nextQuestion === true) {
-    //   //call next question
-    //   nextQuestion(senderID)
-    // }
-    // else if (payloadObj.nextQuestion === false) {
-    //   //pause
-    //   state = "pause"
-    //   user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "done": user.state.done, "round": user.state.round })
-    //   sendTextMessage(senderID, "Hell <3")
-    //   sendTextMessage(senderID, "Come back when you're ready baby~")
-    // }
-
-    // //Postback for normal questions
-    // else {
-    //   //if in playing question state when receive postback 
-    //   //number of questions that user already done increase
-    //   if (user.state.state === "playing") {
-    //     user.state.done++
-    //   }
-    //   console.log("user after done question= ", user)
-
-    //   // //check answer and ask next question
-    //   let result = checkAnswer(payloadObj, answerForEachQuestion)
-
-    //   //send to calculate grade and score for summary
-    //   let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
-    //   let totalScore = summary.calculateTotalScore(numberOfQuestions)
-    //   let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(payloadObj.point, result, duration) //point for that question 
-    //   userScore += scoreOfThatQuestion
-    //   let grade = summary.calculateGrade(totalScore, userScore)
-
-    //   // // answer Correct
-    //   if (result) {
-    //     sendTextMessage(senderID, "Good dog!")
-    //     let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
-    //       result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID)
-    //     firebase.saveResultToFirebase(senderID, preparedResult)
-    //   }
-    //   //answer Wrong
-    //   else {
-    //     sendTextMessage(senderID, "Bad dog!")
-    //     let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
-    //       result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID)
-    //     firebase.saveResultToFirebase(senderID, preparedResult)
-    //   }
-
-    //   let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
-    //   removeKeysDone(user.state.keysLeftForThatUser, keysDone)
-    //   user.setState({
-    //     "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round,
-    //     "done": user.state.done
-    //   })
-
-    //   //prepare summary object to save in firebase
-    //   let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
-    //     user.state.round, skill, grade, userScore, totalScore)
-    //   firebase.saveSummaryToFirebase(senderID, preparedSummary)
-    //   console.log("_______keysLeftForThatUser______ = ", user.state.keysLeftForThatUser)
-    //   let keysLeftForThatUser = user.state.keysLeftForThatUser
-
-
-    //   //ask whether user ready to play next question 
-    //   //if there are still questions left that have not done => create next button
-    //   if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser.length > 0) {
-    //     let buttonNext = await createButton.createButtonNext(senderID)
-    //     callSendAPI(buttonNext)
-    //   }
-    //   //if there is no question left that have not done => create next round button
-    //   else {
-    //     nextQuestion(senderID)
-    //   }
-    // }
-
   }
 
   async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
@@ -476,7 +301,6 @@ const app = async () => {
     else if (payloadObj.nextRound === false) {
       //pause finish
       user.finish()
-      //user.setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
       sendTextMessage(user.senderID, "Come back when you're ready baby~")
       sendTextMessage(user.senderID, "Bye Bye <3")
     }
@@ -489,8 +313,6 @@ const app = async () => {
     else if (payloadObj.nextQuestion === false) {
       //pause
       user.pause()
-      //state = "pause"
-      //user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "done": user.state.done, "round": user.state.round })
       sendTextMessage(user.senderID, "Hell <3")
       sendTextMessage(user.senderID, "Come back when you're ready baby~")
     }
@@ -532,10 +354,6 @@ const app = async () => {
       let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round)
       removeKeysDone(user.state.keysLeftForThatUser, keysDone)
       console.log("user after remove keys done = ", user)
-      // user.setState({
-      //   "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round,
-      //   "done": user.state.done
-      // })
 
       //prepare summary object to save in firebase
       let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
@@ -578,10 +396,6 @@ const app = async () => {
     if (keyOfNextQuestion == null) {
       sendTextMessage(user.senderID, "Finish!")
       user.finish()
-      // state = "finish"
-      //user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-
-      done = 0
       userScore = 0
 
       nextRound(user, numberOfQuestions)
@@ -590,7 +404,6 @@ const app = async () => {
     //still has questions not answered
     else {
       answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
-
       //no key that matched question
       if (answerForEachQuestion == null) {
         console.log("Doesn't have this id in questions json")
@@ -613,14 +426,12 @@ const app = async () => {
   }
 
   const nextRound = (user, numberOfQuestions) => {
-    console.log("round = ", user.state.round)
     //if number of done questions equals to number of all questions
     //then that round is complete -> round increase 
     let round = user.state.round
     if (user.state.done == numberOfQuestions) {
       round++
       user.setRound(round)
-      console.log("round increase= ", user.state.round)
     }
     //create button ask for next round
     let buttonMessage = createButton.createButtonNextRound(user.senderID)
@@ -629,14 +440,10 @@ const app = async () => {
 
   const startNextRound = async (user) => {
     //ready to ask question
-    //reset state = playing
-    // state = "playing"
-    console.log("user next round = ", user)
     let keysLeftForThatUser = await getKeys()
     user.nextRound(keysLeftForThatUser)
     console.log("keysLeft = ", keysLeftForThatUser)
     console.log("user next round = ", user)
-    // user.setState({ state, keysLeftForThatUser, round, "done": 0 })
 
     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     currentQuestionKey = shuffledKey
