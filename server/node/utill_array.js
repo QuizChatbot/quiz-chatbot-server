@@ -37,10 +37,10 @@ const getMoment = () => {
 //     console.log("time = ", time)
 // }
 
-// const getFormattedDate = (timestamp) => {
-//     let date = moment(timestamp).format()
-//     return date
-// }
+const getFormattedDate = (timestamp) => {
+    let date = moment(timestamp).format()
+    return date
+}
 
 const calculateDuration = (startedAt, timeOfPostback) => {
     let doneAt = moment(timeOfPostback)
@@ -48,4 +48,4 @@ const calculateDuration = (startedAt, timeOfPostback) => {
     return duration.asMilliseconds()
 }
 
-module.exports = { shuffleKeyFromQuestions, _, getMoment, calculateDuration, shuffleChoices}
+module.exports = { shuffleKeyFromQuestions, _, getMoment, calculateDuration, shuffleChoices, getFormattedDate}
