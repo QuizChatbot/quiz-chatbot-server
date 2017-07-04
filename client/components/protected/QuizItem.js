@@ -12,7 +12,7 @@ class QuizItem extends Component {
   }
 
   render() {
-    const { quest, completeTodo, deleteQuiz } = this.props
+    const { quest, deleteQuiz } = this.props
     let element = (
       <div>
         <QuizInput

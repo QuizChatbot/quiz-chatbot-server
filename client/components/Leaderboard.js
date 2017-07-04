@@ -11,17 +11,22 @@ export class Leaderboard extends Component {
   }
 
   render() {
+    const { developers } = this.props
     return (
       <div>
         <h2>Leaderboard</h2>
-        {!this.props.developers.length ?
+        {!developers.length ?
           (<div>No Players</div>)
-          : this.props.developers.map((developer, idx) =>
+          : developers.map((developer, idx) =>
             <LeaderboardItem key={idx} idx={idx} developer={developer} />
           )}
       </div>
     )
   }
+}
+
+Leaderboard.PropTypes = {
+  developers: PropTypes.object.isRequired,
 }
 
 export default Leaderboard

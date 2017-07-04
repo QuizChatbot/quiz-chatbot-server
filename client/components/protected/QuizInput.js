@@ -29,6 +29,7 @@ class QuizInput extends Component {
   }
 
   handleSubmit(e) {
+    const { newQuiz, onSave } = this.props
     const quiz = {
       subject: this.state.subject,
       question: this.state.question,
@@ -36,8 +37,8 @@ class QuizInput extends Component {
       choice_1: this.state.choice_1,
       choice_2: this.state.choice_2,
     }
-    this.props.onSave(quiz)
-    if (this.props.newQuiz) {
+    onSave(quiz)
+    if (newQuiz) {
       this.setState({
         subject: '',
         question: '',
@@ -57,24 +58,25 @@ class QuizInput extends Component {
   }
 
   handleBlur(form) {
-    if (!this.props.newQuiz) {
+    const { newQuiz, onSave } = this.props
+    if (!newQuiz) {
       let keys = form.split('_')
       let quiz = (keys[0] === 'choice') ? { [keys[1]]: this.state[form] } : { [form]: this.state[form] }
       let isChoice = (keys[0] === 'choice') ? true : false
-      this.props.onSave(quiz, isChoice)
+      onSave(quiz, isChoice)
       this.setState({ isEditing: { [form]: false } })
     }
   }
 
   renderForm(form, autoFocus) {
-    if (this.state.isEditing[form] || this.props.newQuiz) {
+    const { newQuiz } = this.props
+    if (this.state.isEditing[form] || newQuiz) {
       return (
         <div>
           {form}:
           <input className={
             classnames({
-              // edit: this.props.editing,
-              'new-todo': this.props.newQuiz || this.state.isEditing[form]
+              'new-todo': newQuiz || this.state.isEditing[form]
             })}
             type="text"
             name={form}
@@ -99,12 +101,14 @@ class QuizInput extends Component {
   }
 
   renderSubmitButton() {
-    if (this.props.newQuiz) {
+    const { newQuiz } = this.props
+    if (newQuiz) {
       return (<button onClick={() => this.handleSubmit()}>Submit</button>)
     }
   }
 
   render() {
+    const { newQuiz } = this.props
     const autoFocus = true
     return (
       <div>
@@ -113,7 +117,7 @@ class QuizInput extends Component {
         {this.renderForm("choice_0")}
         {this.renderForm("choice_1")}
         {this.renderForm("choice_2")}
-        {this.props.newQuiz ? this.renderSubmitButton() : <br />}
+        {newQuiz ? this.renderSubmitButton() : <br />}
       </div>
     )
   }
@@ -122,7 +126,6 @@ class QuizInput extends Component {
 QuizInput.propTypes = {
   onSave: PropTypes.func.isRequired,
   quest: PropTypes.object,
-  // editing: PropTypes.bool,
   newQuiz: PropTypes.bool
 }
 

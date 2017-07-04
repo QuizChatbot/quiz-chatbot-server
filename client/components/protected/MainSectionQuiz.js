@@ -14,18 +14,18 @@ class MainSectionQuiz extends Component {
   }
 
   render() {
-    const { actions } = this.props
+    const { actions, quests } = this.props
 
     return (
       <section className="main">
-        {this.props.quests &&
-          (!this.props.quests.length
+        {quests &&
+          (!quests.length
             ? (<div>No Quizzes</div>)
             : (<ul className="todo-list">
-              {this.props.quests.map(quest =>
+              {quests.map(quest =>
                 <QuizItem key={quest.id} quest={quest} {...actions} />
               )}
-              {this.renderFooterQuiz(this.props.quests.length)}
+              {this.renderFooterQuiz(quests.length)}
             </ul>))
         }
       </section>
@@ -35,6 +35,7 @@ class MainSectionQuiz extends Component {
 
 MainSectionQuiz.propTypes = {
   actions: PropTypes.object.isRequired,
+  quests: PropTypes.array.isRequired
 }
 
 export default MainSectionQuiz
