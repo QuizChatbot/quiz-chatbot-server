@@ -30,9 +30,20 @@ describe('shuffle choices and return the shuffled array back', () => {
     })
 })
 
-
 describe('get moment', () => {
     test('get moment now', () => {
         expect(utillArray.getMoment()).toBeDefined()
+    })
+})
+
+describe('Formatted date', () => {
+    test('calculate duration in ms', () => {
+        expect(utillArray.getFormattedDate(1499167085389)).toBe('2017-07-04T18:18:05+07:00')
+    })
+})
+
+describe('calculate duration with startedAt and timePostback', () => {
+    test('calculate duration in ms', () => {
+        expect(utillArray.calculateDuration('2017-07-04T18:08:49+07:00', 1499167085389)).toBeDefined()
     })
 })
