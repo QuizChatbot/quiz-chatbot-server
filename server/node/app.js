@@ -177,7 +177,7 @@ const app = async () => {
     let quickReply = message.quick_reply
 
     if (messageText) {
-      console.log("mssg = ", message)
+      console.log("_____mssg____ = ", message.text)
       handleReceivedMessage(user, messageText)
     } else if (messageAttachments) {
       sendTextMessage(senderID, "Message with attachment received")
@@ -212,6 +212,9 @@ const app = async () => {
     //   }
     // }
 
+    if(messageText === "OK"){
+      sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง")
+    }
     // //other users except the first user will add their profile to firebase
     let userDetail = await getUserDetail(user.senderID)
     let firstName = userDetail.first_name
