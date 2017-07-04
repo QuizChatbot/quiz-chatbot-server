@@ -212,60 +212,62 @@ const app = async () => {
     //   }
     // }
 
-    if(messageText === "OK"){
+    if (messageText !== "OK") {
       sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง")
     }
     // //other users except the first user will add their profile to firebase
-    let userDetail = await getUserDetail(user.senderID)
-    let firstName = userDetail.first_name
-    firebase.saveUserToFirebase(user.senderID, userDetail)
+    else {
+      let userDetail = await getUserDetail(user.senderID)
+      let firstName = userDetail.first_name
+      firebase.saveUserToFirebase(user.senderID, userDetail)
 
-    if (user.state.welcomed === false) {
-      user.welcome()
-      user.playing()
-      sendLetsQuiz(user.senderID, messageText, firstName)
-      sendTextMessage(user.senderID, "say 'OK' if you want to play")
-    }
-
-
-    // //when set state again, data format will change
-    // //already quiz with chatbot or user come back after pause
-    else if (user.state.state === "playing" || user.state.state === "pause" || user.state.state === "finish") {
-      console.log("playing")
-      console.log("user playing = ", user)
-      //get keys question that user done
-      let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round)
-
-      //remove questions done from questions that not yet answered
-      removeKeysDone(user.state.keysLeftForThatUser, keysDone)
-
-
-      //if user pause -> change to playing
-      if (user.state.state === "pause") {
-        console.log("_________PAUSE__________")
-        user.resume()
-      }
-      else if (user.state.state === "finish") {
-        let keysLeftForThatUser = await getKeys()
-        user.playing(keysLeftForThatUser)
-        console.log("user after finish = ", user)
+      if (user.state.welcomed === false) {
+        user.welcome()
+        user.playing()
+        sendLetsQuiz(user.senderID, messageText, firstName)
+        sendTextMessage(user.senderID, "say 'OK' if you want to play")
       }
 
-      // //shuffle keys of questions that have not answered
-      let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-      user.startQuiz(shuffledKey)
-      console.log("user start quiz = ", user)
-      answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-      if (answerForEachQuestion == null) {
-        console.log("Doesn't have this id in questions database")
-        return null
-      }
-      // //create button for that question
-      const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-      const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
-      startedAt = utillArray.getMoment()
-      callSendAPI(buttonMessage)
 
+      // //when set state again, data format will change
+      // //already quiz with chatbot or user come back after pause
+      else if (user.state.state === "playing" || user.state.state === "pause" || user.state.state === "finish") {
+        console.log("playing")
+        console.log("user playing = ", user)
+        //get keys question that user done
+        let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round)
+
+        //remove questions done from questions that not yet answered
+        removeKeysDone(user.state.keysLeftForThatUser, keysDone)
+
+
+        //if user pause -> change to playing
+        if (user.state.state === "pause") {
+          console.log("_________PAUSE__________")
+          user.resume()
+        }
+        else if (user.state.state === "finish") {
+          let keysLeftForThatUser = await getKeys()
+          user.playing(keysLeftForThatUser)
+          console.log("user after finish = ", user)
+        }
+
+        // //shuffle keys of questions that have not answered
+        let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
+        user.startQuiz(shuffledKey)
+        console.log("user start quiz = ", user)
+        answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+        if (answerForEachQuestion == null) {
+          console.log("Doesn't have this id in questions database")
+          return null
+        }
+        // //create button for that question
+        const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+        const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
+        startedAt = utillArray.getMoment()
+        callSendAPI(buttonMessage)
+
+      }
     }
   }
 
