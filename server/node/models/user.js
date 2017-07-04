@@ -73,6 +73,13 @@ class User {
 
     }
 
+    finish(){
+        api.setState(this.senderID,
+            { state: 'finish', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
+        )
+        this.state.state = 'finish'
+    }
+
 }
 
 module.exports = { load }
