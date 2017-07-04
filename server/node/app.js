@@ -562,6 +562,7 @@ const app = async () => {
 
   async function nextQuestion(user) {
     //TOFIX: user class
+    console.log("user next q = ", user)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
 
     //define current key = key of question about to ask
