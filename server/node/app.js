@@ -462,7 +462,7 @@ const app = async () => {
 
   }
 
-  function handleReceivedPostback(user, payloadObj, timeOfPostback) {
+  async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
      //check for button nextRound payload
     if (payloadObj.nextRound === true) {
       sendTextMessage(user.senderID, "Next Round!")
