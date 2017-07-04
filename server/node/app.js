@@ -612,7 +612,7 @@ const app = async () => {
     //if number of done questions equals to number of all questions
     //then that round is complete -> round increase 
     let round = user.state.round
-    if (round == numberOfQuestions) {
+    if (user.state.done == numberOfQuestions) {
       round++
       user.setRound(round)
        console.log("round increase= ", user.state.round)
