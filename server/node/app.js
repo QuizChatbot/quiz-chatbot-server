@@ -622,14 +622,14 @@ const app = async () => {
   const startNextRound = async (user) => {
     //ready to ask question
     //reset state = playing
-    state = "playing"
+    // state = "playing"
     let keysLeftForThatUser = await getKeys()
-    user.setState({ state, keysLeftForThatUser, round, "done": 0 })
+    user.nextRound(keysLeftForThatUser)
+    // user.setState({ state, keysLeftForThatUser, round, "done": 0 })
 
     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
     currentQuestionKey = shuffledKey
     answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-    console.log("answerForEachQuestion next round = ", answerForEachQuestion)
 
     if (answerForEachQuestion == null) {
       console.log("Doesn't have this id in questions database")
@@ -637,7 +637,7 @@ const app = async () => {
     }
 
     const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-    const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+    const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
     startedAt = utillArray.getMoment()
     callSendAPI(buttonMessage)
   }
