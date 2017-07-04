@@ -55,7 +55,7 @@ class User {
     playing(keysLeftForThatUser) {
         api.setState(this.senderID,
             { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
-            welcomed: this.state.welcomed, userScore: this.userScore }
+            welcomed: this.state.welcomed, userScore: this.state.userScore }
         )
         this.state.state = 'playing'
         this.state.welcomed = true
