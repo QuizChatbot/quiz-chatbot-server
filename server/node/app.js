@@ -611,10 +611,11 @@ const app = async () => {
     console.log("round = ", user.state.round)
     //if number of done questions equals to number of all questions
     //then that round is complete -> round increase 
-    if (user.state.done == numberOfQuestions) {
-      user.state.round++
+    let round = user.state.round
+    if (round == numberOfQuestions) {
+      round++
+      user.setRound(round)
        console.log("round increase= ", user.state.round)
-      // user.setRound(round)
     }
     //create button ask for next round
     let buttonMessage = createButton.createButtonNextRound(user.senderID)

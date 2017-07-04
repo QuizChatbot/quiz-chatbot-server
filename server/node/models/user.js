@@ -32,9 +32,9 @@ class User {
         })
     }
 
-    get(field) {
-        return this.state[field]
-    }
+    // get(field) {
+    //     return this.state[field]
+    // }
 
     getWelcome() {
         return api.getStateWelcome(this.senderID)
