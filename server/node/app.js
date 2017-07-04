@@ -479,7 +479,7 @@ const app = async () => {
     //check for button next question
     else if (payloadObj.nextQuestion === true) {
       //call next question
-      nextQuestion(user.senderID)
+      nextQuestion(user)
     }
     else if (payloadObj.nextQuestion === false) {
       //pause
