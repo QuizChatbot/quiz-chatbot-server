@@ -275,6 +275,8 @@ const app = async () => {
   }
 
   const handleReceivedMessage = async (user, messageText) => {
+    //DUPLICATE
+
     // //first time connect to bot, usersData is empty
     // //let round = 0
     // if (user.state == "initialize") {
@@ -326,12 +328,8 @@ const app = async () => {
       //if user pause -> change to playing
       if (user.state.state === "pause") {
         console.log("_________PAUSE__________")
-        user.setState({ "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-      }
-      //if user playing
-      else {
-        console.log("playing")
-        console.log(user)
+        user.resume()
+        // user.setState({ "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
       }
 
       // //shuffle keys of questions that have not answered
