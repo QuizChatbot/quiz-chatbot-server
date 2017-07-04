@@ -7,7 +7,7 @@ export function addQuiz(quiz) {
       subject: quiz.subject,
       question: quiz.question,
       choices: [quiz.choice_0, quiz.choice_1, quiz.choice_2],
-      owner: "5LrhuhQtqDfempxq8B9zGpqiiK42",
+      owner: firebase.auth().currentUser.uid,
       skills: "es6",
       point: 15,
       createdAt: Date(),
