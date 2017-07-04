@@ -319,9 +319,10 @@ const app = async () => {
     // //when set state again, data format will change
     // //already quiz with chatbot or user come back after pause
     else if (user.state.state === "playing" || user.state.state === "pause") {
+      console.log("playing")
       console.log("user playing = ", user)
       //get keys question that user done
-      let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
+      let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round)
 
       //remove questions done from questions that not yet answered
       removeKeysDone(user.state.keysLeftForThatUser, keysDone)
@@ -345,7 +346,7 @@ const app = async () => {
       }
       // //create button for that question
       const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-      const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+      const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
       startedAt = utillArray.getMoment()
       callSendAPI(buttonMessage)
 
@@ -637,7 +638,7 @@ const app = async () => {
         metadata: "DEVELOPER_DEFINED_METADATA"
       }
     }
-    state = "playing"
+    //state = "playing"
     callSendAPI(messageData)
   }
 
