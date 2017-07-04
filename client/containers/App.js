@@ -45,7 +45,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/"
               component={(props) => <Leaderboard {...props} />} />
-              <PrivateRoute path='/myQuiz' component={(props) => <MyQuiz {...props} />} />
+              <PrivateRoute authed={this.props.authed} path='/myQuiz' component={(props) => <MyQuiz {...props} />} />
             <Route render={() => <Page404 />} />
           </Switch>
         </div>
@@ -54,7 +54,9 @@ class App extends Component {
   }
 }
 export default connect(
-  null,
+  (state) => ({
+    authed: state.app.authed,
+  }),
   (dispatch) => {
     return { actions: bindActionCreators(QuizActions, dispatch) }
   }
