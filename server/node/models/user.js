@@ -80,11 +80,12 @@ class User {
         this.state.state = 'finish'
     }
 
-    nextRound() {
+    nextRound(keysLeftForThatUser) {
         api.setState(this.senderID,
             { state: 'playing', done: 0, round: this.state.round, keysLeftForThatUser, welcomed: this.state.welcomed }
         )
         this.state.state = 'playing'
+        this.state.welcomed = true
     }
 
 }
