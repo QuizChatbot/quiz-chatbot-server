@@ -626,6 +626,8 @@ const app = async () => {
     console.log("user next round = ", user)
     let keysLeftForThatUser = await getKeys()
     user.nextRound(keysLeftForThatUser)
+     console.log("user keysLeft = ", keysLeftForThatUser)
+      console.log("user next round = ", user)
     // user.setState({ state, keysLeftForThatUser, round, "done": 0 })
 
     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
