@@ -1,11 +1,38 @@
 const utillArray = require('../utill_array')
 
-// describe('shuffle keys and send back first element of shuffled keys', () => {
-//     test('shuffle keys success', () => {
-//         expect(utillArray.shuffleKeyFromQuestions(['key1', 'key2', 'key3'])).toBe(15)
-//     })
+describe('shuffle keys and send back first element of shuffled keys', () => {
+    function containsAny(source, target) {
+        let result = source.filter((item) => { return target.indexOf(item) > -1 });
+        return (result.length > 0);
+    }
 
-//     test('shuffle keys failed', () => {
-//         expect(utillArray.shuffleKeyFromQuestions(['key1', 'key2', 'key3'])).toBe(13)
+    test('shuffle keys success', () => {
+        let keys = ['key1', 'key2', 'key3']
+        let shuffle = utillArray.shuffleKeyFromQuestions(keys)
+        expect(containsAny(keys, shuffle)).toBeTruthy()
+    })
 
-// })
+    test('shuffle keys failed', () => {
+        let shuffle = utillArray.shuffleKeyFromQuestions([])
+        expect(shuffle).toBeFalsy()
+    })
+})
+
+describe('shuffle choices and return the shuffled array back', () => {
+    test('shuffle choices success', () => {
+        let choices = ['c1', 'c2', 'c3']
+        let shuffle = utillArray.shuffleChoices(choices)
+        expect(shuffle).toHaveLength(3)
+    })
+    test('shuffle choices failed', () => {
+        let shuffle = utillArray.shuffleChoices([])
+        expect(shuffle).toBeUndefined()
+    })
+})
+
+
+describe('get moment', () => {
+    test('get moment now', () => {
+        expect(utillArray.getMoment()).toBeDefined()
+    })
+})

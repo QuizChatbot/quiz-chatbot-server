@@ -283,6 +283,7 @@ const app = async () => {
     let senderID = event.sender.id
     let recipientID = event.recipient.id
     let timeOfPostback = event.timestamp
+    console.log(timeOfPostback)
     // The 'payload' param is a developer-defined field which is set in a postback 
     // button for Structured Messages. 
     let payload = event.postback.payload

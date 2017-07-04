@@ -24,23 +24,23 @@ const shuffleChoices = (choices) => {
     }
 }
 
-const startTimer = () => {
-    console.time('questionDuration')
-}
+// const startTimer = () => {
+//     console.time('questionDuration')
+// }
 
 const getMoment = () => {
     return moment().format()   
 }
 
-const stopTimer = () => {
-    let time = console.timeEnd('questionDuration')
-    console.log("time = ", time)
-}
+// const stopTimer = () => {
+//     let time = console.timeEnd('questionDuration')
+//     console.log("time = ", time)
+// }
 
-const getFormattedDate = (timestamp) => {
-    let date = moment(timestamp).format()
-    return date
-}
+// const getFormattedDate = (timestamp) => {
+//     let date = moment(timestamp).format()
+//     return date
+// }
 
 const calculateDuration = (startedAt, timeOfPostback) => {
     let doneAt = moment(timeOfPostback)
@@ -48,4 +48,4 @@ const calculateDuration = (startedAt, timeOfPostback) => {
     return duration.asMilliseconds()
 }
 
-module.exports = { shuffleKeyFromQuestions, _, getFormattedDate, startTimer, stopTimer, getMoment, calculateDuration, shuffleChoices}
+module.exports = { shuffleKeyFromQuestions, _, getMoment, calculateDuration, shuffleChoices}
