@@ -177,7 +177,7 @@ const app = async () => {
     let quickReply = message.quick_reply
 
     if (messageText) {
-      console.log(messageText)
+      console.log("mssg = ", message)
       handleReceivedMessage(user, messageText)
     } else if (messageAttachments) {
       sendTextMessage(senderID, "Message with attachment received")
