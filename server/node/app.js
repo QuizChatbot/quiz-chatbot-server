@@ -220,6 +220,7 @@ const app = async () => {
       user.welcome()
       user.playing()
       sendLetsQuiz(user.senderID, messageText, firstName)
+      sendTextMessage(user.senderID, "say 'OK' if you want to play")
     }
 
 
