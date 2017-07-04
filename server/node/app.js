@@ -623,6 +623,7 @@ const app = async () => {
     //ready to ask question
     //reset state = playing
     // state = "playing"
+    console.log("user next round = ", user)
     let keysLeftForThatUser = await getKeys()
     user.nextRound(keysLeftForThatUser)
     // user.setState({ state, keysLeftForThatUser, round, "done": 0 })
