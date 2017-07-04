@@ -466,7 +466,7 @@ const app = async () => {
      //check for button nextRound payload
     if (payloadObj.nextRound === true) {
       sendTextMessage(user.senderID, "Next Round!")
-      startNextRound(user.senderID, user.state.round)
+      startNextRound(user)
     }
     else if (payloadObj.nextRound === false) {
       //pause finish
@@ -548,7 +548,7 @@ const app = async () => {
       }
       //if there is no question left that have not done => create next round button
       else {
-        nextQuestion(user.senderID)
+        nextQuestion(user)
       }
     }
   }
@@ -560,7 +560,7 @@ const app = async () => {
 
   }
 
-  async function nextQuestion(senderID) {
+  async function nextQuestion(user) {
     //TOFIX: user class
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
 
@@ -570,14 +570,15 @@ const app = async () => {
     //no question left
     //finish that round
     if (keyOfNextQuestion == null) {
-      sendTextMessage(senderID, "Finish!")
-      state = "finish"
-      user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
+      sendTextMessage(user.senderID, "Finish!")
+      user.finish()
+      // state = "finish"
+      //user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
 
       done = 0
       userScore = 0
 
-      nextRound(senderID, user.state.round, user.state.done, numberOfQuestions)
+      nextRound(user, numberOfQuestions)
     }
 
     //still has questions not answered
@@ -591,7 +592,7 @@ const app = async () => {
       }
 
       let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
-      let buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
+      let buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
 
       startedAt = utillArray.getMoment()
 
@@ -605,19 +606,19 @@ const app = async () => {
     utillArray._.pullAll(keys, keysDone)
   }
 
-  const nextRound = (senderID, round, done, numberOfQuestions) => {
+  const nextRound = (user, numberOfQuestions) => {
     //if number of done questions equals to number of all questions
     //then that round is complete -> round increase 
-    if (done == numberOfQuestions) {
-      round++
-      user.setRound(round)
+    if (user.state.done == numberOfQuestions) {
+      user.state.round++
+      // user.setRound(round)
     }
     //create button ask for next round
-    let buttonMessage = createButton.createButtonNextRound(senderID)
+    let buttonMessage = createButton.createButtonNextRound(user.senderID)
     callSendAPI(buttonMessage)
   }
 
-  const startNextRound = async (senderID, round) => {
+  const startNextRound = async (user) => {
     //ready to ask question
     //reset state = playing
     state = "playing"
