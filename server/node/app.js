@@ -463,7 +463,7 @@ const app = async () => {
   }
 
   async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
-     //check for button nextRound payload
+    //check for button nextRound payload
     if (payloadObj.nextRound === true) {
       sendTextMessage(user.senderID, "Next Round!")
       startNextRound(user)
@@ -608,10 +608,12 @@ const app = async () => {
   }
 
   const nextRound = (user, numberOfQuestions) => {
+    console.log("round = ", user.state.round)
     //if number of done questions equals to number of all questions
     //then that round is complete -> round increase 
     if (user.state.done == numberOfQuestions) {
       user.state.round++
+       console.log("round increase= ", user.state.round)
       // user.setRound(round)
     }
     //create button ask for next round
@@ -626,8 +628,8 @@ const app = async () => {
     console.log("user next round = ", user)
     let keysLeftForThatUser = await getKeys()
     user.nextRound(keysLeftForThatUser)
-     console.log("keysLeft = ", keysLeftForThatUser)
-      console.log("user next round = ", user)
+    console.log("keysLeft = ", keysLeftForThatUser)
+    console.log("user next round = ", user)
     // user.setState({ state, keysLeftForThatUser, round, "done": 0 })
 
     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
@@ -735,7 +737,6 @@ const app = async () => {
         metadata: "DEVELOPER_DEFINED_METADATA"
       }
     }
-    //state = "playing"
     callSendAPI(messageData)
   }
 
