@@ -335,8 +335,8 @@ const app = async () => {
       }
       else if (user.state.state === "finish") {
         let keysLeftForThatUser = await getKeys()
-        user = await userClass.load(user.senderID, keysLeftForThatUser)
-        user.playing()
+        //user = await userClass.load(user.senderID, keysLeftForThatUser)
+        user.playing(keysLeftForThatUser)
         console.log("user after finish = ", user)
       }
 
