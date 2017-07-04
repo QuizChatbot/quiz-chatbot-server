@@ -20,12 +20,9 @@ const app = async () => {
   // console.log("config ", config, tunnelConfig)
 
   let numberOfQuestions = await firebase.getNumberOfQuestions()
-  let results
   let answerForEachQuestion
-  let currentQuestionKey
   let startedAt
   let skill = "es6"
-  let userScore = 0
 
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
@@ -37,9 +34,6 @@ const app = async () => {
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
   app.use(express.static('public'))
-
-
-  let state = "initial"
 
 
   // App Secret can be retrieved from the App Dashboard
@@ -389,15 +383,13 @@ const app = async () => {
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
 
     //define current key = key of question about to ask
-    currentQuestionKey = keyOfNextQuestion
+    // currentQuestionKey = keyOfNextQuestion
 
     //no question left
     //finish that round
     if (keyOfNextQuestion == null) {
       sendTextMessage(user.senderID, "Finish!")
       user.finish()
-      // userScore = 0
-
       nextRound(user, numberOfQuestions)
     }
 
@@ -446,7 +438,7 @@ const app = async () => {
     console.log("user next round = ", user)
 
     let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-    currentQuestionKey = shuffledKey
+    // currentQuestionKey = shuffledKey
     answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
 
     if (answerForEachQuestion == null) {

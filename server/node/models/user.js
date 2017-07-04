@@ -17,11 +17,6 @@ class User {
         this.state = state
     }
 
-    setState(newState) {
-        api.setState(this.senderID, newState)
-        this.state = newState
-    }
-
     startQuiz(questionKey) {
         this.setState({
             keysLeftForThatUser: this.state.keysLeftForThatUser,
@@ -31,15 +26,6 @@ class User {
             state: 'playing',
             userScore: this.state.userScore
         })
-    }
-
-    getWelcome() {
-        return api.getStateWelcome(this.senderID)
-    }
-
-    setStateWelcome(stateWelcome) {
-        api.setStateWelcome(this.senderID, stateWelcome)
-        this.stateWelcome = stateWelcome
     }
 
     setRound(round) {
@@ -97,7 +83,6 @@ class User {
         this.state.state = 'playing'
         this.state.welcomed = true
     }
-
 }
 
 module.exports = { load }
