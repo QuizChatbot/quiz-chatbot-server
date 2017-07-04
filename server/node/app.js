@@ -333,8 +333,8 @@ const app = async () => {
       let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
       let totalScore = summary.calculateTotalScore(numberOfQuestions)
       let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(payloadObj.point, result, duration) //point for that question 
-      userScore += scoreOfThatQuestion
-      let grade = summary.calculateGrade(totalScore, userScore)
+      user.state.userScore += scoreOfThatQuestion
+      let grade = summary.calculateGrade(totalScore, user.state.userScore)
 
       // // answer Correct
       if (result) {
@@ -357,7 +357,7 @@ const app = async () => {
 
       //prepare summary object to save in firebase
       let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
-        user.state.round, skill, grade, userScore, totalScore)
+        user.state.round, skill, grade, user.state.userScore, totalScore)
       firebase.saveSummaryToFirebase(user.senderID, preparedSummary)
       console.log("_______keysLeftForThatUser______ = ", user.state.keysLeftForThatUser)
       let keysLeftForThatUser = user.state.keysLeftForThatUser
@@ -396,7 +396,7 @@ const app = async () => {
     if (keyOfNextQuestion == null) {
       sendTextMessage(user.senderID, "Finish!")
       user.finish()
-      userScore = 0
+      // userScore = 0
 
       nextRound(user, numberOfQuestions)
     }

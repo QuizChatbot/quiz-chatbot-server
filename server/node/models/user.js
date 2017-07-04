@@ -4,7 +4,7 @@ const load = async (senderID, keys) => {
     const oldState = await api.getState(senderID)
     //contact that user for the first time
     if (oldState === null) {
-        await api.setState(senderID, { state: "initial", done: 0, round: 0, keysLeftForThatUser: keys, welcomed: false })
+        await api.setState(senderID, { state: "initial", done: 0, round: 0, keysLeftForThatUser: keys, welcomed: false, userScore: 0 })
     }
     let state = await api.getState(senderID)
 
@@ -28,13 +28,10 @@ class User {
             currentQuestionKey: questionKey,
             done: this.state.done,
             round: this.state.round,
-            state: 'playing'
+            state: 'playing',
+            userScore: this.state.userScore
         })
     }
-
-    // get(field) {
-    //     return this.state[field]
-    // }
 
     getWelcome() {
         return api.getStateWelcome(this.senderID)
@@ -57,7 +54,8 @@ class User {
 
     playing(keysLeftForThatUser) {
         api.setState(this.senderID,
-            { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
+            { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
+            welcomed: this.state.welcomed, userScore: this.userScore }
         )
         this.state.state = 'playing'
         this.state.welcomed = true
@@ -66,7 +64,8 @@ class User {
 
     pause() {
         api.setState(this.senderID,
-            { state: 'pause', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
+            { state: 'pause', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
+            welcomed: this.state.welcomed, userScore: this.state.userScore }
         )
         this.state.state = 'pause'
         this.state.welcomed = true
@@ -74,14 +73,16 @@ class User {
 
     resume() {
         api.setState(this.senderID,
-            { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
+            { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
+            welcomed: this.state.welcomed, userScore: this.state.userScore }
         )
         this.state.state = 'playing'
     }
 
     finish() {
         api.setState(this.senderID,
-            { state: 'finish', done: 0, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
+            { state: 'finish', done: 0, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
+            welcomed: this.state.welcomed, userScore: 0 }
         )
         this.state.state = 'finish'
         this.state.welcomed = true
@@ -89,7 +90,8 @@ class User {
 
     nextRound(keysLeftForThatUser) {
         api.setState(this.senderID,
-            { state: 'playing', done: 0, round: this.state.round, keysLeftForThatUser: keysLeftForThatUser, welcomed: this.state.welcomed }
+            { state: 'playing', done: 0, round: this.state.round, keysLeftForThatUser: keysLeftForThatUser, 
+            welcomed: this.state.welcomed, userScore: 0 }
         )
         this.state.keysLeftForThatUser = keysLeftForThatUser
         this.state.state = 'playing'
