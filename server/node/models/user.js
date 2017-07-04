@@ -55,14 +55,22 @@ class User {
         this.state.welcomed = true
     }
 
-    pause(){
-        api.setState(this.senderID, 
-        {state: 'pause', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed}
+    playing() {
+        api.setState(this.senderID,
+            { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
         )
+        this.state.state = 'playing'
     }
 
-    resume(){
-        
+    pause() {
+        api.setState(this.senderID,
+            { state: 'pause', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
+        )
+        this.state.state = 'pause'
+    }
+
+    resume() {
+
     }
 
 }

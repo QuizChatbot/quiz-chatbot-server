@@ -303,12 +303,14 @@ const app = async () => {
     // }
 
     // //other users except the first user will add their profile to firebase
+     console.log("user playing = ", user)
     let userDetail = await getUserDetail(user.senderID)
     let firstName = userDetail.first_name
     firebase.saveUserToFirebase(user.senderID, userDetail)
 
     if (user.state.welcomed === false) {
       user.welcome()
+      user.playing()
       console.log("user after welcome = ", user)
       sendLetsQuiz(user.senderID, messageText, firstName)
     }
@@ -317,7 +319,7 @@ const app = async () => {
     // //when set state again, data format will change
     // //already quiz with chatbot or user come back after pause
     else if (user.state.state === "playing" || user.state.state === "pause") {
-
+      console.log("user playing = ", user)
       //get keys question that user done
       let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
 
