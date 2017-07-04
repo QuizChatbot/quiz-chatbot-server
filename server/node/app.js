@@ -470,7 +470,7 @@ const app = async () => {
     }
     else if (payloadObj.nextRound === false) {
       //pause finish
-      user.finish()
+      user.pause()
       //user.setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
       sendTextMessage(user.senderID, "Come back when you're ready baby~")
       sendTextMessage(user.senderID, "Bye Bye <3")

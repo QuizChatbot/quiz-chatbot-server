@@ -60,6 +60,7 @@ class User {
             { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
         )
         this.state.state = 'playing'
+        this.state.welcomed = true
     }
 
     pause() {
@@ -67,10 +68,14 @@ class User {
             { state: 'pause', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
         )
         this.state.state = 'pause'
+        this.state.welcomed = true
     }
 
     resume() {
-
+        api.setState(this.senderID,
+            { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
+        )
+        this.state.state = 'playing'
     }
 
     finish() {
@@ -78,6 +83,7 @@ class User {
             { state: 'finish', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, welcomed: this.state.welcomed }
         )
         this.state.state = 'finish'
+        this.state.welcomed = true
     }
 
     nextRound(keysLeftForThatUser) {
