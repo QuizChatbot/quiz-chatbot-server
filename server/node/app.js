@@ -427,6 +427,7 @@ const app = async () => {
     //if number of done questions equals to number of all questions
     //then that round is complete -> round increase 
     let round = user.state.round
+    console.log("user test nextRound = ", user)
      console.log("numberOfQuestions = ", numberOfQuestions)
       console.log("done = ", user.state.done)
     console.log("round = ", round)
