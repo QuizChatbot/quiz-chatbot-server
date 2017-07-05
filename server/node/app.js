@@ -212,7 +212,7 @@ const app = async () => {
     //   }
     // }
 
-    if (messageText !== "OK" && user.state.welcomed === true) {
+    if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause") {
       sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
     }
     // //other users except the first user will add their profile to firebase
@@ -427,9 +427,12 @@ const app = async () => {
     //if number of done questions equals to number of all questions
     //then that round is complete -> round increase 
     let round = user.state.round
+    console.log("round = ", round)
     if (user.state.done == numberOfQuestions) {
       round++
+      console.log("round increase = ", round)
       user.setRound(round)
+       console.log("user set round = ", user)
     }
     //create button ask for next round
     let buttonMessage = createButton.createButtonNextRound(user.senderID)

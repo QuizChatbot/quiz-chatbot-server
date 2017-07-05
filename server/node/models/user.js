@@ -41,7 +41,7 @@ class User {
     // }
 
     setRound(round) {
-        this.api.setRound(this.senderID, round)
+        // this.api.setRound(this.senderID, round)
         this.setState({round: round})
     }
 
