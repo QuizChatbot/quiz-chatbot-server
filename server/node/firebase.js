@@ -135,10 +135,12 @@ const getGrade = async (senderID, round) => new Promise(async (resolve) => {
             if (resultSnapshot.hasOwnProperty(property)) {
                 if (resultSnapshot[property].round == round) {
                     grade = resultSnapshot[property].grade
+                    console.log("__Grade in loop = ", grade)
+                    console.log("__Grade = ", resultSnapshot[property].grade)
                 }
             }
         }
-        console.log("__Grade = ", grade)
+        console.log("__Grade out loop= ", grade)
         resolve(grade)
 
     }, (errorObject) => {
