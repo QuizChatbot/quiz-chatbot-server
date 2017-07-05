@@ -4,8 +4,6 @@ import { isFunction, isObject, omit, get } from 'lodash'
 import updeep from 'updeep'
 import * as Actions from '../actions'
 
-const localStorage = typeof window === 'object' ? window.localStorage : null
-
 const initialState = {
   data: {}
 }
@@ -13,11 +11,6 @@ const initialState = {
 function splitUrl(url) {
   return url.split('/')
 }
-
-// function urlToKeyPath (url) {
-//   const keyPath = splitUrl(url).join('.')
-//   return keyPath
-// }
 
 export default class Firedux {
   constructor(options) {
@@ -157,7 +150,6 @@ export default class Firedux {
 
       const handler = function (error, authData) {
         if (error) return handleError(error)
-        // localStorage.setItem('FIREBASE_TOKEN', (authData.token || authData.refreshToken))
         that.authData = authData
         dispatch({ type: 'FIREBASE_LOGIN', uid: authData.user.uid, error })
         resolve(authData)
