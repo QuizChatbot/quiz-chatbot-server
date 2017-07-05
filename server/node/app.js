@@ -315,6 +315,7 @@ const app = async () => {
     else if (payloadObj.nextQuestion === false) {
       //pause
       user.pause()
+      console.log("user after pause = ", user)
       sendTextMessage(user.senderID, "Hell <3")
       sendTextMessage(user.senderID, "Come back when you're ready baby~")
     }
