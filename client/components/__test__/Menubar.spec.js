@@ -31,17 +31,20 @@ describe('Menubar component test', () => {
     expect(Wrapper.contains(<LogoutButton onLogoutClick={undefined} />)).toEqual(true)
   })
 
-  // it('should render Login button if renderLoginButton function is called', () => {
-  //   const func = () => { return }
-  //   const Wrapper = shallow(<renderLoginButton onLoginClick={func} />)
-  //   //expect(Wrapper.text()).toEqual('Login with Facebook')
-  //   expect(Wrapper.contains(<button>Login with Facebook</button>)).toEqual(true)
-  // })
+  it('LoginButton should render login button', () => {
+    const onLoginClick = () => { }
+    const Wrapper = shallow(<LoginButton onLoginClick={onLoginClick} />)
+    expect(Wrapper.contains('Login with Facebook')).toEqual(true)
+    expect(Wrapper.find('button')).toHaveLength(1)
+    expect(Wrapper.contains(<button onClick={onLoginClick}>Login with Facebook</button>)).toEqual(true)
+  })
 
-  // it('should render Logout button if renderLogoutButton function is called', () => {
-  //   const func = () => { return }
-  //   const Wrapper = shallow(<renderLogoutButton onLogoutClick={func} />)
-  //   expect(Wrapper.contains(<button onClick={() => onLogoutClick()}>Logout</button>)).toEqual(true)
-  // })
+  it('LogoutButton should render Logout button', () => {
+    const onLogoutClick = () => { }
+    const Wrapper = shallow(<LogoutButton onLogoutClick={onLogoutClick} />)
+    expect(Wrapper.contains('Logout')).toEqual(true)
+    expect(Wrapper.find('button')).toHaveLength(1)
+    expect(Wrapper.contains(<button onClick={onLogoutClick}>Logout</button>)).toEqual(true)
+  })
 
 })

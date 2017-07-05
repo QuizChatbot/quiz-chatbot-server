@@ -2,11 +2,11 @@ import React, { PropTypes, Component } from 'react'
 import { Link } from 'react-router-dom'
 
 export const LoginButton = ({ onLoginClick }) => (
-  <button onClick={() => onLoginClick()}>Login with Facebook</button>
+  <button onClick={onLoginClick}>Login with Facebook</button>
 )
 
 export const LogoutButton = ({ onLogoutClick }) => (
-  <button onClick={() => onLogoutClick()}>Logout</button>
+  <button onClick={onLogoutClick}>Logout</button>
 )
 
 export class Menubar extends Component {
