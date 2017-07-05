@@ -14,7 +14,8 @@ const app = async () => {
     tunnelConfig = require('./tunnel.json'),
     summary = require('./summary'),
     userClass = require('./models/user'),
-    resultFirebase = require('./result')
+    resultFirebase = require('./result'),
+    api = require('./localUserAPI')
 
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
@@ -113,7 +114,7 @@ const app = async () => {
           //get all question keys and save to usersData for that senderID
           let keysLeftForThatUser = await getKeys()
           // //get state of this user
-          let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser)
+          let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
 
 
           if (messagingEvent.optin) {

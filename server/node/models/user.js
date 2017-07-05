@@ -1,6 +1,6 @@
 const api = require('../localUserAPI')
 
-const load = async (senderID, keys) => {
+const load = async (senderID, keys, api) => {
     const oldState = await api.getState(senderID)
     //contact that user for the first time
     if (oldState === null) {
@@ -12,13 +12,15 @@ const load = async (senderID, keys) => {
 }
 
 class User {
-    constructor(senderID, state) {
+    constructor(senderID, state, api) {
         this.senderID = senderID
         this.state = state
+        this.api = api
     }
 
-    setState(newState) {
-        api.setState(this.senderID, newState)
+    setState(updateState) {
+        const newState = Object.assign({}, this.state, updateState)
+        this.api.setState(this.senderID, newState)
         this.state = newState
     }
 
@@ -31,67 +33,69 @@ class User {
             state: 'playing',
             userScore: this.state.userScore
         })
-    }
+    }1
 
     setStateWelcome(stateWelcome) {
-        api.setStateWelcome(this.senderID, stateWelcome)
+        this.api.setStateWelcome(this.senderID, stateWelcome)
         this.stateWelcome = stateWelcome
     }
 
     setRound(round) {
-        api.setRound(this.senderID, round)
+        this.api.setRound(this.senderID, round)
         this.state.round = round
     }
 
     welcome() {
-        api.setStateWelcome(this.senderID, true)
+        this.api.setStateWelcome(this.senderID, true)
         this.state.welcomed = true
     }
 
     playing(keysLeftForThatUser) {
-        api.setState(this.senderID,
-            { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
-            welcomed: this.state.welcomed, userScore: this.state.userScore }
+        this.setState(this.senderID,
+            { state: 'playing', keysLeftForThatUser: keysLeftForThatUser, 
+            welcomed: true }
         )
-        this.state.state = 'playing'
-        this.state.welcomed = true
-        this.state.keysLeftForThatUser = keysLeftForThatUser
+        // this.state.state = 'playing'
+        // this.state.welcomed = true
+        // this.state.keysLeftForThatUser = keysLeftForThatUser
     }
 
     pause() {
-        api.setState(this.senderID,
-            { state: 'pause', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
-            welcomed: this.state.welcomed, userScore: this.state.userScore }
+        this.setState(this.senderID,
+            { state: 'pause', welcomed: true }
         )
-        this.state.state = 'pause'
-        this.state.welcomed = true
+        // this.state.state = 'pause'
+        // this.state.welcomed = true
     }
 
     resume() {
-        api.setState(this.senderID,
-            { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
-            welcomed: this.state.welcomed, userScore: this.state.userScore }
-        )
-        this.state.state = 'playing'
+        this.setState({ state: 'playing' })
+        // api.setState(this.senderID,
+        //     { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
+        //     welcomed: this.state.welcomed, userScore: this.state.userScore }
+        // )
+        // this.state.state = 'playing'
     }
 
     finish() {
-        api.setState(this.senderID,
-            { state: 'finish', done: 0, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
-            welcomed: this.state.welcomed, userScore: 0 }
-        )
-        this.state.state = 'finish'
-        this.state.welcomed = true
+        this.setState({ state: 'finish', welcomed: true, done: 0, userScore: 0 })
+        // api.setState(this.senderID,
+        //     { state: 'finish', done: 0, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
+        //     welcomed: this.state.welcomed, userScore: 0 }
+        // )
+        // this.state.state = 'finish'
+        // this.state.welcomed = true
     }
 
     nextRound(keysLeftForThatUser) {
-        api.setState(this.senderID,
-            { state: 'playing', done: 0, round: this.state.round, keysLeftForThatUser: keysLeftForThatUser, 
-            welcomed: this.state.welcomed, userScore: 0 }
-        )
-        this.state.keysLeftForThatUser = keysLeftForThatUser
-        this.state.state = 'playing'
-        this.state.welcomed = true
+        this.setState({state: "playing", done :0, userScore: 0, keysLeftForThatUser: keysLeftForThatUser})
+        // api.setState(this.senderID,
+        //     { state: 'playing', done: 0, round: this.state.round, keysLeftForThatUser: keysLeftForThatUser, 
+        //     welcomed: this.state.welcomed, userScore: 0 }
+        // )
+        // this.state.keysLeftForThatUser = keysLeftForThatUser
+        // this.state.state = 'playing'
+        // this.state.welcomed = true
     }
 
 }
