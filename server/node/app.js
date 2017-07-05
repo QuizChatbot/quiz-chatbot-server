@@ -212,7 +212,7 @@ const app = async () => {
     //   }
     // }
 
-    if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause") {
+    if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
       sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
     }
     // //other users except the first user will add their profile to firebase

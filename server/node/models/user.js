@@ -42,18 +42,32 @@ class User {
 
     setRound(round) {
         // this.api.setRound(this.senderID, round)
-        this.setState({round: round})
+        this.setState({ round: round })
     }
 
     welcome() {
         this.api.setStateWelcome(this.senderID, true)
-        this.setState({welcomed: true})
+        this.setState({ welcomed: true })
     }
 
     playing() {
         this.setState(
-            { state: 'playing', keysLeftForThatUser: this.state.keysLeftForThatUser, 
-            welcomed: true }
+            {
+                state: 'playing', keysLeftForThatUser: this.state.keysLeftForThatUser,
+                welcomed: true
+            }
+        )
+        // this.state.state = 'playing'
+        // this.state.welcomed = true
+        // this.state.keysLeftForThatUser = keysLeftForThatUser
+    }
+
+    playing(keysLeftForThatUser) {
+        this.setState(
+            {
+                state: 'playing', keysLeftForThatUser: keysLeftForThatUser,
+                welcomed: true
+            }
         )
         // this.state.state = 'playing'
         // this.state.welcomed = true
@@ -88,7 +102,7 @@ class User {
     }
 
     nextRound(keysLeftForThatUser) {
-        this.setState({state: "playing", done :0, userScore: 0, keysLeftForThatUser: keysLeftForThatUser, welcomed: true})
+        this.setState({ state: "playing", done: 0, userScore: 0, keysLeftForThatUser: keysLeftForThatUser, welcomed: true })
         // api.setState(this.senderID,
         //     { state: 'playing', done: 0, round: this.state.round, keysLeftForThatUser: keysLeftForThatUser, 
         //     welcomed: this.state.welcomed, userScore: 0 }
