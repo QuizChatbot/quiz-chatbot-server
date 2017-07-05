@@ -245,6 +245,7 @@ const app = async () => {
         if (user.state.state === "pause") {
           console.log("_________PAUSE__________")
           user.resume()
+          console.log("user after resume = ", user)
         }
         else if (user.state.state === "finish") {
           let keysLeftForThatUser = await getKeys()
