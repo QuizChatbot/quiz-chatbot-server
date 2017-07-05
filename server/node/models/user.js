@@ -42,16 +42,16 @@ class User {
 
     setRound(round) {
         this.api.setRound(this.senderID, round)
-        this.state.round = round
+        this.setState({round: round})
     }
 
     welcome() {
         this.api.setStateWelcome(this.senderID, true)
-        this.state.welcomed = true
+        ths.setState({welcomed: true})
     }
 
     playing(keysLeftForThatUser) {
-        this.setState(this.senderID,
+        this.setState(
             { state: 'playing', keysLeftForThatUser: keysLeftForThatUser, 
             welcomed: true }
         )
@@ -61,7 +61,7 @@ class User {
     }
 
     pause() {
-        this.setState(this.senderID,
+        this.setState(
             { state: 'pause', welcomed: true }
         )
         // this.state.state = 'pause'
