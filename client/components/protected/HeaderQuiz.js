@@ -17,7 +17,7 @@ class HeaderQuiz extends Component {
 }
 
 HeaderQuiz.propTypes = {
-  addQuiz: PropTypes.func.isRequired
+  addQuiz: PropTypes.func
 }
 
 export default HeaderQuiz
