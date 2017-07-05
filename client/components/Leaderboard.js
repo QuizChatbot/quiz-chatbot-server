@@ -12,7 +12,6 @@ export class Leaderboard extends Component {
 
   render() {
     const { developers } = this.props
-    console.log("developers= ", developers)
     return (
       <div>
         <h2>Leaderboard</h2>

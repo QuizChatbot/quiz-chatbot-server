@@ -6,7 +6,8 @@ describe('Leaderboard component test', () => {
   const props = {
     developers: [{
       profile: {
-        first_name: 'Rungsikorn'
+        first_name: 'firstname',
+        last_name: 'lastname'
       },
       maxSummary: {
         grade: 'B',
@@ -17,17 +18,17 @@ describe('Leaderboard component test', () => {
 
   it('should render leaderbaord item message', () => {
     const Wrapper = shallow(<LeaderboardItem developer={props.developers[0]} key={0} idx={0} />)
-    expect(Wrapper.contains(<h2>1. Rungsikorn B ( score: 75 )</h2>)).toMatchSnapshot()
+    expect(Wrapper.contains(<h2>1. firstname lastname B ( score: 75 )</h2>)).toEqual(true)
   })
 
   it('should render leaderboard component', () => {
     const Wrapper = shallow(<Leaderboard {...props} />)
-    expect(Wrapper.contains(<h2>Leaderboard</h2>)).toMatchSnapshot()
-    expect(Wrapper.contains(<LeaderboardItem developer={props.developers[0]} key={0} idx={0} />)).toMatchSnapshot()
+    expect(Wrapper.contains(<h2>Leaderboard</h2>)).toEqual(true)
+    expect(Wrapper.contains(<LeaderboardItem developer={props.developers[0]} key={0} idx={0} />)).toEqual(true)
   })
 
   it('should render No players message if developers length is 0', () => {
     const Wrapper = shallow(<Leaderboard developers={[]} />)
-    expect(Wrapper.contains('No Players')).toMatchSnapshot()
+    expect(Wrapper.contains('No Players')).toEqual(true)
   })
 })
