@@ -62,7 +62,7 @@ class User {
         // this.state.keysLeftForThatUser = keysLeftForThatUser
     }
 
-    startAgain(keysLeftForThatUser) {
+    startAgain(keysLeftForThatUser) { 
         this.setState(
             {
                 state: 'playing', keysLeftForThatUser: keysLeftForThatUser,
