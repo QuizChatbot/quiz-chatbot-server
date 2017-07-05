@@ -7,7 +7,7 @@ const connectToFirebase = () => {
     })
     return admin
 }
- 
+
 const admin = connectToFirebase()
 
 //get total number of questions
@@ -116,7 +116,7 @@ const getQuestionDone = async (senderID, round) => new Promise(async (resolve) =
                     keysDone.push(resultSnapshot[property].question)
                 }
             }
-        } 
+        }
         resolve(keysDone)
     }, (errorObject) => {
         console.log("Cannot get keys of questions that user already done  = " + errorObject.code)
@@ -124,6 +124,30 @@ const getQuestionDone = async (senderID, round) => new Promise(async (resolve) =
     })
 
 })
+
+const getGrade = async (senderID, round) => new Promise(async (resolve) => {
+    const db = admin.database()
+    const ref = db.ref("/Developer/" + senderID)
+    let grade
+    ref.child("summary").on("value", (snapshot) => {
+        let resultSnapshot = snapshot.val()
+        console.log("__Grade__ ", resultSnapshot)
+        for (let property in resultSnapshot) {
+            if (resultSnapshot.hasOwnProperty(property)) {
+                if (resultSnapshot[property].round == round) {
+                    console.log((resultSnapshot[property].grade))
+                    grade = resultSnapshot[property].grade
+                }
+            }
+        }
+        resolve(grade)
+
+    }, (errorObject) => {
+        console.log("Cannot get grade of user  = " + errorObject.code)
+    })
+
+})
+
 
 //save result of answered question
 const saveResultToFirebase = async (senderID, prepareResult) => {
@@ -158,7 +182,7 @@ const saveUserToFirebase = (senderID, user) => {
                 if (childSnapshot.key == senderID) {
                     console.log("Already have user information")
                     hasUser = true
-                    return 
+                    return
                 }
             })
         })
@@ -174,7 +198,7 @@ const saveSummaryToFirebase = (senderID, summary) => {
     ref.child("summary").child(summary.round).update({
         "round": summary.round,
         "done": summary.done,
-        "isDone" : summary.isDone,
+        "isDone": summary.isDone,
         "keysQuestionLeft": summary.keysQuestionLeft,
         "skill": summary.skill,
         "grade": summary.grade,
@@ -185,6 +209,7 @@ const saveSummaryToFirebase = (senderID, summary) => {
 
 module.exports = {
     connectToFirebase, getQuestionsFromFirebase, getAllAnswersFromQuestion, getQuestionFromId,
-    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone
+    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone,
+    getGrade
 }
 

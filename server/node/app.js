@@ -23,7 +23,7 @@ const app = async () => {
   let answerForEachQuestion
   let startedAt
   let skill = "es6"
-
+  let grade = await firebase.getGrade('1365644836817821', 0)
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
     return keys
@@ -385,17 +385,14 @@ const app = async () => {
   }
 
   async function nextQuestion(user) {
-    //TOFIX: user class
     console.log("user next q = ", user)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-
-    //define current key = key of question about to ask
-    // currentQuestionKey = keyOfNextQuestion
 
     //no question left
     //finish that round
     if (keyOfNextQuestion == null) {
       sendTextMessage(user.senderID, "Finish!")
+      sendTextMessage(user.senderID, `ได้คะแนน ${user.state.userScore} เกรด ${grade} ถ้าอยากรู้ลำดับก็ไปที่ https://quizchatbot-ce222.firebaseapp.com/ เลยย`)
       user.finish()
       nextRound(user, numberOfQuestions)
     }
