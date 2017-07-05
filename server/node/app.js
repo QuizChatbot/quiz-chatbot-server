@@ -23,7 +23,7 @@ const app = async () => {
   let answerForEachQuestion
   let startedAt
   let skill = "es6"
-  let grade = await firebase.getGrade('1365644836817821', 0)
+  
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
     return keys
@@ -387,7 +387,7 @@ const app = async () => {
   async function nextQuestion(user) {
     console.log("user next q = ", user)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-
+    let grade = firebase.getGrade(user.state.senderID, user.state.round)
     //no question left
     //finish that round
     if (keyOfNextQuestion == null) {
