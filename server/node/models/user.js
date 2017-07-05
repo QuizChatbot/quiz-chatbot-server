@@ -47,7 +47,7 @@ class User {
 
     welcome() {
         this.api.setStateWelcome(this.senderID, true)
-        ths.setState({welcomed: true})
+        this.setState({welcomed: true})
     }
 
     playing(keysLeftForThatUser) {
