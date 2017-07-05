@@ -19,11 +19,11 @@ export class Menubar extends Component {
     return (<div>
       <Link to="/">Leaderboard</Link><br />
       <a href="https://www.facebook.com/messages/t/122419575009686" target="_blank">Play Quiz</a>
-      <Link to="/"></Link><br />
       {!authed
         ? (renderLoginButton(onLoginClick))
         : (<div>
-          <span> name: {firedux.displayName} </span><br />
+          <span>name:{firedux.displayName}</span>
+          <br />
           <Link to="/myquiz">My Quiz</Link><br />
           {renderLogoutButton(onLogoutClick)}
         </div>)
@@ -34,8 +34,8 @@ export class Menubar extends Component {
 }
 
 Menubar.PropTypes = {
-  firedux: PropTypes.object.isRequired,
-  authed: PropTypes.bool.isRequired,
+  firedux: PropTypes.object,
+  authed: PropTypes.bool,
   onLoginClick: PropTypes.func,
   onLogoutClick: PropTypes.func
 }

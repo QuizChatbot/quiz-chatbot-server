@@ -6,8 +6,8 @@ describe('Leaderboard component test', () => {
   const props = {
     developers: [{
       profile: {
-        first_name: 'firstname',
-        last_name: 'lastname'
+        first_name: 'Xiao',
+        last_name: 'Ying'
       },
       maxSummary: {
         grade: 'B',
@@ -18,7 +18,7 @@ describe('Leaderboard component test', () => {
 
   it('should render leaderbaord item message', () => {
     const Wrapper = shallow(<LeaderboardItem developer={props.developers[0]} key={0} idx={0} />)
-    expect(Wrapper.contains(<h2>1. firstname lastname B ( score: 75 )</h2>)).toEqual(true)
+    expect(Wrapper.contains(<h2>1. Xiao Ying B ( score: 75 )</h2>)).toEqual(true)
   })
 
   it('should render leaderboard component', () => {
