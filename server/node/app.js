@@ -177,7 +177,6 @@ const app = async () => {
     let quickReply = message.quick_reply
 
     if (messageText) {
-      console.log("_____mssg____ = ", message.text)
       handleReceivedMessage(user, messageText)
     } else if (messageAttachments) {
       sendTextMessage(senderID, "Message with attachment received")
@@ -224,8 +223,8 @@ const app = async () => {
       if (user.state.welcomed === false) {
         user.welcome()
         user.playing()
-        sendLetsQuiz(user.senderID, messageText, firstName)
-        sendTextMessage(user.senderID, "say 'OK' if you want to play")
+        //sendLetsQuiz(user.senderID, messageText, firstName)
+        sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
       }
 
 
@@ -387,7 +386,7 @@ const app = async () => {
   async function nextQuestion(user) {
     console.log("user next q = ", user)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-    let grade = firebase.getGrade(user.state.senderID, user.state.round)
+    let grade = await firebase.getGrade(user.state.senderID, user.state.round)
     //no question left
     //finish that round
     if (keyOfNextQuestion == null) {
