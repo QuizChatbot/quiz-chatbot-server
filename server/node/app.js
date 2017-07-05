@@ -23,7 +23,7 @@ const app = async () => {
   let answerForEachQuestion
   let startedAt
   let skill = "es6"
-  
+
   async function getKeys() {
     let keys = await firebase.getAllQuestionKeys()
     return keys
@@ -226,7 +226,7 @@ const app = async () => {
         //sendLetsQuiz(user.senderID, messageText, firstName)
         sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
       }
- 
+
 
       // //when set state again, data format will change
       // //already quiz with chatbot or user come back after pause
@@ -386,10 +386,10 @@ const app = async () => {
   async function nextQuestion(user) {
     console.log("user next q = ", user)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-    let grade = await firebase.getGrade(user.state.senderID, user.state.round)
     //no question left
     //finish that round
     if (keyOfNextQuestion == null) {
+      let grade = await firebase.getGrade(user.state.senderID, user.state.round)
       sendTextMessage(user.senderID, "Finish!")
       sendTextMessage(user.senderID, `ได้คะแนน ${user.state.userScore} เกรด ${grade} ถ้าอยากรู้ลำดับก็ไปที่ https://quizchatbot-ce222.firebaseapp.com/ เลยย`)
       user.finish()

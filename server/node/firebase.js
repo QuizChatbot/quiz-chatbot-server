@@ -138,6 +138,7 @@ const getGrade = async (senderID, round) => new Promise(async (resolve) => {
                 }
             }
         }
+        console.log("__Grade = ", grade)
         resolve(grade)
 
     }, (errorObject) => {
