@@ -3,7 +3,7 @@ const api = require('../localUserAPI')
 const load = async (senderID, keys, api) => {
     const oldState = await api.getState(senderID)
     //contact that user for the first time
-    if (oldState === null) {
+    if (!oldState) {
         await api.setState(senderID, { state: "initial", done: 0, round: 0, keysLeftForThatUser: keys, welcomed: false, userScore: 0 })
     }
     let state = await api.getState(senderID)
