@@ -1,28 +1,27 @@
 import React, { PropTypes, Component } from 'react'
-import classnames from 'classnames'
 
-class Footer extends Component {
-  renderQuizCount() {
-    const { quizCount } = this.props
-    const itemWord = quizCount === 1 ? 'item' : 'items'
-    return (
-      <span className="todo-count">
-        <strong>{quizCount || 'No'}</strong> {itemWord}
-      </span>
-    )
-  }
+export const QuizCount = ({ count }) => {
+  const itemWord = count === 1 ? 'item' : 'items'
+  return (
+    <span className="todo-count">
+      <strong>{count || 'No'}</strong> {itemWord}
+    </span>
+  )
+}
 
+class FooterQuiz extends Component {
   render() {
+    const { quizCount } = this.props
     return (
       <footer className="footer">
-        {this.renderQuizCount()}
+        <QuizCount count={quizCount} />
       </footer>
     )
   }
 }
 
-Footer.propTypes = {
-  quizCount: PropTypes.number.isRequired,
+FooterQuiz.propTypes = {
+  quizCount: PropTypes.number,
 }
 
-export default Footer
+export default FooterQuiz
