@@ -50,9 +50,9 @@ class User {
         this.setState({welcomed: true})
     }
 
-    playing(keysLeftForThatUser) {
+    playing() {
         this.setState(
-            { state: 'playing', keysLeftForThatUser: keysLeftForThatUser, 
+            { state: 'playing', keysLeftForThatUser: this.state.keysLeftForThatUser, 
             welcomed: true }
         )
         // this.state.state = 'playing'
