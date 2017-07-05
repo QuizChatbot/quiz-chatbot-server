@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import { firebaseToArray } from '../utils'
 
 export const LeaderboardItem = ({ idx, developer }) => (
-  <h2>{idx + 1}. {developer.profile.first_name} {developer.maxSummary.grade} ( score: {developer.maxSummary.score} )</h2>
+  <h2>{idx + 1}. {developer.profile.first_name} {developer.profile.last_name} {developer.maxSummary.grade} ( score: {developer.maxSummary.score} )</h2>
 )
 
 export class Leaderboard extends Component {
@@ -12,6 +12,7 @@ export class Leaderboard extends Component {
 
   render() {
     const { developers } = this.props
+    console.log("developers= ", developers)
     return (
       <div>
         <h2>Leaderboard</h2>
