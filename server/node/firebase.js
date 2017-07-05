@@ -132,7 +132,9 @@ const getGrade = async (senderID, round) => new Promise(async (resolve) => {
     ref.child("summary").on("value", (snapshot) => {
         let resultSnapshot = snapshot.val()
         for (let property in resultSnapshot) {
+             console.log("__prop = ", property)
             if (resultSnapshot.hasOwnProperty(property)) {
+                 console.log("__resultSnapshot[propert] = ", resultSnapshot[property])
                 if (resultSnapshot[property].round == round) {
                     grade = resultSnapshot[property].grade
                     console.log("__Grade in loop = ", grade)
