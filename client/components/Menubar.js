@@ -18,7 +18,7 @@ export class Menubar extends Component {
     const { firedux, authed, onLoginClick, onLogoutClick } = this.props
     return (<div>
       <Link to="/">Leaderboard</Link><br />
-      <a href="https://www.facebook.com/messages/t/122419575009686" target="_blank">Play Quiz</a>
+      <a href="https://www.facebook.com/messages/t/122419575009686" target="_blank">Play Quiz</a><br />
       {!authed
         ? <LoginButton onLoginClick={onLoginClick} />
         : (<div>
