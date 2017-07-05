@@ -16,6 +16,7 @@ const app = async () => {
     userClass = require('./models/user'),
     resultFirebase = require('./result'),
     api = require('./localUserAPI')
+    console.log(api)
 
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)

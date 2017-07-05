@@ -8,7 +8,7 @@ const load = async (senderID, keys, api) => {
     }
     let state = await api.getState(senderID)
 
-    return new User(senderID, state)
+    return new User(senderID, state, api)
 }
 
 class User {
