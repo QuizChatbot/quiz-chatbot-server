@@ -16,7 +16,6 @@ const app = async () => {
     userClass = require('./models/user'),
     resultFirebase = require('./result'),
     api = require('./localUserAPI')
-    console.log(api)
 
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
@@ -214,7 +213,7 @@ const app = async () => {
     // }
 
     if (messageText !== "OK" && user.state.welcomed === true) {
-      sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง")
+      sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
     }
     // //other users except the first user will add their profile to firebase
     else {
@@ -224,13 +223,13 @@ const app = async () => {
 
       if (user.state.welcomed === false) {
         user.welcome()
+        console.log("user set welcome = ", user)
         user.playing()
+        console.log("user set playing = ", user)
         //sendLetsQuiz(user.senderID, messageText, firstName)
         sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
       }
 
-
-      // //when set state again, data format will change
       // //already quiz with chatbot or user come back after pause
       else if (user.state.state === "playing" || user.state.state === "pause" || user.state.state === "finish") {
         console.log("playing")
