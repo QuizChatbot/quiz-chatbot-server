@@ -249,7 +249,7 @@ const app = async () => {
         }
         else if (user.state.state === "finish") {
           let keysLeftForThatUser = await getKeys()
-          user.playing(keysLeftForThatUser)
+          user.startAgain(keysLeftForThatUser)
           console.log("user after finish = ", user)
         }
 
