@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount, render } from 'enzyme';
-import { Leaderboard, LeaderboardItem } from '../Leaderboard'
+import Leaderboard, { LeaderboardItem } from '../Leaderboard'
 
 describe('Leaderboard component test', () => {
   const props = {

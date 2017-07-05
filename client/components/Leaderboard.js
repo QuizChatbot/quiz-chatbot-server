@@ -5,7 +5,7 @@ export const LeaderboardItem = ({ idx, developer }) => (
   <h2>{idx + 1}. {developer.profile.first_name} {developer.profile.last_name} {developer.maxSummary.grade} ( score: {developer.maxSummary.score} )</h2>
 )
 
-export class Leaderboard extends Component {
+class Leaderboard extends Component {
   constructor(props, context) {
     super(props, context)
   }
