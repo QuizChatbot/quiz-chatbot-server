@@ -33,7 +33,7 @@ class User {
             state: 'playing',
             userScore: this.state.userScore
         })
-    }1
+    }
 
     setStateWelcome(stateWelcome) {
         this.api.setStateWelcome(this.senderID, stateWelcome)
