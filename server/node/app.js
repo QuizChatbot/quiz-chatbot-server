@@ -387,6 +387,7 @@ const app = async () => {
   }
 
   async function nextQuestion(user) {
+    let done = user.state.done
     console.log("user next q = ", user)
     let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
     //no question left
@@ -396,7 +397,7 @@ const app = async () => {
       sendTextMessage(user.senderID, "Finish!")
       sendTextMessage(user.senderID, `ได้คะแนน ${user.state.userScore} เกรด ${grade} ถ้าอยากรู้ลำดับก็ไปที่ https://quizchatbot-ce222.firebaseapp.com/ เลยย`)
       user.finish()
-      nextRound(user, numberOfQuestions)
+      nextRound(user, numberOfQuestions, done)
     }
 
     //still has questions not answered
@@ -423,7 +424,7 @@ const app = async () => {
     utillArray._.pullAll(keys, keysDone)
   }
  
-  const nextRound = (user, numberOfQuestions) => {
+  const nextRound = (user, numberOfQuestions, done) => {
     //if number of done questions equals to number of all questions
     //then that round is complete -> round increase 
     let round = user.state.round
@@ -431,7 +432,7 @@ const app = async () => {
      console.log("numberOfQuestions = ", numberOfQuestions)
       console.log("done = ", user.state.done)
     console.log("round = ", round)
-    if (user.state.done == numberOfQuestions) {
+    if (done === numberOfQuestions) {
       round++
       console.log("round increase = ", round)
       user.setRound(round)
