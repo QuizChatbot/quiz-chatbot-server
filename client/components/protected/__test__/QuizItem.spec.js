@@ -8,7 +8,6 @@ describe('QuizItem component test', () => {
 
   it('should render Element component', () => {
     const Wrapper = shallow(<QuizItem quest={quest} editQuiz={func} deleteQuiz={func} />)
-    expect(Wrapper.find('Element')).toHaveLength(1)
     expect(Wrapper.contains(<Element quest={quest} deleteQuiz={func} editQuiz={func} />)).toEqual(true)
   })
 
