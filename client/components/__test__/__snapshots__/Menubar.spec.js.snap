@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Menubar component test should always render leaderboard link 1`] = `true`;
+
+exports[`Menubar component test should render Login button if renderLoginButton function is called 1`] = `false`;
+
+exports[`Menubar component test should render Logout button if renderLogoutButton function is called 1`] = `false`;
+
+exports[`Menubar component test should render login button if authed is false 1`] = `true`;
+
+exports[`Menubar component test should render login button if authed is false 2`] = `false`;
+
+exports[`Menubar component test should render user name and logout button if authed is true 1`] = `true`;
+
+exports[`Menubar component test should render user name and logout button if authed is true 2`] = `false`;
+
+exports[`Menubar component test should render user name and logout button if authed is true 3`] = `false`;

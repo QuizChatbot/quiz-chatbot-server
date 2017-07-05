@@ -1,21 +1,31 @@
 import React, { PropTypes, Component } from 'react'
 import { Link } from 'react-router-dom'
 
+export function renderLoginButton(onLoginClick) {
+  return (<button onClick={() => onLoginClick()}>Login with Facebook</button>)
+}
+
+export function renderLogoutButton(onLogoutClick) {
+  return (<button onClick={() => onLogoutClick()}>Logout</button>)
+}
+
 export class Menubar extends Component {
   constructor(props, context) {
     super(props, context)
   }
 
   render() {
+    const { firedux, authed, onLoginClick, onLogoutClick } = this.props
     return (<div>
       <Link to="/">Leaderboard</Link><br />
-      {!this.props.authed
-        ? (<button onClick={() => this.props.onLoginClick()}>Login with Facebook</button>)
+      {!authed
+        ? (renderLoginButton(onLoginClick))
         : (<div>
-          <span> name: {this.props.firedux.displayName} </span><br />
+          <span> name: {firedux.displayName} </span><br />
           <Link to="/myquiz">My Quiz</Link><br />
-          <button onClick={() => this.props.onLogoutClick()}>Logout</button>
-        </div>)}
+          {renderLogoutButton(onLogoutClick)}
+        </div>)
+      }
     </div>
     )
   }
@@ -24,8 +34,8 @@ export class Menubar extends Component {
 Menubar.PropTypes = {
   firedux: PropTypes.object.isRequired,
   authed: PropTypes.bool.isRequired,
-  onLoginClick: PropTypes.func.isRequired,
-  onLogoutClick: PropTypes.func.isRequired
+  onLoginClick: PropTypes.func,
+  onLogoutClick: PropTypes.func
 }
 
 export default Menubar

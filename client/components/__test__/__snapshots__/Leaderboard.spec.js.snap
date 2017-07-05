@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Leaderboard component test should render No players message if developers length is 0 1`] = `true`;
+
+exports[`Leaderboard component test should render leaderbaord item message 1`] = `true`;
+
+exports[`Leaderboard component test should render leaderboard component 1`] = `true`;
+
+exports[`Leaderboard component test should render leaderboard component 2`] = `true`;
