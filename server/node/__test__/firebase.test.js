@@ -4,7 +4,7 @@ const firebase = require('../firebase')
 //     test('connect to firebase', () => {
        
 //     })
-// })
+// }) 
 
 describe('number of questions', () => {
     test('get number of questions', () => {
