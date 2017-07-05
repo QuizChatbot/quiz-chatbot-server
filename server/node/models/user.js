@@ -35,10 +35,10 @@ class User {
         })
     }
 
-    setStateWelcome(stateWelcome) {
-        this.api.setStateWelcome(this.senderID, stateWelcome)
-        this.stateWelcome = stateWelcome
-    }
+    // setStateWelcome(stateWelcome) {
+    //     this.api.setStateWelcome(this.senderID, stateWelcome)
+    //     this.stateWelcome = stateWelcome
+    // }
 
     setRound(round) {
         this.api.setRound(this.senderID, round)
