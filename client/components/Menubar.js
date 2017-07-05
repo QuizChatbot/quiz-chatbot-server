@@ -1,13 +1,13 @@
 import React, { PropTypes, Component } from 'react'
 import { Link } from 'react-router-dom'
 
-export function renderLoginButton(onLoginClick) {
-  return (<button onClick={() => onLoginClick()}>Login with Facebook</button>)
-}
+export const LoginButton = ({ onLoginClick }) => (
+  <button onClick={() => onLoginClick()}>Login with Facebook</button>
+)
 
-export function renderLogoutButton(onLogoutClick) {
-  return (<button onClick={() => onLogoutClick()}>Logout</button>)
-}
+export const LogoutButton = ({ onLogoutClick }) => (
+  <button onClick={() => onLogoutClick()}>Logout</button>
+)
 
 export class Menubar extends Component {
   constructor(props, context) {
@@ -20,12 +20,12 @@ export class Menubar extends Component {
       <Link to="/">Leaderboard</Link><br />
       <a href="https://www.facebook.com/messages/t/122419575009686" target="_blank">Play Quiz</a>
       {!authed
-        ? (renderLoginButton(onLoginClick))
+        ? <LoginButton onLoginClick={onLoginClick} />
         : (<div>
-          <span>name:{firedux.displayName}</span>
+          <span>name: {firedux.displayName}</span>
           <br />
           <Link to="/myquiz">My Quiz</Link><br />
-          {renderLogoutButton(onLogoutClick)}
+          <LogoutButton onLogoutClick={onLogoutClick} />
         </div>)
       }
     </div>

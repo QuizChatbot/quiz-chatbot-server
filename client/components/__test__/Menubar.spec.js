@@ -1,19 +1,12 @@
 import React from 'react';
 import { shallow, mount, render } from 'enzyme';
-import { Menubar, renderLoginButton, renderLogoutButton } from '../Menubar'
+import { Menubar, LoginButton, LogoutButton } from '../Menubar'
 import { Link } from 'react-router-dom'
-
 
 describe('Menubar component test', () => {
 
   it('should always render leaderboard link', () => {
-    const props = {
-      firedux: {
-        displayName: "Xiao Jia Ying"
-      },
-      auth: true
-    }
-    const Wrapper = shallow(<Menubar {...props} />)
+    const Wrapper = shallow(<Menubar />)
     expect(Wrapper.contains(<Link to="/">Leaderboard</Link>)).toEqual(true)
   })
 
@@ -22,8 +15,8 @@ describe('Menubar component test', () => {
       authed: false
     }
     const Wrapper = shallow(<Menubar {...props} />)
-    expect(Wrapper.contains('Login with Facebook')).toEqual(true)
-    expect(Wrapper.contains('Logout')).toEqual(false)
+    expect(Wrapper.contains(<LoginButton onLoginClick={undefined} />)).toEqual(true)
+    expect(Wrapper.contains(<LogoutButton onLogoutClick={undefined} />)).toEqual(false)
   })
 
   it('should render user name and logout button if authed is true', () => {
@@ -33,16 +26,16 @@ describe('Menubar component test', () => {
       },
       authed: true
     }
-    const authed = false
     const Wrapper = shallow(<Menubar {...props} />)
-    expect(Wrapper.contains('Xiao Jia Ying')).toEqual(true)
-    expect(Wrapper.contains('Logout')).toEqual(true)
+    expect(Wrapper.contains(<span>name: Xiao Jia Ying</span>)).toEqual(true)
+    expect(Wrapper.contains(<LogoutButton onLogoutClick={undefined} />)).toEqual(true)
   })
 
   // it('should render Login button if renderLoginButton function is called', () => {
   //   const func = () => { return }
   //   const Wrapper = shallow(<renderLoginButton onLoginClick={func} />)
-  //   expect(Wrapper.contains(<button onClick={() => onLoginClick()}>Login with Facebook</button>)).toEqual(true)
+  //   //expect(Wrapper.text()).toEqual('Login with Facebook')
+  //   expect(Wrapper.contains(<button>Login with Facebook</button>)).toEqual(true)
   // })
 
   // it('should render Logout button if renderLogoutButton function is called', () => {
