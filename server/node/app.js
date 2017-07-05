@@ -389,7 +389,7 @@ const app = async () => {
     //no question left
     //finish that round
     if (keyOfNextQuestion == null) {
-      let grade = await firebase.getGrade(user.state.senderID, user.state.round)
+      let grade = await firebase.getGrade(user.senderID, user.state.round)
       sendTextMessage(user.senderID, "Finish!")
       sendTextMessage(user.senderID, `ได้คะแนน ${user.state.userScore} เกรด ${grade} ถ้าอยากรู้ลำดับก็ไปที่ https://quizchatbot-ce222.firebaseapp.com/ เลยย`)
       user.finish()
