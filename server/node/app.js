@@ -406,7 +406,7 @@ const app = async () => {
       if (answerForEachQuestion == null) {
         console.log("Doesn't have this id in questions json")
         return null
-      }
+      } 
 
       let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
       let buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
