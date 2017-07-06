@@ -91,8 +91,8 @@ class User {
         // this.state.state = 'playing'
     }
 
-    done() {
-        let done = this.state.done++
+    async done() {
+        let done = await this.state.done++
         console.log("__this.state.DONE__", this.state.done)
         console.log("__DONE__", done)
         this.setState({ done: done})
