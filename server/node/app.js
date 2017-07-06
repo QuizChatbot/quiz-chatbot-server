@@ -14,7 +14,8 @@ const
   summary = require('./summary'),
   userClass = require('./models/user'),
   resultFirebase = require('./result'),
-  api = require('./localUserAPI')
+  api = require('./localUserAPI'),
+  messenger = require('./messenger')
 
 const config = require('config')
 
@@ -192,7 +193,7 @@ const app = async () => {
     if (messageText) {
       handleReceivedMessage(user, messageText)
     } else if (messageAttachments) {
-      sendTextMessage(senderID, "Message with attachment received")
+      messenger.sendTextMessage(senderID, "Message with attachment received")
     }
   }
 
@@ -617,7 +618,7 @@ const handleReceivedMessage = async (user, messageText) => {
   // }
 
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
-    sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
+    messenger.sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
   }
   // //other users except the first user will add their profile to firebase
   else {
@@ -631,7 +632,7 @@ const handleReceivedMessage = async (user, messageText) => {
       user.playing()
       console.log("user set playing = ", user)
       //sendLetsQuiz(user.senderID, messageText, firstName)
-      sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
+      messenger.sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
     }
 
     // //already quiz with chatbot or user come back after pause
@@ -670,7 +671,7 @@ const handleReceivedMessage = async (user, messageText) => {
       const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
       const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
       startedAt = utillArray.getMoment()
-      callSendAPI(buttonMessage)
+      messenger.callSendAPI(buttonMessage)
 
     }
   }
@@ -683,14 +684,14 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
   //check for button nextRound payload
   if (payloadObj.nextRound === true) {
-    sendTextMessage(user.senderID, "Next Round!")
+    messenger.sendTextMessage(user.senderID, "Next Round!")
     startNextRound(user)
   }
   else if (payloadObj.nextRound === false) {
     //pause finish
     user.finish()
-    sendTextMessage(user.senderID, "Come back when you're ready baby~")
-    sendTextMessage(user.senderID, "Bye Bye <3")
+    messenger.sendTextMessage(user.senderID, "Come back when you're ready baby~")
+    messenger.sendTextMessage(user.senderID, "Bye Bye <3")
   }
 
   //check for button next question
@@ -702,8 +703,8 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     //pause
     user.pause()
     console.log("user after pause = ", user)
-    sendTextMessage(user.senderID, "Hell <3")
-    sendTextMessage(user.senderID, "Come back when you're ready baby~")
+    messenger.sendTextMessage(user.senderID, "Hell <3")
+    messenger.sendTextMessage(user.senderID, "Come back when you're ready baby~")
   }
 
   //Postback for normal questions
@@ -727,14 +728,14 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
     // // answer Correct
     if (result) {
-      sendTextMessage(user.senderID, "Good dog!")
+      messenger.sendTextMessage(user.senderID, "Good dog!")
       let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
         result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID)
       firebase.saveResultToFirebase(user.senderID, preparedResult)
     }
     //answer Wrong
     else {
-      sendTextMessage(user.senderID, "Bad dog!")
+      messenger.sendTextMessage(user.senderID, "Bad dog!")
       let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
         result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID)
       firebase.saveResultToFirebase(user.senderID, preparedResult)
@@ -756,7 +757,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     //if there are still questions left that have not done => create next button
     if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser.length > 0) {
       let buttonNext = await createButton.createButtonNext(user.senderID)
-      callSendAPI(buttonNext)
+      messenger.callSendAPI(buttonNext)
     }
     //if there is no question left that have not done => create next round button
     else {
@@ -781,8 +782,8 @@ async function nextQuestion(user) {
   //finish that round
   if (keyOfNextQuestion == null) {
     let grade = await firebase.getGrade(user.senderID, user.state.round)
-    sendTextMessage(user.senderID, "Finish!")
-    sendTextMessage(user.senderID, `ได้คะแนน ${user.state.userScore} เกรด ${grade} ถ้าอยากรู้ลำดับก็ไปที่ https://quizchatbot-ce222.firebaseapp.com/ เลยย`)
+    messenger.sendTextMessage(user.senderID, "Finish!")
+    messenger.sendTextMessage(user.senderID, `ได้คะแนน ${user.state.userScore} เกรด ${grade} ถ้าอยากรู้ลำดับก็ไปที่ https://quizchatbot-ce222.firebaseapp.com/ เลยย`)
     user.finish()
     nextRound(user, numberOfQuestions, done)
   }
@@ -801,7 +802,7 @@ async function nextQuestion(user) {
 
     startedAt = utillArray.getMoment()
 
-    callSendAPI(buttonMessage)
+    messenger.callSendAPI(buttonMessage)
   }
 }
 
@@ -821,7 +822,7 @@ const nextRound = (user, numberOfQuestions, done) => {
   }
   //create button ask for next round
   let buttonMessage = createButton.createButtonNextRound(user.senderID)
-  callSendAPI(buttonMessage)
+  messenger.callSendAPI(buttonMessage)
 }
 
 const startNextRound = async (user) => {
@@ -843,7 +844,7 @@ const startNextRound = async (user) => {
   const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
   const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
   startedAt = utillArray.getMoment()
-  callSendAPI(buttonMessage)
+  messenger.callSendAPI(buttonMessage)
 }
 
 /*
@@ -861,7 +862,7 @@ function sendTextMessage(recipientId, messageText) {
     }
   }
 
-  callSendAPI(messageData)
+  messenger.callSendAPI(messageData)
 }
 
 
@@ -936,7 +937,7 @@ async function sendLetsQuiz(recipientId, messageText, firstName) {
       metadata: "DEVELOPER_DEFINED_METADATA"
     }
   }
-  callSendAPI(messageData)
+  messenger.callSendAPI(messageData)
 }
 
 // get user information from facebook
@@ -957,5 +958,6 @@ const getUserDetail = (senderID) => new Promise(async (resolve, reject) => {
 })
 
 
-module.exports = app
+module.exports = {app, handleReceivedMessage, handleReceivedPostback, getUserDetail, sendLetsQuiz, createGreetingApi, setGreetingText,
+                  callSendAPI, sendTextMessage, startNextRound, nextRound, removeKeysDone, nextQuestion, checkAnswer, getKeys}
 
