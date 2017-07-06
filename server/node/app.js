@@ -576,7 +576,7 @@ const app = async () => {
 
 
 
-let numberOfQuestions = await firebase.getNumberOfQuestions()
+// let numberOfQuestions = await firebase.getNumberOfQuestions()
 let answerForEachQuestion
 let startedAt
 let skill = "es6"
@@ -678,6 +678,9 @@ const handleReceivedMessage = async (user, messageText) => {
 
 
 async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
+  let numberOfQuestions = await firebase.getNumberOfQuestions()
+
+
   //check for button nextRound payload
   if (payloadObj.nextRound === true) {
     sendTextMessage(user.senderID, "Next Round!")
@@ -770,6 +773,7 @@ function checkAnswer(payload, answerForEachQuestion) {
 }
 
 async function nextQuestion(user) {
+  let numberOfQuestions = await firebase.getNumberOfQuestions()
   let done = user.state.done
   console.log("user next q = ", user)
   let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
