@@ -93,6 +93,8 @@ class User {
 
     done() {
         let done = this.state.done++
+        console.log("__this.state.DONE__", this.state.done)
+        console.log("__DONE__", done)
         this.setState({ done: done})
     }
 
