@@ -1,39 +1,8 @@
-const config = require('config')
- 
- 
- // App Secret can be retrieved from the App Dashboard
-  const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
-    process.env.MESSENGER_APP_SECRET :
-    config.get('appSecret')
-
-  // Arbitrary value used to validate a webhook
-  const VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
-    (process.env.MESSENGER_VALIDATION_TOKEN) :
-    config.get('validationToken')
-
-  // Generate a page access token for your page from the App Dashboard
-  const PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN) ?
-    (process.env.MESSENGER_PAGE_ACCESS_TOKEN) :
-    config.get('pageAccessToken')
-
-  // URL where the app is running (include protocol). Used to point to scripts and 
-  // assets located at this address. 
-  const SERVER_URL = (process.env.SERVER_URL) ?
-    (process.env.SERVER_URL) :
-    config.get('serverURL')
-
-  if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
-    console.error("Missing config values")
-    process.exit(1)
-  }
-
-
-const app = async () => {
-  require('es6-promise').polyfill();
+ require('es6-promise').polyfill();
   require('isomorphic-fetch');
-  const
+ 
+ const
     bodyParser = require('body-parser'),
-    config = require('config'),
     crypto = require('crypto'),
     express = require('express'),
     https = require('https'),
@@ -46,6 +15,44 @@ const app = async () => {
     userClass = require('./models/user'),
     resultFirebase = require('./result'),
     api = require('./localUserAPI')
+  
+const  config = require('config')
+
+let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
+ 
+ try {
+ // App Secret can be retrieved from the App Dashboard
+  APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
+    process.env.MESSENGER_APP_SECRET :
+    config.get('appSecret')
+
+  // Arbitrary value used to validate a webhook
+  VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
+    (process.env.MESSENGER_VALIDATION_TOKEN) :
+    config.get('validationToken')
+
+  // Generate a page access token for your page from the App Dashboard
+  PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN) ?
+    (process.env.MESSENGER_PAGE_ACCESS_TOKEN) :
+    config.get('pageAccessToken')
+
+  // URL where the app is running (include protocol). Used to point to scripts and 
+  // assets located at this address. 
+  SERVER_URL = (process.env.SERVER_URL) ?
+    (process.env.SERVER_URL) :
+    config.get('serverURL')
+
+  if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
+    console.error("Missing config values")
+    process.exit(1)
+  }
+
+ }catch(error) {
+   console.warn(error)
+ } 
+const app = async () => {
+  
+  
 
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
@@ -66,32 +73,7 @@ const app = async () => {
   app.use(bodyParser.json({ extended: false }))
   app.use(express.static('public'))
 
-
-  // App Secret can be retrieved from the App Dashboard
-  const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
-    process.env.MESSENGER_APP_SECRET :
-    config.get('appSecret')
-
-  // Arbitrary value used to validate a webhook
-  const VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
-    (process.env.MESSENGER_VALIDATION_TOKEN) :
-    config.get('validationToken')
-
-  // Generate a page access token for your page from the App Dashboard
-  const PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN) ?
-    (process.env.MESSENGER_PAGE_ACCESS_TOKEN) :
-    config.get('pageAccessToken')
-
-  // URL where the app is running (include protocol). Used to point to scripts and 
-  // assets located at this address. 
-  const SERVER_URL = (process.env.SERVER_URL) ?
-    (process.env.SERVER_URL) :
-    config.get('serverURL')
-
-  if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
-    console.error("Missing config values")
-    process.exit(1)
-  }
+ 
 
   // get user information from facebook
   const getUserDetail = (senderID) => new Promise(async (resolve, reject) => {
@@ -593,6 +575,7 @@ const app = async () => {
 }
 
 
+
 const handleReceivedMessage = async (user, messageText) => {
   //DUPLICATE
 
@@ -872,7 +855,6 @@ function sendTextMessage(recipientId, messageText) {
  *
  */
 function callSendAPI(messageData) {
-  const request = require('request')
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: PAGE_ACCESS_TOKEN },
@@ -911,7 +893,6 @@ function setGreetingText() {
 }
 
 function createGreetingApi(messageData) {
-  const request = require('request')
   request({
     uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
     qs: { access_token: PAGE_ACCESS_TOKEN },
