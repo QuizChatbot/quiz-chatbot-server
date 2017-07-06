@@ -46,7 +46,7 @@ class User {
     }
 
     welcome() {
-        this.api.setStateWelcome(this.senderID, true)
+        // this.api.setStateWelcome(this.senderID, true)
         this.setState({ welcomed: true })
     }
 
@@ -91,10 +91,8 @@ class User {
         // this.state.state = 'playing'
     }
 
-    done() {
+    doneQuestion() {
         let done = this.state.done + 1
-        console.log("__this.state.DONE__", this.state.done)
-        console.log("__DONE__", done)
         this.setState({ done: done})
     }
 
