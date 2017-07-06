@@ -1,27 +1,27 @@
- require('es6-promise').polyfill();
-  require('isomorphic-fetch');
- 
- const
-    bodyParser = require('body-parser'),
-    crypto = require('crypto'),
-    express = require('express'),
-    https = require('https'),
-    request = require('request'),
-    createButton = require('./create_button'),
-    utillArray = require('./utill_array'),
-    firebase = require('./firebase'),
-    tunnelConfig = require('./tunnel.json'),
-    summary = require('./summary'),
-    userClass = require('./models/user'),
-    resultFirebase = require('./result'),
-    api = require('./localUserAPI')
-  
-const  config = require('config')
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
+
+const
+  bodyParser = require('body-parser'),
+  crypto = require('crypto'),
+  express = require('express'),
+  https = require('https'),
+  request = require('request'),
+  createButton = require('./create_button'),
+  utillArray = require('./utill_array'),
+  firebase = require('./firebase'),
+  tunnelConfig = require('./tunnel.json'),
+  summary = require('./summary'),
+  userClass = require('./models/user'),
+  resultFirebase = require('./result'),
+  api = require('./localUserAPI')
+
+const config = require('config')
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
- 
- try {
- // App Secret can be retrieved from the App Dashboard
+
+try {
+  // App Secret can be retrieved from the App Dashboard
   APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
     process.env.MESSENGER_APP_SECRET :
     config.get('appSecret')
@@ -47,25 +47,25 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
     process.exit(1)
   }
 
- }catch(error) {
-   console.warn(error)
- } 
+} catch (error) {
+  console.warn(error)
+}
 const app = async () => {
-  
-  
+
+
 
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
 
-  let numberOfQuestions = await firebase.getNumberOfQuestions()
-  let answerForEachQuestion
-  let startedAt
-  let skill = "es6"
+  // let numberOfQuestions = await firebase.getNumberOfQuestions()
+  // let answerForEachQuestion
+  // let startedAt
+  // let skill = "es6"
 
-  async function getKeys() {
-    let keys = await firebase.getAllQuestionKeys()
-    return keys
-  }
+  // async function getKeys() {
+  //   let keys = await firebase.getAllQuestionKeys()
+  //   return keys
+  // }
 
   let app = express()
   app.set('port', process.env.PORT || 4000)
@@ -73,24 +73,24 @@ const app = async () => {
   app.use(bodyParser.json({ extended: false }))
   app.use(express.static('public'))
 
- 
 
-  // get user information from facebook
-  const getUserDetail = (senderID) => new Promise(async (resolve, reject) => {
-    const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
-    fetch(graph)
-      .then(async function (response) {
-        if (response.status >= 400) {
-          throw new Error("Bad response from server")
-        }
-        let json = await response.json()
-        resolve(json)
-      })
-      .catch((err) => {
-        console.log("Cannot get user information from facebook : ", err)
-        reject(err)
-      })
-  })
+
+  // // get user information from facebook
+  // const getUserDetail = (senderID) => new Promise(async (resolve, reject) => {
+  //   const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
+  //   fetch(graph)
+  //     .then(async function (response) {
+  //       if (response.status >= 400) {
+  //         throw new Error("Bad response from server")
+  //       }
+  //       let json = await response.json()
+  //       resolve(json)
+  //     })
+  //     .catch((err) => {
+  //       console.log("Cannot get user information from facebook : ", err)
+  //       reject(err)
+  //     })
+  // })
 
   app.get('/webhook', (req, res) => {
     if (req.query['hub.mode'] === 'subscribe' &&
@@ -576,6 +576,18 @@ const app = async () => {
 
 
 
+let numberOfQuestions = await firebase.getNumberOfQuestions()
+let answerForEachQuestion
+let startedAt
+let skill = "es6"
+
+
+async function getKeys() {
+  let keys = await firebase.getAllQuestionKeys()
+  return keys
+}
+
+
 const handleReceivedMessage = async (user, messageText) => {
   //DUPLICATE
 
@@ -922,6 +934,23 @@ async function sendLetsQuiz(recipientId, messageText, firstName) {
   }
   callSendAPI(messageData)
 }
+
+// get user information from facebook
+const getUserDetail = (senderID) => new Promise(async (resolve, reject) => {
+  const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
+  fetch(graph)
+    .then(async function (response) {
+      if (response.status >= 400) {
+        throw new Error("Bad response from server")
+      }
+      let json = await response.json()
+      resolve(json)
+    })
+    .catch((err) => {
+      console.log("Cannot get user information from facebook : ", err)
+      reject(err)
+    })
+})
 
 
 module.exports = app
