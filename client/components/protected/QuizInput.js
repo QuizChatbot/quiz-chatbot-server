@@ -1,51 +1,23 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
+import { getBlankQuest, getQuestFromProps, getQuizStatefromQuest } from '../../libs/quizHelper'
 
 class QuizInput extends Component {
   constructor(props, context) {
     super(props, context)
-    let quest = (props.quest != undefined) ? {
-      subject: props.quest.subject,
-      question: props.quest.question,
-      choice_0: props.quest.choices[0],
-      choice_1: props.quest.choices[1],
-      choice_2: props.quest.choices[2],
-    } : {}
-
-    this.state = {
-      subject: quest.subject || '',
-      question: quest.question || '',
-      choice_0: quest.choice_0 || '',
-      choice_1: quest.choice_1 || '',
-      choice_2: quest.choice_2 || '',
-      isEditing: {
-        subject: false,
-        question: false,
-        choice_0: false,
-        choice_1: false,
-        choice_2: false
-      }
-    }
+    let quest = getQuestFromProps(props.quest)
+    this.state = getQuizStatefromQuest(quest)
   }
 
   handleSubmit(e) {
     const { newQuiz, onSave } = this.props
-    const quiz = {
-      subject: this.state.subject,
-      question: this.state.question,
-      choice_0: this.state.choice_0,
-      choice_1: this.state.choice_1,
-      choice_2: this.state.choice_2,
-    }
-    onSave(quiz)
+
+    // Save quiz
+    const { subject, question, choice_0, choice_1, choice_2 } = this.state
+    onSave({ subject, question, choice_0, choice_1, choice_2 })
+
     if (newQuiz) {
-      this.setState({
-        subject: '',
-        question: '',
-        choice_0: '',
-        choice_1: '',
-        choice_2: '',
-      })
+      this.setState(getBlankQuest())
     }
   }
 
