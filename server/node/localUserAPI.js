@@ -7,7 +7,6 @@ async function setState(senderID, state) {
     } else {
         usersData[senderID] = state
     }
-    // console.log('userData = ', usersData)
 }
 
 async function setRound(senderID, round) {

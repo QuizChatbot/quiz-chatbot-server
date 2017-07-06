@@ -62,17 +62,17 @@ class User {
         // this.state.keysLeftForThatUser = keysLeftForThatUser
     }
 
-    startAgain(keysLeftForThatUser) {
-        this.setState(
-            {
-                state: 'playing', keysLeftForThatUser: keysLeftForThatUser,
-                welcomed: true
-            }
-        )
-        // this.state.state = 'playing'
-        // this.state.welcomed = true
-        // this.state.keysLeftForThatUser = keysLeftForThatUser
-    }
+    // startAgain(keysLeftForThatUser) {
+    //     this.setState(
+    //         {
+    //             state: 'playing', keysLeftForThatUser: keysLeftForThatUser,
+    //             welcomed: true
+    //         }
+    //     )
+    //     // this.state.state = 'playing'
+    //     // this.state.welcomed = true
+    //     // this.state.keysLeftForThatUser = keysLeftForThatUser
+    // }
 
     pause() {
         this.setState(
@@ -91,6 +91,7 @@ class User {
         // this.state.state = 'playing'
     }
 
+    //when user answer one question
     doneQuestion() {
         let done = this.state.done + 1
         this.setState({ done: done})
