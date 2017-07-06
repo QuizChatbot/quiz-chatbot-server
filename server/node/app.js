@@ -249,7 +249,7 @@ const app = async () => {
         }
         else if (user.state.state === "finish") {
           let keysLeftForThatUser = await getKeys()
-          user.startAgain(keysLeftForThatUser)
+          user.startNextRound(keysLeftForThatUser)
           console.log("user after finish = ", user)
         }
  
@@ -325,7 +325,7 @@ const app = async () => {
       //if in playing question state when receive postback 
       //number of questions that user already done increase
       if (user.state.state === "playing") {
-        user.done()
+        user.doneQuestion()
       }
       console.log("user after done question= ", user)
 
