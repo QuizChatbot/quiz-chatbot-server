@@ -1,5 +1,6 @@
 const questData = (state, action) => {
-  if (!state) return { quests: [] }
+  const { quests = [] } = state || {}
+
   switch (action.type) {
     case 'quest/set-quest-data':
       return {
@@ -7,7 +8,7 @@ const questData = (state, action) => {
       }
     default:
       return {
-        quests: state.quests ? state.quests : []
+        quests
       }
   }
 }
