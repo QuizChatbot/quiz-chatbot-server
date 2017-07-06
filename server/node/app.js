@@ -113,7 +113,7 @@ const app = async () => {
 
           //get all question keys and save to usersData for that senderID
           let keysLeftForThatUser = await getKeys()
-          // //get state of this user
+          // get user if doesn't have this user before
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
 
 
@@ -325,7 +325,7 @@ const app = async () => {
       //if in playing question state when receive postback 
       //number of questions that user already done increase
       if (user.state.state === "playing") {
-        user.state.done++
+        user.done()
       }
       console.log("user after done question= ", user)
 

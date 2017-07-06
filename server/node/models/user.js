@@ -2,7 +2,7 @@ const api = require('../localUserAPI')
 
 const load = async (senderID, keys, api) => {
     const oldState = await api.getState(senderID)
-    //contact that user for the first time
+    //contact that user for the first time. Dont have oldState of that user
     if (!oldState) {
         await api.setState(senderID, { state: "initial", done: 0, round: 0, keysLeftForThatUser: keys, welcomed: false, userScore: 0 })
     }
@@ -53,7 +53,7 @@ class User {
     playing() {
         this.setState(
             {
-                state: 'playing', keysLeftForThatUser: this.state.keysLeftForThatUser,
+                state: 'playing',
                 welcomed: true
             }
         )
@@ -62,7 +62,7 @@ class User {
         // this.state.keysLeftForThatUser = keysLeftForThatUser
     }
 
-    startAgain(keysLeftForThatUser) { 
+    startAgain(keysLeftForThatUser) {
         this.setState(
             {
                 state: 'playing', keysLeftForThatUser: keysLeftForThatUser,
@@ -91,6 +91,10 @@ class User {
         // this.state.state = 'playing'
     }
 
+    done() {
+        this.setState({ done: this.state.done++})
+    }
+
     finish() {
         this.setState({ state: 'finish', welcomed: true, done: 0, userScore: 0 })
         // api.setState(this.senderID,
@@ -114,5 +118,5 @@ class User {
 
 }
 
-module.exports = { load }
+module.exports = { load, User }
 
