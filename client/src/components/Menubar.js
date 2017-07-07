@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import RaisedButton from 'material-ui/RaisedButton'
 
 export const LoginButton = ({ onLoginClick }) => (
-  <button onClick={onLoginClick}>Login with Facebook</button>
+  <RaisedButton label='Login with Facebook' primary onTouchTap={onLoginClick} />
 )
 
 export const LogoutButton = ({ onLogoutClick }) => (
-  <button onClick={onLogoutClick}>Logout</button>
+  <RaisedButton label='Logout' primary onTouchTap={onLogoutClick} />
 )
 
 export class Menubar extends Component {

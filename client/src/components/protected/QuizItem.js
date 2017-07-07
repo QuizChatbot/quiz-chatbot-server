@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import QuizInput from './QuizInput'
+import IconButton from 'material-ui/IconButton'
+import ActionDelete from 'material-ui/svg-icons/action/delete'
 
 export const Element = ({ quest, deleteQuiz, editQuiz }) => {
   function handleSave (id, quiz, isChoice) {
@@ -14,7 +16,9 @@ export const Element = ({ quest, deleteQuiz, editQuiz }) => {
         quest={quest}
         onSave={(quiz, isChoice) => handleSave(quest.id, quiz, isChoice)}
       />
-      <button className='destroy' onClick={() => deleteQuiz(quest.id)} />
+      <IconButton tooltip='Delete'>
+        <ActionDelete onTouchTap={() => deleteQuiz(quest.id)} />
+      </IconButton>
     </div>
   )
 }

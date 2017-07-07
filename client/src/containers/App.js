@@ -8,6 +8,33 @@ import MyQuiz from './MyQuiz.container'
 import Page404 from './404.container'
 import * as QuizActions from '../actions'
 
+// Theme
+import { deepOrange500 } from 'material-ui/styles/colors'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+
+// Font
+import 'typeface-roboto'
+
+// Click handler
+import injectTapEventPlugin from 'react-tap-event-plugin'
+injectTapEventPlugin()
+
+// Styles
+const styles = {
+  container: {
+    textAlign: 'center',
+    paddingTop: 200
+  }
+}
+
+// Theme
+const muiTheme = getMuiTheme({
+  palette: {
+    accent1Color: deepOrange500
+  }
+})
+
 function PrivateRoute ({ component: Component, authed }) {
   return (
     <Route
@@ -38,27 +65,29 @@ class App extends Component {
 
   render () {
     return (
-      <BrowserRouter>
-        <div>
-          <Menubar
-            onLoginClick={this.handleLogin}
-            onLogoutClick={this.handleLogout}
-          />
-          <Switch>
-            <Route
-              exact
-              path='/'
-              component={props => <Leaderboard {...props} />}
+      <MuiThemeProvider muiTheme={muiTheme}>
+        <BrowserRouter>
+          <div style={styles.container}>
+            <Menubar
+              onLoginClick={this.handleLogin}
+              onLogoutClick={this.handleLogout}
             />
-            <PrivateRoute
-              authed={this.props.authed}
-              path='/myquiz'
-              component={props => <MyQuiz {...props} />}
-            />
-            <Route render={() => <Page404 />} />
-          </Switch>
-        </div>
-      </BrowserRouter>
+            <Switch>
+              <Route
+                exact
+                path='/'
+                component={props => <Leaderboard {...props} />}
+              />
+              <PrivateRoute
+                authed={this.props.authed}
+                path='/myquiz'
+                component={props => <MyQuiz {...props} />}
+              />
+              <Route render={() => <Page404 />} />
+            </Switch>
+          </div>
+        </BrowserRouter>
+      </MuiThemeProvider>
     )
   }
 }

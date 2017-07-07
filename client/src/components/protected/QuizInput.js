@@ -6,6 +6,7 @@ import {
   getQuestFromProps,
   getQuizStatefromQuest
 } from '../../libs/quizHelper'
+import RaisedButton from 'material-ui/RaisedButton'
 
 class QuizInput extends Component {
   constructor (props, context) {
@@ -14,7 +15,7 @@ class QuizInput extends Component {
     this.state = getQuizStatefromQuest(quest)
   }
 
-  handleSubmit (e) {
+  handleSubmit = e => {
     const { newQuiz, onSave } = this.props
 
     // Save quiz
@@ -82,7 +83,14 @@ class QuizInput extends Component {
   renderSubmitButton () {
     const { newQuiz } = this.props
     if (newQuiz) {
-      return <button onClick={() => this.handleSubmit()}>Submit</button>
+      return (
+        <RaisedButton
+          type='submit'
+          label='Submit'
+          primary
+          onTouchTap={this.handleSubmit}
+        />
+      )
     }
   }
 
@@ -96,7 +104,7 @@ class QuizInput extends Component {
         {this.renderForm('choice_0')}
         {this.renderForm('choice_1')}
         {this.renderForm('choice_2')}
-        {newQuiz ? this.renderSubmitButton() : <br />}
+        {newQuiz && this.renderSubmitButton()}
       </div>
     )
   }
