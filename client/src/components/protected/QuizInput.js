@@ -60,7 +60,7 @@ class QuizInput extends Component {
             floatingLabelText={form}
             // defaultValue={this.state[form]}
             value={this.state[form]}
-            autoFocus={autoFocus}
+            autoFocus={autoFocus || this.state.isEditing[form]}
             onChange={this.handleChange}
             onBlur={() => this.handleBlur(form)}
           />
