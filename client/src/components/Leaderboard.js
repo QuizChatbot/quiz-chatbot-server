@@ -1,23 +1,29 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { ListItem } from 'material-ui/List'
+import Avatar from 'material-ui/Avatar'
 
 export const LeaderboardItem = ({ idx, developer }) => (
-  <h2>
-    {idx + 1}
-    .
-    {' '}
-    {developer.profile.first_name}
-    {' '}
-    {developer.profile.last_name}
-    {' '}
-    {developer.maxSummary.grade}
-    {' '}
-    ( score:
-    {' '}
-    {developer.maxSummary.score}
-    {' '}
-    )
-  </h2>
+  <ListItem
+    key={idx}
+    leftAvatar={<Avatar src={developer.profile.profile_pic} />}
+    primaryText={
+      idx +
+        1 +
+        ' ' +
+        developer.profile.first_name +
+        ' ' +
+        developer.profile.last_name
+    }
+    secondaryText={
+      <p>
+        <span>Grade: {developer.maxSummary.grade}</span><br />
+        Score: {developer.maxSummary.score}
+      </p>
+    }
+    secondaryTextLines={2}
+    style={{ width: '50%', margin: 'auto' }}
+  />
 )
 
 class Leaderboard extends Component {
