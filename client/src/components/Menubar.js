@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 
 export const LoginButton = ({ onLoginClick }) => (
@@ -16,21 +17,24 @@ export class Menubar extends Component {
     const { firedux, authed, onLoginClick, onLogoutClick } = this.props
     return (
       <div>
-        <Link to='/'>Leaderboard</Link><br />
-        <a
-          href='https://www.facebook.com/messages/t/122419575009686'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Play Quiz
-        </a>
-        <br />
+        <div>
+          <FlatButton label='LEADERBOARD' containerElement={<Link to='/' />} />
+          <FlatButton
+            style={{ verticalAlign: 'top' }}
+            label='PLAY QUIZ'
+            href='https://www.facebook.com/messages/t/122419575009686'
+            target='_blank'
+          />
+          <FlatButton
+            label='MY QUIZ'
+            disabled={!authed}
+            containerElement={<Link to='/myquiz' />}
+          />
+        </div>
         {!authed
           ? <LoginButton onLoginClick={onLoginClick} />
           : <div>
             <span>name: {firedux.displayName}</span>
-            <br />
-            <Link to='/myquiz'>My Quiz</Link><br />
             <LogoutButton onLogoutClick={onLogoutClick} />
           </div>}
       </div>
