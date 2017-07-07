@@ -8,12 +8,12 @@ const initialState = {
   data: {}
 }
 
-function splitUrl(url) {
+function splitUrl (url) {
   return url.split('/')
 }
 
 export default class Firedux {
-  constructor(options) {
+  constructor (options) {
     const that = this
     if (options.url) {
       console.warn('Firedux option "url" is deprecated, use "ref" instead.')
@@ -22,7 +22,7 @@ export default class Firedux {
     this.v3 = Firebase.SDK_VERSION.substr(0, 2) === '3.'
 
     if (this.v3) {
-      this.auth = Firebase.auth// eslint-disable-line
+      this.auth = Firebase.auth // eslint-disable-line
     }
 
     this.url = options.url || options.ref.toString()
@@ -39,7 +39,7 @@ export default class Firedux {
     this.dispatch = null
     this.userAuth = null
 
-    function makeFirebaseState(action, state, path, value, merge = false) {
+    function makeFirebaseState (action, state, path, value, merge = false) {
       // const keyPath = urlToKeyPath(path)
       // const dataPath = 'data.' + keyPath
       const dataPath = ['data'].concat(splitUrl(path))
@@ -50,7 +50,7 @@ export default class Firedux {
       return newState
     }
 
-    function removeFirebaseState(action, state, path) {
+    function removeFirebaseState (action, state, path) {
       const split = splitUrl(path)
       const dataSplit = ['data'].concat(split)
 
@@ -67,18 +67,29 @@ export default class Firedux {
       return newState
     }
 
-    this.reducer = function reducer() {
+    this.reducer = function reducer () {
       return function (state = initialState, action) {
-        // debug('FIREBASE ACTION', action.type, action)
+        // console.log('FIREBASE ACTION', action.type, action)
         switch (action.type) {
           case 'FIREBASE_GET':
           case 'FIREBASE_WATCH':
-            return makeFirebaseState(action, state, action.path, action.snapshot.val())
+            return makeFirebaseState(
+              action,
+              state,
+              action.path,
+              action.snapshot.val()
+            )
           case 'FIREBASE_SET':
           case 'FIREBASE_PUSH':
             return makeFirebaseState(action, state, action.path, action.value)
           case 'FIREBASE_UPDATE':
-            return makeFirebaseState(action, state, action.path, action.value, true)
+            return makeFirebaseState(
+              action,
+              state,
+              action.path,
+              action.value,
+              true
+            )
           case 'FIREBASE_REMOVE':
             return removeFirebaseState(action, state, action.path)
           case 'FIREBASE_SET_RESPONSE':
@@ -114,10 +125,10 @@ export default class Firedux {
 
     return this
   }
-  cleanValue(value) {
+  cleanValue (value) {
     return isObject(value) ? omit(value, this.omit) : value
   }
-  init() {
+  init () {
     const { dispatch } = this
     return new Promise((resolve, reject) => {
       if (this.v3) {
@@ -136,7 +147,7 @@ export default class Firedux {
       }
     })
   }
-  login() {
+  login () {
     const { dispatch } = this
     const that = this
     return new Promise((resolve, reject) => {
@@ -149,6 +160,7 @@ export default class Firedux {
       }
 
       const handler = function (error, authData) {
+        console.log('handler')
         if (error) return handleError(error)
         that.authData = authData
         dispatch({ type: 'FIREBASE_LOGIN', uid: authData.user.uid, error })
@@ -156,13 +168,15 @@ export default class Firedux {
       }
 
       try {
-        if (this.v3) {
-          var provider = new this.auth.FacebookAuthProvider();
-          this.auth()
-            .signInWithPopup(provider)
-            .then(authData => handler(null, authData))
-            .catch(error => handleError(error))
-        }
+        console.log('try this:', this)
+        // if (this.v3) {
+        console.log('if')
+        var provider = new this.auth.FacebookAuthProvider()
+        this.auth()
+          .signInWithPopup(provider)
+          .then(authData => handler(null, authData))
+          .catch(error => handleError(error))
+        // }
       } catch (error) {
         console.error('FB AUTH ERROR', error)
         dispatch({ type: 'FIREBASE_LOGIN_ERROR', error })
@@ -170,7 +184,7 @@ export default class Firedux {
       }
     })
   }
-  logout() {
+  logout () {
     const { dispatch } = this
 
     return new Promise((resolve, reject) => {
@@ -188,16 +202,15 @@ export default class Firedux {
       }
 
       if (this.v3) {
-        this.auth().signOut()
-          .then(handleLogout, handleLogoutError)
+        this.auth().signOut().then(handleLogout, handleLogoutError)
       }
     })
   }
-  watch(path, onComplete) {
+  watch (path, onComplete) {
     const { dispatch } = this
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       switch (path) {
-        case "Developer":
+        case 'Developer':
           this.ref.child(path).on('value', snapshot => {
             dispatch({
               type: 'FIREBASE_WATCH',
@@ -211,13 +224,14 @@ export default class Firedux {
           })
           resolve({})
           break
-        case "Quests":
-          firebase.auth().currentUser && (
-            this.ref.child(path)
-              .orderByChild("owner")
+        case 'Quests':
+          firebase.auth().currentUser &&
+            this.ref
+              .child(path)
+              .orderByChild('owner')
               .equalTo(firebase.auth().currentUser.uid)
               // .orderBy("lastEditAt")
-              .on('value', (snapshot) => {
+              .on('value', snapshot => {
                 dispatch({
                   type: 'FIREBASE_WATCH',
                   path: path,
@@ -228,7 +242,6 @@ export default class Firedux {
                 // if (onComplete) onComplete(snapshot)
                 resolve({ snapshot: snapshot })
               })
-          )
           resolve({})
           break
         default:
@@ -237,9 +250,9 @@ export default class Firedux {
       }
     })
   }
-  get(path, onComplete) {
+  get (path, onComplete) {
     const { dispatch } = this
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (this.getting[path]) {
         // debug('already getting', path)
         return { type: 'FIREBASE_GET_PENDING' }
@@ -258,7 +271,7 @@ export default class Firedux {
       })
     })
   }
-  set(path, value, onComplete) {
+  set (path, value, onComplete) {
     const { dispatch } = this
     return new Promise((resolve, reject) => {
       const newValue = this.cleanValue(value)
@@ -282,7 +295,7 @@ export default class Firedux {
       })
     })
   }
-  update(path, value, onComplete) {
+  update (path, value, onComplete) {
     const { dispatch } = this
     return new Promise((resolve, reject) => {
       const newValue = this.cleanValue(value)
@@ -306,7 +319,7 @@ export default class Firedux {
       })
     })
   }
-  remove(path, onComplete) {
+  remove (path, onComplete) {
     const { dispatch } = this
     return new Promise((resolve, reject) => {
       if (this.removing[path]) {
@@ -324,9 +337,9 @@ export default class Firedux {
         path: path,
         // TODO: How to access state for cleaner rollback?
         // eslint-disable-next-line no-return-assign
-        setValue: (v) => value = v
+        setValue: v => (value = v)
       })
-      this.ref.child(path).remove((error) => {
+      this.ref.child(path).remove(error => {
         this.removing[path] = false
         dispatch({
           type: 'FIREBASE_REMOVE_RESPONSE',
@@ -340,7 +353,7 @@ export default class Firedux {
       })
     })
   }
-  push(toPath, value, onId, onComplete) {
+  push (toPath, value, onId, onComplete) {
     const { dispatch } = this
     const that = this
     const newValue = this.cleanValue(value)
@@ -350,7 +363,7 @@ export default class Firedux {
 
       let path, newId
       const ref = that.ref.child(toPath)
-      const pushRef = ref.push(newValue, (error) => {
+      const pushRef = ref.push(newValue, error => {
         dispatch({
           type: 'FIREBASE_PUSH_RESPONSE',
           path: path,

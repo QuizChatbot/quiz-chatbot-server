@@ -32,13 +32,9 @@ class App extends Component {
     this.props.actions.init()
   }
 
-  handleLogin () {
-    this.props.actions.login()
-  }
+  handleLogin = () => this.props.actions.login()
 
-  handleLogout () {
-    this.props.actions.logout()
-  }
+  handleLogout = () => this.props.actions.logout()
 
   render () {
     return (
