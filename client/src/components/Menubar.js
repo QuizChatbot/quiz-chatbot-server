@@ -3,6 +3,12 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import Paper from 'material-ui/Paper'
+
+const style = {
+  textAlign: 'center',
+  display: 'inline-block'
+}
 
 export const LoginButton = ({ onLoginClick }) => (
   <RaisedButton label='Login with Facebook' primary onTouchTap={onLoginClick} />
@@ -17,7 +23,8 @@ export class Menubar extends Component {
     const { firedux, authed, onLoginClick, onLogoutClick } = this.props
     return (
       <div>
-        <div>
+        <Paper style={style} zDepth={1} rounded={false}>
+
           <FlatButton label='LEADERBOARD' containerElement={<Link to='/' />} />
           <FlatButton
             style={{ verticalAlign: 'top' }}
@@ -30,7 +37,7 @@ export class Menubar extends Component {
             disabled={!authed}
             containerElement={<Link to='/myquiz' />}
           />
-        </div>
+        </Paper>
         {!authed
           ? <LoginButton onLoginClick={onLoginClick} />
           : <div>
