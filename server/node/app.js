@@ -216,7 +216,7 @@ const handleReceivedMessage = async (user, messageText) => {
       let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round)
 
       //remove questions done from questions that not yet answered
-      removeKeysDone(user.state.keysLeftForThatUser, keysDone)
+      user.removeKeysDone(keysDone)
 
 
       //if user pause -> change to playing
@@ -315,7 +315,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     }
 
     let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round)
-    removeKeysDone(user.state.keysLeftForThatUser, keysDone)
+    user.removeKeysDone(keysDone)
     console.log("user after remove keys done = ", user)
     console.log("score = ", user.state.userScore)
     //prepare summary object to save in firebase

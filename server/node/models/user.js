@@ -1,4 +1,5 @@
 const api = require('../localUserAPI')
+const utillArray = require('../utill_array')
 
 const load = async (senderID, keys, api) => {
     const oldState = await api.getState(senderID)
@@ -35,88 +36,50 @@ class User {
         })
     }
 
-    // setStateWelcome(stateWelcome) {
-    //     this.api.setStateWelcome(this.senderID, stateWelcome)
-    //     this.stateWelcome = stateWelcome
-    // }
-
     setRound(round) {
-        // this.api.setRound(this.senderID, round)
         this.setState({ round: round })
     }
 
     welcome() {
-        // this.api.setStateWelcome(this.senderID, true)
         this.setState({ welcomed: true })
     }
 
     playing() {
         this.setState(
-            {
-                state: 'playing',
-                welcomed: true
-            }
+            {state: 'playing', welcomed: true}
         )
-        // this.state.state = 'playing'
-        // this.state.welcomed = true
-        // this.state.keysLeftForThatUser = keysLeftForThatUser
     }
-
-    // startAgain(keysLeftForThatUser) {
-    //     this.setState(
-    //         {
-    //             state: 'playing', keysLeftForThatUser: keysLeftForThatUser,
-    //             welcomed: true
-    //         }
-    //     )
-    //     // this.state.state = 'playing'
-    //     // this.state.welcomed = true
-    //     // this.state.keysLeftForThatUser = keysLeftForThatUser
-    // }
 
     pause() {
         this.setState(
             { state: 'pause', welcomed: true }
         )
-        // this.state.state = 'pause'
-        // this.state.welcomed = true
     }
 
     resume() {
         this.setState({ state: 'playing' })
-        // api.setState(this.senderID,
-        //     { state: 'playing', done: this.state.done, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
-        //     welcomed: this.state.welcomed, userScore: this.state.userScore }
-        // )
-        // this.state.state = 'playing'
+
     }
 
     //when user answer one question
     doneQuestion() {
         let done = this.state.done + 1
-        this.setState({ done: done})
+        this.setState({ done: done })
     }
 
     finish() {
         this.setState({ state: 'finish', welcomed: true, done: 0, userScore: 0 })
-        // api.setState(this.senderID,
-        //     { state: 'finish', done: 0, round: this.state.round, keysLeftForThatUser: this.state.keysLeftForThatUser, 
-        //     welcomed: this.state.welcomed, userScore: 0 }
-        // )
-        // this.state.state = 'finish'
-        // this.state.welcomed = true
     }
 
     nextRound(keysLeftForThatUser) {
         this.setState({ state: "playing", done: 0, userScore: 0, keysLeftForThatUser: keysLeftForThatUser, welcomed: true })
-        // api.setState(this.senderID,
-        //     { state: 'playing', done: 0, round: this.state.round, keysLeftForThatUser: keysLeftForThatUser, 
-        //     welcomed: this.state.welcomed, userScore: 0 }
-        // )
-        // this.state.keysLeftForThatUser = keysLeftForThatUser
-        // this.state.state = 'playing'
-        // this.state.welcomed = true
     }
+
+    removeKeysDone(keysDone) {
+        let keysLeftForThatUser =  utillArray._.pullAll(this.state.keysLeftForThatUser, keysDone)
+        this.setState({keysLeftForThatUser: keysLeftForThatUser})
+    }
+
 
 }
 
