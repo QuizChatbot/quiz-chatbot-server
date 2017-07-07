@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
 import {
   getBlankQuest,
   getQuestFromProps,
   getQuizStatefromQuest
 } from '../../libs/quizHelper'
 import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField'
 
 class QuizInput extends Component {
   constructor (props, context) {
@@ -27,15 +27,15 @@ class QuizInput extends Component {
     }
   }
 
-  handleChange (e) {
+  handleChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  handleDoubleClick (form) {
+  handleDoubleClick = form => {
     this.setState({ isEditing: { [form]: true } })
   }
 
-  handleBlur (form) {
+  handleBlur = form => {
     const { newQuiz, onSave } = this.props
     if (!newQuiz) {
       let keys = form.split('_')
@@ -53,19 +53,18 @@ class QuizInput extends Component {
     if (this.state.isEditing[form] || newQuiz) {
       return (
         <div>
-          {form}:
-          <input
-            className={classnames({
-              'new-todo': newQuiz || this.state.isEditing[form]
-            })}
+          <TextField
+            ref={form}
             type='text'
             name={form}
-            placeholder={form + '??'}
+            floatingLabelText={form}
+            // defaultValue={this.state[form]}
             value={this.state[form]}
             autoFocus={autoFocus}
-            onChange={this.handleChange.bind(this)}
+            onChange={this.handleChange}
             onBlur={() => this.handleBlur(form)}
           />
+
         </div>
       )
     } else {
