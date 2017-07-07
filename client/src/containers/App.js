@@ -23,8 +23,8 @@ injectTapEventPlugin()
 // Styles
 const styles = {
   container: {
-    textAlign: 'center',
-    paddingTop: 200
+    textAlign: 'center'
+    // paddingTop: 200
   }
 }
 
