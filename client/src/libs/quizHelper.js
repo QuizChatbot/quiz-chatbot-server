@@ -3,7 +3,8 @@ const getBlankQuest = () => ({
   question: '',
   choice_0: '',
   choice_1: '',
-  choice_2: ''
+  choice_2: '',
+  open: true
 })
 
 const getQuestFromProps = quest => {
@@ -36,7 +37,8 @@ const getQuizStatefromQuest = ({
     choice_0: false,
     choice_1: false,
     choice_2: false
-  }
+  },
+  open: false
 })
 
 export { getBlankQuest, getQuestFromProps, getQuizStatefromQuest }

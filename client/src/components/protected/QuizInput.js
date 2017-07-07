@@ -7,6 +7,7 @@ import {
 } from '../../libs/quizHelper'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
+import Snackbar from 'material-ui/Snackbar'
 
 class QuizInput extends Component {
   constructor (props, context) {
@@ -48,6 +49,12 @@ class QuizInput extends Component {
     }
   }
 
+  handleRequestClose = () => {
+    this.setState({
+      open: false
+    })
+  }
+
   renderForm (form, autoFocus) {
     const { newQuiz } = this.props
     if (this.state.isEditing[form] || newQuiz) {
@@ -83,12 +90,20 @@ class QuizInput extends Component {
     const { newQuiz } = this.props
     if (newQuiz) {
       return (
-        <RaisedButton
-          type='submit'
-          label='Submit'
-          primary
-          onTouchTap={this.handleSubmit}
-        />
+        <div>
+          <RaisedButton
+            type='submit'
+            label='Submit'
+            primary
+            onTouchTap={this.handleSubmit}
+          />
+          <Snackbar
+            open={this.state.open}
+            message='Quiz added'
+            autoHideDuration={4000}
+            onRequestClose={this.handleRequestClose}
+          />
+        </div>
       )
     }
   }
