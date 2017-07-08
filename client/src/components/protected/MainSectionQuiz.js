@@ -16,8 +16,13 @@ class MainSectionQuiz extends Component {
           (!quests.length
             ? <div>No Quizzes</div>
             : <ul className='todo-list'>
-              {quests.map(quest => (
-                <QuizItem key={quest.id} quest={quest} {...actions} />
+              {quests.map((quest, idx) => (
+                <QuizItem
+                  idx={idx + 1}
+                  key={quest.id}
+                  quest={quest}
+                  {...actions}
+                  />
                 ))}
               <Footer quizCount={quests.length} />
             </ul>)}

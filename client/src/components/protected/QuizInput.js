@@ -57,6 +57,19 @@ class QuizInput extends Component {
 
   renderForm (form, autoFocus) {
     const { newQuiz } = this.props
+    const getFloatingLabelText = form => {
+      switch (form) {
+        case 'choice_0':
+          return 'Answer'
+        case 'choice_1':
+          return 'Choice 1'
+        case 'choice_2':
+          return 'Choice 2'
+        default:
+          return form
+      }
+    }
+
     if (this.state.isEditing[form] || newQuiz) {
       return (
         <div>
@@ -64,21 +77,20 @@ class QuizInput extends Component {
             ref={form}
             type='text'
             name={form}
-            floatingLabelText={form}
+            floatingLabelText={getFloatingLabelText(form)}
             // defaultValue={this.state[form]}
             value={this.state[form]}
             autoFocus={autoFocus || this.state.isEditing[form]}
             onChange={this.handleChange}
             onBlur={() => this.handleBlur(form)}
           />
-
         </div>
       )
     } else {
       return (
         <div className='view'>
           <label onDoubleClick={() => this.handleDoubleClick(form)}>
-            {form}: {this.state[form]}
+            <b>{getFloatingLabelText(form)}:</b> {this.state[form]}
           </label>
           <br />
         </div>
@@ -109,10 +121,11 @@ class QuizInput extends Component {
   }
 
   render () {
-    const { newQuiz } = this.props
+    const { idx, newQuiz } = this.props
     const autoFocus = true
     return (
       <div>
+        {idx && <h4>#{idx}</h4>}
         {this.renderForm('subject', autoFocus)}
         {this.renderForm('question')}
         {this.renderForm('choice_0')}
@@ -125,6 +138,7 @@ class QuizInput extends Component {
 }
 
 QuizInput.propTypes = {
+  idx: PropTypes.number,
   onSave: PropTypes.func.isRequired,
   quest: PropTypes.object,
   newQuiz: PropTypes.bool
