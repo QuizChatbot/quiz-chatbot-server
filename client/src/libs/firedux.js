@@ -174,15 +174,13 @@ export default class Firedux {
       }
 
       try {
-        console.log('try this:', this)
-        // if (this.v3) {
-        console.log('if')
-        var provider = new this.auth.FacebookAuthProvider()
-        this.auth()
-          .signInWithPopup(provider)
-          .then(authData => handler(null, authData))
-          .catch(error => handleError(error))
-        // }
+        if (this.v3) {
+          var provider = new this.auth.FacebookAuthProvider()
+          this.auth()
+            .signInWithPopup(provider)
+            .then(authData => handler(null, authData))
+            .catch(error => handleError(error))
+        }
       } catch (error) {
         console.error('FB AUTH ERROR', error)
         dispatch({ type: 'FIREBASE_LOGIN_ERROR', error })
