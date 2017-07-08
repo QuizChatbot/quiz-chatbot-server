@@ -42,16 +42,19 @@ export class Menubar extends Component {
           <div style={menuStyle}>
             <FlatButton
               label='LEADERBOARD'
+              rippleColor='black'
               containerElement={<Link to='/' />}
               style={{ verticalAlign: 'bottom' }}
             />
             <FlatButton
               label='PLAY QUIZ'
+              rippleColor='cyan'
               href='https://www.facebook.com/messages/t/122419575009686'
               target='_blank'
             />
             <FlatButton
               label='MY QUIZ'
+              rippleColor='black'
               disabled={!authed}
               containerElement={<Link to='/myquiz' />}
               style={{ verticalAlign: 'bottom' }}
@@ -69,7 +72,7 @@ export class Menubar extends Component {
                   verticalAlign: 'bottom'
                 }}
                 />
-              <span>{firedux.displayName} {' '}</span>
+              <span>{' '}{firedux.displayName}{' '}</span>
               <LogoutButton
                 onLogoutClick={onLogoutClick}
                 style={{ display: 'inline' }}
