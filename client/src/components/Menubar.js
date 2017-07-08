@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import Paper from 'material-ui/Paper'
+import Avatar from 'material-ui/Avatar'
 
 const paperStyle = {
   width: '80%',
@@ -61,8 +62,18 @@ export class Menubar extends Component {
               <LoginButton onLoginClick={onLoginClick} />
             </div>
             : <div style={loginStyle}>
-              <span>name: {firedux.displayName}</span>
-              <LogoutButton onLogoutClick={onLogoutClick} />
+              <Avatar
+                src={firedux.photoURL}
+                style={{
+                  textAlign: 'center',
+                  verticalAlign: 'bottom'
+                }}
+                />
+              <span>{firedux.displayName} {' '}</span>
+              <LogoutButton
+                onLogoutClick={onLogoutClick}
+                style={{ display: 'inline' }}
+                />
             </div>}
         </Paper>
       </div>
