@@ -115,6 +115,7 @@ export default class Firedux {
             return Object.assign({}, state, {
               uid: action.uid,
               displayName: action.displayName,
+              photoURL: action.photoURL,
               authError: action.error
             })
           default:
@@ -134,11 +135,13 @@ export default class Firedux {
       if (this.v3) {
         const auth = this.auth()
         auth.onAuthStateChanged(user => {
+          console.log('user', user)
           if (user) {
             dispatch({
               type: 'FIREBASE_VALIDATE_USER',
               uid: user.uid,
               displayName: user.displayName,
+              photoURL: user.photoURL,
               authError: null
             })
             resolve(user)
@@ -149,7 +152,7 @@ export default class Firedux {
   }
   login () {
     const { dispatch } = this
-    const that = this
+    // const that = this
     return new Promise((resolve, reject) => {
       dispatch({ type: 'FIREBASE_LOGIN_ATTEMPT' })
 
@@ -160,10 +163,15 @@ export default class Firedux {
       }
 
       const handler = function (error, authData) {
-        console.log('handler')
         if (error) return handleError(error)
-        that.authData = authData
-        dispatch({ type: 'FIREBASE_LOGIN', uid: authData.user.uid, error })
+        let user = authData.user
+        dispatch({
+          type: 'FIREBASE_LOGIN',
+          uid: user.uid,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          error
+        })
         resolve(authData)
       }
 
