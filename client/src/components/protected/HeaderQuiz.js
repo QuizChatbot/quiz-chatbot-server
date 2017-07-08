@@ -9,7 +9,7 @@ class HeaderQuiz extends Component {
 
   render () {
     return (
-      <header className='header'>
+      <header>
         <QuizInput newQuiz onSave={this.handleSave.bind(this)} />
       </header>
     )

@@ -11,11 +11,11 @@ class MainSectionQuiz extends Component {
   render () {
     const { actions, quests } = this.props
     return (
-      <section className='main'>
+      <section>
         {quests &&
           (!quests.length
             ? <div><br />You have no quizzes, try adding some quiz now!</div>
-            : <ul className='todo-list'>
+            : <ul>
               <Footer quizCount={quests.length} />
               {quests.map((quest, idx) => (
                 <QuizItem

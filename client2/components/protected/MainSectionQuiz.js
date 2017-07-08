@@ -4,30 +4,28 @@ import QuizItem from './QuizItem'
 import FooterQuiz from './FooterQuiz'
 import { firebaseToArray } from '../../utils'
 
-export const Footer = (quizCount) => (
+export const Footer = quizCount => (
   <FooterQuiz quizCount={quizCount.quizCount} />
 )
 
-
 class MainSectionQuiz extends Component {
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context)
   }
 
-  render() {
+  render () {
     const { actions, quests } = this.props
     return (
-      <section className="main">
+      <section>
         {quests &&
           (!quests.length
-            ? (<div>No Quizzes</div>)
-            : (<ul className="todo-list">
-              {quests.map(quest =>
+            ? <div>No Quizzes</div>
+            : <ul>
+              {quests.map(quest => (
                 <QuizItem key={quest.id} quest={quest} {...actions} />
-              )}
+                ))}
               <Footer quizCount={quests.length} />
-            </ul>))
-        }
+            </ul>)}
       </section>
     )
   }

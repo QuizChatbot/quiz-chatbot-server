@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import QuizInput from './QuizInput'
 
 export const Element = ({ quest, deleteQuiz, editQuiz }) => {
-  function handleSave(id, quiz, isChoice) {
+  function handleSave (id, quiz, isChoice) {
     editQuiz(`${id}`, quiz, isChoice)
   }
 
@@ -11,23 +11,22 @@ export const Element = ({ quest, deleteQuiz, editQuiz }) => {
     <div>
       <QuizInput
         quest={quest}
-        onSave={(quiz, isChoice) => handleSave(quest.id, quiz, isChoice)} />
-      <button
-        className="destroy"
-        onClick={() => deleteQuiz(quest.id)} />
+        onSave={(quiz, isChoice) => handleSave(quest.id, quiz, isChoice)}
+      />
+      <button onClick={() => deleteQuiz(quest.id)} />
     </div>
   )
 }
 
 class QuizItem extends Component {
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context)
   }
 
-  render() {
+  render () {
     const { quest, deleteQuiz, editQuiz } = this.props
     return (
-      <li className={classnames({ completed: quest.completed })}>
+      <li>
         <Element quest={quest} deleteQuiz={deleteQuiz} editQuiz={editQuiz} />
       </li>
     )
@@ -37,7 +36,7 @@ class QuizItem extends Component {
 QuizItem.propTypes = {
   quest: PropTypes.object,
   editQuiz: PropTypes.func,
-  deleteQuiz: PropTypes.func,
+  deleteQuiz: PropTypes.func
 }
 
 export default QuizItem

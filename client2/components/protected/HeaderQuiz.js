@@ -3,13 +3,13 @@ import QuizInput from './QuizInput'
 import store from '../../store'
 
 class HeaderQuiz extends Component {
-  handleSave(quiz) {
+  handleSave (quiz) {
     this.props.addQuiz(quiz)
   }
 
-  render() {
+  render () {
     return (
-      <header className="header">
+      <header>
         <QuizInput newQuiz onSave={this.handleSave.bind(this)} />
       </header>
     )

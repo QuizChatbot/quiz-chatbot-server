@@ -1,15 +1,19 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
-import { getBlankQuest, getQuestFromProps, getQuizStatefromQuest } from '../../libs/quizHelper'
+import {
+  getBlankQuest,
+  getQuestFromProps,
+  getQuizStatefromQuest
+} from '../../libs/quizHelper'
 
 class QuizInput extends Component {
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context)
     let quest = getQuestFromProps(props.quest)
     this.state = getQuizStatefromQuest(quest)
   }
 
-  handleSubmit(e) {
+  handleSubmit (e) {
     const { newQuiz, onSave } = this.props
 
     // Save quiz
@@ -21,38 +25,37 @@ class QuizInput extends Component {
     }
   }
 
-  handleChange(e) {
+  handleChange (e) {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  handleDoubleClick(form) {
+  handleDoubleClick (form) {
     this.setState({ isEditing: { [form]: true } })
   }
 
-  handleBlur(form) {
+  handleBlur (form) {
     const { newQuiz, onSave } = this.props
     if (!newQuiz) {
       let keys = form.split('_')
-      let quiz = (keys[0] === 'choice') ? { [keys[1]]: this.state[form] } : { [form]: this.state[form] }
-      let isChoice = (keys[0] === 'choice') ? true : false
+      let quiz = keys[0] === 'choice'
+        ? { [keys[1]]: this.state[form] }
+        : { [form]: this.state[form] }
+      let isChoice = keys[0] === 'choice'
       onSave(quiz, isChoice)
       this.setState({ isEditing: { [form]: false } })
     }
   }
 
-  renderForm(form, autoFocus) {
+  renderForm (form, autoFocus) {
     const { newQuiz } = this.props
     if (this.state.isEditing[form] || newQuiz) {
       return (
         <div>
           {form}:
-          <input className={
-            classnames({
-              'new-todo': newQuiz || this.state.isEditing[form]
-            })}
-            type="text"
+          <input
+            type='text'
             name={form}
-            placeholder={form + "??"}
+            placeholder={form + '??'}
             value={this.state[form]}
             autoFocus={autoFocus}
             onChange={this.handleChange.bind(this)}
@@ -62,7 +65,7 @@ class QuizInput extends Component {
       )
     } else {
       return (
-        <div className="view">
+        <div>
           <label onDoubleClick={() => this.handleDoubleClick(form)}>
             {form}: {this.state[form]}
           </label>
@@ -72,23 +75,23 @@ class QuizInput extends Component {
     }
   }
 
-  renderSubmitButton() {
+  renderSubmitButton () {
     const { newQuiz } = this.props
     if (newQuiz) {
-      return (<button onClick={() => this.handleSubmit()}>Submit</button>)
+      return <button onClick={() => this.handleSubmit()}>Submit</button>
     }
   }
 
-  render() {
+  render () {
     const { newQuiz } = this.props
     const autoFocus = true
     return (
       <div>
-        {this.renderForm("subject", autoFocus)}
-        {this.renderForm("question")}
-        {this.renderForm("choice_0")}
-        {this.renderForm("choice_1")}
-        {this.renderForm("choice_2")}
+        {this.renderForm('subject', autoFocus)}
+        {this.renderForm('question')}
+        {this.renderForm('choice_0')}
+        {this.renderForm('choice_1')}
+        {this.renderForm('choice_2')}
         {newQuiz ? this.renderSubmitButton() : <br />}
       </div>
     )

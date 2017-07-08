@@ -88,7 +88,7 @@ class QuizInput extends Component {
       )
     } else {
       return (
-        <div className='view'>
+        <div>
           <label onDoubleClick={() => this.handleDoubleClick(form)}>
             <b>{getFloatingLabelText(form)}:</b> {this.state[form]}
           </label>
