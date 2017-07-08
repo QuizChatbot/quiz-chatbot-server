@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 
 export const QuizCount = ({ count }) => {
   const itemWord = count === 1 ? 'item' : 'items'
+  const quizWord = count === 1 ? 'quiz' : 'quizzes'
   return (
-    <span className='todo-count'>
-      <strong>{count || 'No'}</strong> {itemWord}
+    <span>
+      Your {quizWord} ({count || 'No'} {itemWord}) : <br />
     </span>
   )
 }
@@ -14,9 +15,9 @@ class FooterQuiz extends Component {
   render () {
     const { quizCount } = this.props
     return (
-      <footer className='footer'>
+      <div>
         <QuizCount count={quizCount} />
-      </footer>
+      </div>
     )
   }
 }

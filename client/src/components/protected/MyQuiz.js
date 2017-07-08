@@ -9,7 +9,6 @@ class MyQuiz extends Component {
     return (
       <div>
         <HeaderQuiz addQuiz={actions.addQuiz} />
-        Your Questions:
         <MainSectionQuiz actions={actions} />
       </div>
     )
