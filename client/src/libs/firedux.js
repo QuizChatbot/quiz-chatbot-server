@@ -135,7 +135,6 @@ export default class Firedux {
       if (this.v3) {
         const auth = this.auth()
         auth.onAuthStateChanged(user => {
-          console.log('user', user)
           if (user) {
             dispatch({
               type: 'FIREBASE_VALIDATE_USER',
@@ -152,7 +151,6 @@ export default class Firedux {
   }
   login () {
     const { dispatch } = this
-    // const that = this
     return new Promise((resolve, reject) => {
       dispatch({ type: 'FIREBASE_LOGIN_ATTEMPT' })
 
