@@ -9,6 +9,8 @@ const style = {
   width: '50%',
   margin: 10,
   padding: 10,
+  paddingLeft: 30,
+  paddingRight: 30,
   textAlign: 'left',
   display: 'inline-block'
 }
@@ -38,7 +40,7 @@ class QuizItem extends Component {
   render () {
     const { idx, quest, deleteQuiz, editQuiz } = this.props
     return (
-      <Paper style={style} zDepth={1}>
+      <Paper style={style} zDepth={2}>
         <Element
           idx={idx}
           quest={quest}
