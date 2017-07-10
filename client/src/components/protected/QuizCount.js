@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-export const QuizCount = ({ count }) => {
+export const QuizWord = ({ count }) => {
   const itemWord = count === 1 ? 'item' : 'items'
   const quizWord = count === 1 ? 'quiz' : 'quizzes'
   return (
@@ -11,19 +11,19 @@ export const QuizCount = ({ count }) => {
   )
 }
 
-class FooterQuiz extends Component {
+class QuizCount extends Component {
   render () {
     const { quizCount } = this.props
     return (
       <div>
-        <QuizCount count={quizCount} />
+        <QuizWord count={quizCount} />
       </div>
     )
   }
 }
 
-FooterQuiz.propTypes = {
+QuizCount.propTypes = {
   quizCount: PropTypes.number
 }
 
-export default FooterQuiz
+export default QuizCount

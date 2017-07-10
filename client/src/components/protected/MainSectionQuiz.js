@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import QuizItem from './QuizItem'
-import FooterQuiz from './FooterQuiz'
+import QuizCount from './QuizCount'
 
-export const Footer = quizCount => (
-  <FooterQuiz quizCount={quizCount.quizCount} />
-)
+export const Footer = quizCount => <QuizCount quizCount={quizCount.quizCount} />
 
 class MainSectionQuiz extends Component {
   render () {
