@@ -243,6 +243,8 @@ const handleReceivedMessage = async (user, messageText) => {
       // //create button for that question
       const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
       const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
+      console.log("ButtonsCreate = ", buttonsCreated)
+      console.log("ButtonMessage = ", buttonMessage)
       startedAt = utillArray.getMoment()
       messenger.callSendAPI(buttonMessage)
 
