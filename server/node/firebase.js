@@ -52,7 +52,7 @@ const getAllAnswersFromQuestion = async (id) => {
             questionSnapshots = snapshot.val()
             resolve(questionSnapshots)
         }, (errorObject) => {
-            reject(errorObject)
+            reject("Reject Cannot get all answers from question id : " + errorObject.code)
             console.log("Cannot get all answers from question id : " + errorObject.code)
         })
     }).then((questionSnapshots) => {
