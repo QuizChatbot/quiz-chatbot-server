@@ -251,7 +251,7 @@ const handleReceivedMessage = async (user, messageText) => {
 
 async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   let numberOfQuestions = await firebase.getNumberOfQuestions()
-
+  console.log("_____pay = ", payloadObj)
 
   //check for button nextRound payload
   if (payloadObj.nextRound === true) {
@@ -314,8 +314,6 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
     let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round)
     user.removeKeysDone(keysDone)
-    console.log("user after remove keys done = ", user)
-    console.log("score = ", user.state.userScore)
     //prepare summary object to save in firebase
     let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
       user.state.round, skill, grade, user.state.userScore, totalScore)
