@@ -381,9 +381,9 @@ async function nextQuestion(user) {
 
 //remove array from array
 //remove questions'keys that already done 
-const removeKeysDone = (keys, keysDone) => {
-  utillArray._.pullAll(keys, keysDone)
-}
+// const removeKeysDone = (keys, keysDone) => {
+//   utillArray._.pullAll(keys, keysDone)
+// }
 
 const nextRound = (user, numberOfQuestions, done) => {
   //if number of done questions equals to number of all questions
@@ -423,6 +423,6 @@ const startNextRound = async (user) => {
 
 module.exports = {
   app, handleReceivedMessage, handleReceivedPostback,
-  startNextRound, nextRound, removeKeysDone, nextQuestion, checkAnswer, getKeys
+  startNextRound, nextRound, nextQuestion, checkAnswer, getKeys
 }
 
