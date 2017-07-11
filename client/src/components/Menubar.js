@@ -6,6 +6,9 @@ import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import Paper from 'material-ui/Paper'
 import Avatar from 'material-ui/Avatar'
+import FontIcon from 'material-ui/FontIcon'
+import IconButton from 'material-ui/IconButton'
+import NevigationMenu from 'material-ui/svg-icons/navigation/menu'
 
 const PaperMenu = styled(Paper)`
   width:100%;
@@ -72,7 +75,9 @@ export class Menubar extends Component {
             onClick={() =>
               this.setState({ isShowMenu: !this.state.isShowMenu })}
           >
-            Menu
+            <IconButton>
+              <NevigationMenu />
+            </IconButton>
           </Hamberger>
           <MenuContainer visible={this.state.isShowMenu}>
             <FlatButton
