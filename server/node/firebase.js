@@ -50,10 +50,13 @@ const getAllAnswersFromQuestion = async (id) => {
     const result = await new Promise(function (resolve, reject) {
         ref.child(id).child("choices").on("value", (snapshot) => {
             questionSnapshots = snapshot.val()
+            if(!questionSnapshots){
+                reject("Cannot get all answers from this question")
+            }
             resolve(questionSnapshots)
         }, (errorObject) => {
-            reject(errorObject)
             console.log("Cannot get all answers from question id : " + errorObject.code)
+            reject("Reject Cannot get all answers from question id : " + errorObject.code)
         })
     }).then((questionSnapshots) => {
         return questionSnapshots

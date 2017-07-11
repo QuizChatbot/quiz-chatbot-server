@@ -29,7 +29,8 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
 
 const app = async () => {
 
-
+  let t = await firebase.getAllAnswersFromQuestion('-KokKeQlC8X-PbeiYHHT')
+  console.log("____t= ", t)
 
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
@@ -243,8 +244,6 @@ const handleReceivedMessage = async (user, messageText) => {
       // //create button for that question
       const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
       const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
-      console.log("ButtonsCreate = ", buttonsCreated)
-      console.log("ButtonMessage = ", buttonMessage)
       startedAt = utillArray.getMoment()
       messenger.callSendAPI(buttonMessage)
 
@@ -262,7 +261,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     messenger.sendTextMessage(user.senderID, "Next Round!")
     startNextRound(user)
   }
-  else if (payloadObj.nextRound === false) {
+  else if (pa999999999999999999999999999999999999999999yloadObj.nextRound === false) {
     //pause finish
     user.finish()
     messenger.sendTextMessage(user.senderID, "Come back when you're ready baby~")
