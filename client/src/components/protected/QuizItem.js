@@ -1,19 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import QuizInput from './QuizInput'
+import styled from 'styled-components'
 import IconButton from 'material-ui/IconButton'
 import ActionDelete from 'material-ui/svg-icons/action/delete'
 import Paper from 'material-ui/Paper'
 
-const style = {
-  width: '50%',
-  margin: 10,
-  padding: 10,
-  paddingLeft: 30,
-  paddingRight: 30,
-  textAlign: 'left',
-  display: 'inline-block'
-}
+const PaperStyled = styled(Paper)`
+  text-align: left;
+`
 
 export const Element = ({ idx, quest, deleteQuiz, editQuiz }) => {
   function handleSave (id, quiz, isChoice) {
@@ -28,7 +23,7 @@ export const Element = ({ idx, quest, deleteQuiz, editQuiz }) => {
         onSave={(quiz, isChoice) => handleSave(quest.id, quiz, isChoice)}
       />
       <div style={{ textAlign: 'center' }}>
-        <IconButton tooltip='Delete' style={{ textAlign: 'center' }}>
+        <IconButton tooltip='Delete'>
           <ActionDelete onTouchTap={() => deleteQuiz(quest.id)} />
         </IconButton>
       </div>
@@ -40,14 +35,14 @@ class QuizItem extends Component {
   render () {
     const { idx, quest, deleteQuiz, editQuiz } = this.props
     return (
-      <Paper style={style} zDepth={2}>
+      <PaperStyled zDepth={2}>
         <Element
           idx={idx}
           quest={quest}
           deleteQuiz={deleteQuiz}
           editQuiz={editQuiz}
         />
-      </Paper>
+      </PaperStyled>
     )
   }
 }

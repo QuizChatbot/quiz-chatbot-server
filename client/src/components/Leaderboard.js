@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import { ListItem } from 'material-ui/List'
 import Avatar from 'material-ui/Avatar'
+
+const ListContainer = styled.div`
+text-align: left;
+width: 100%;
+max-width: 480px;
+margin: auto;
+`
 
 export const LeaderboardItem = ({ idx, developer }) => (
   <ListItem
@@ -22,7 +30,6 @@ export const LeaderboardItem = ({ idx, developer }) => (
       </p>
     }
     secondaryTextLines={2}
-    style={{ width: '50%', margin: 'auto' }}
   />
 )
 
@@ -30,13 +37,15 @@ class Leaderboard extends Component {
   render () {
     const { developers } = this.props
     return (
-      <div>
+      <div style={{ textAlign: 'center', margin: 'auto' }}>
         <h2>Leaderboard</h2>
-        {!developers.length
-          ? <div>No Players</div>
-          : developers.map((developer, idx) => (
-            <LeaderboardItem key={idx} idx={idx} developer={developer} />
-            ))}
+        <ListContainer>
+          {!developers.length
+            ? <div>No Players</div>
+            : developers.map((developer, idx) => (
+              <LeaderboardItem key={idx} idx={idx} developer={developer} />
+              ))}
+        </ListContainer>
       </div>
     )
   }
