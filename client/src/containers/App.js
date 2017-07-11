@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Leaderboard from './Leaderboard.container'
 import Menubar from './Menubar.container'
+import Footer from '../components/Footer'
 import MyQuiz from './MyQuiz.container'
 import Page404 from './404.container'
 import * as QuizActions from '../actions'
@@ -85,6 +86,8 @@ class App extends Component {
               />
               <Route render={() => <Page404 />} />
             </Switch>
+            <br />
+            <Footer />
           </div>
         </BrowserRouter>
       </MuiThemeProvider>
