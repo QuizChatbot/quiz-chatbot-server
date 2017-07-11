@@ -59,6 +59,10 @@ class QuizInput extends Component {
     const { newQuiz } = this.props
     const getFloatingLabelText = form => {
       switch (form) {
+        case 'subject':
+          return 'Subject'
+        case 'question':
+          return 'Question'
         case 'choice_0':
           return 'Answer'
         case 'choice_1':
