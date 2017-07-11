@@ -29,6 +29,9 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
 
 const app = async () => {
 
+  let t = await firebase.getAllAnswersFromQuestion('y')
+  console.log("____t= ", t)
+
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
 
