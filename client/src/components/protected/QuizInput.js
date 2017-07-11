@@ -128,7 +128,7 @@ class QuizInput extends Component {
     const { idx, newQuiz } = this.props
     const autoFocus = true
     return (
-      <div>
+      <div style={{ padding: '10px' }}>
         {idx && <h4>#{idx}</h4>}
         {this.renderForm('subject', autoFocus)}
         {this.renderForm('question')}
