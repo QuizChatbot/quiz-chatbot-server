@@ -261,7 +261,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     messenger.sendTextMessage(user.senderID, "Next Round!")
     startNextRound(user)
   }
-  else if (pa999999999999999999999999999999999999999999yloadObj.nextRound === false) {
+  else if (payloadObj.nextRound === false) {
     //pause finish
     user.finish()
     messenger.sendTextMessage(user.senderID, "Come back when you're ready baby~")
