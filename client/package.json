@@ -16,6 +16,7 @@
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0",
+    "styled-components": "^2.1.1",
     "typeface-roboto": "0.0.29",
     "updeep": "^1.0.0"
   },
