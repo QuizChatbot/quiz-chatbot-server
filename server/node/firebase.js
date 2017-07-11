@@ -51,7 +51,7 @@ const getAllAnswersFromQuestion = async (id) => {
         ref.child(id).child("choices").on("value", (snapshot) => {
             questionSnapshots = snapshot.val()
             if(!questionSnapshots){
-                throw "Cannot get all answers from question id : "
+                reject("Cannot get all answers from question id : ")
             }
             resolve(questionSnapshots)
         }, (errorObject) => {
