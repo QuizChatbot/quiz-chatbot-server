@@ -50,7 +50,7 @@ const getAllAnswersFromQuestion = async (id) => {
     const result = await new Promise(function (resolve, reject) {
         ref.child(id).child("choices").on("value", (snapshot) => {
             questionSnapshots = snapshot.val()
-            if(!questionSnapshots){
+            if (!questionSnapshots) {
                 reject("Cannot get all answers from question id : ")
             }
             resolve(questionSnapshots)
@@ -170,6 +170,20 @@ const saveResultToFirebase = async (senderID, prepareResult) => {
         "round": result.round,
         "score": result.score
     })
+
+    ref = db.ref("/Developer_cheat/" + senderID)
+    //create new key when push
+    ref.child("results").push({
+        "answer": result.answer,
+        "doneAt": result.doneAt,
+        "startedAt": result.startedAt,
+        "duration": result.duration,
+        "point": result.point,
+        "question": result.question,
+        "result": result.result,
+        "round": result.round,
+        "score": result.score
+    })
 }
 
 const saveUserToFirebase = (senderID, user) => {
@@ -192,11 +206,42 @@ const saveUserToFirebase = (senderID, user) => {
     //if firebase doesn't have user data
     ref = db.ref("/Developer/" + senderID)
     ref.update({ profile: user })
+
+    //Cheat protected
+    ref = db.ref("/Developer_cheat/")
+    //check if firebase has that user data 
+    ref.once("value")
+        .then((snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                if (childSnapshot.key == senderID) {
+                    console.log("Already have user information")
+                    hasUser = true
+                    return
+                }
+            })
+        })
+
+    //if firebase doesn't have user data
+    ref = db.ref("/Developer_cheat/" + senderID)
+    ref.update({ profile: user })
 }
 
 const saveSummaryToFirebase = (senderID, summary) => {
     let db = admin.database()
     let ref = db.ref("/Developer/" + senderID)
+    ref.child("summary").child(summary.round).update({
+        "round": summary.round,
+        "done": summary.done,
+        "isDone": summary.isDone,
+        "keysQuestionLeft": summary.keysQuestionLeft,
+        "skill": summary.skill,
+        "grade": summary.grade,
+        "score": summary.score,
+        "totalScore": summary.totalScore
+    })
+
+    //Cheat protected
+    ref = db.ref("/Developer_cheat/" + senderID)
     ref.child("summary").child(summary.round).update({
         "round": summary.round,
         "done": summary.done,

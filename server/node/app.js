@@ -26,6 +26,9 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
   PAGE_ACCESS_TOKEN = config.PAGE_ACCESS_TOKEN
   SERVER_URL = config.SERVER_URL
 
+/**
+ * this is Main messenger app .
+ */
 
 const app = async () => {
 
