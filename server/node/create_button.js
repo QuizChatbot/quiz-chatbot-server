@@ -124,11 +124,11 @@ const createButtonFromQuestionId = async (id) => {
             buttons: [{
               type: "postback",
               title: "12 Factors App",
-              payload: JSON.stringify({ "category": "12 Factors App" })
+              payload: JSON.stringify({ "category": "12 factors app" })
             }, {
               type: "postback",
-              title: "Javascript es6",
-              payload: JSON.stringify({ "category": "Javascript es6" })
+              title: "Design Patterns",
+              payload: JSON.stringify({ "category": "design patterns" })
             }]
           }
         }

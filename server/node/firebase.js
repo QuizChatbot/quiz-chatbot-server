@@ -107,7 +107,7 @@ const getAllQuestionKeys = () => new Promise(async (resolve, reject) => {
 
 //get key of questions already done by that user
 //query only question that done in that round
-const getQuestionDone = async (senderID, round) => new Promise(async (resolve) => {
+const getQuestionDone = async (senderID, round, category) => new Promise(async (resolve) => {
     const db = admin.database()
     const ref = db.ref("/Developer/" + senderID)
     let keysDone = []
@@ -116,7 +116,7 @@ const getQuestionDone = async (senderID, round) => new Promise(async (resolve) =
         for (let property in resultSnapshot) {
             if (resultSnapshot.hasOwnProperty(property)) {
                 //get keys of questions done if that round
-                if (resultSnapshot[property].round == round) {
+                if (resultSnapshot[property].round == round && resultSnapshot[property].category == category) {
                     keysDone.push(resultSnapshot[property].question)
                 }
             }

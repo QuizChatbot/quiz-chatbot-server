@@ -205,7 +205,7 @@ const handleReceivedMessage = async (user, messageText) => {
       console.log("user set welcome = ", user)
       // user.playing()
       user.choosing()
-      console.log("user set playing = ", user)
+      console.log("user set choosing = ", user)
       messenger.sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
     }
 
@@ -214,7 +214,7 @@ const handleReceivedMessage = async (user, messageText) => {
       console.log("playing")
       console.log("user playing = ", user)
       //get keys question that user done
-      let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round)
+      let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round, user.state.category)
 
       //remove questions done from questions that not yet answered
       user.removeKeysDone(keysDone)
@@ -285,13 +285,12 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     messenger.sendTextMessage(user.senderID, "Come back when you're ready baby~")
   }
   //choose category of questions
-  else if (payloadObj.category === "12 Factors App") {
+  else if (payloadObj.category === "12 factors app") {
     user.playing()
     user.chooseCategory(payloadObj.category)
-    console.log("_______", user)
     messenger.sendTextMessage(user.senderID, `Alright, say 'OK' if you are ready to play`)
   }
-  else if (payloadObj.category === "Javascript es6") {
+  else if (payloadObj.category === "design patterns") {
     user.playing()
     user.chooseCategory(payloadObj.category)
     messenger.sendTextMessage(user.senderID, `Alright, say 'OK' if you are ready to play`)
@@ -320,22 +319,22 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     if (result) {
       messenger.sendTextMessage(user.senderID, "Good dog!")
       let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
-        result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID)
+        result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID, user.state.category)
       firebase.saveResultToFirebase(user.senderID, preparedResult)
     }
     //answer Wrong
     else {
       messenger.sendTextMessage(user.senderID, "Bad dog!")
       let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
-        result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID)
+        result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID, user.state.category)
       firebase.saveResultToFirebase(user.senderID, preparedResult)
     }
 
-    let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round)
+    let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round, user.state.category)
     user.removeKeysDone(keysDone)
     //prepare summary object to save in firebase
     let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
-      user.state.round, skill, grade, user.state.userScore, totalScore)
+      user.state.round, user.state.category, grade, user.state.userScore, totalScore)
     firebase.saveSummaryToFirebase(user.senderID, preparedSummary)
     console.log("_______keysLeftForThatUser______ = ", user.state.keysLeftForThatUser)
     let keysLeftForThatUser = user.state.keysLeftForThatUser
