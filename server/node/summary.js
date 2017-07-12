@@ -1,10 +1,10 @@
-const prepareSummary = (done, numberOfQuestions, keys, round, skill, grade, score, totalScore) => {
+const prepareSummary = (done, numberOfQuestions, keys, round, category, grade, score, totalScore) => {
     let summaryObj = {}
 
     summaryObj.done = done
     summaryObj.round = round
     summaryObj.keysQuestionLeft = keys
-    summaryObj.skill = skill
+    summaryObj.category = category
     summaryObj.grade = grade
     summaryObj.score = score
     summaryObj.totalScore = totalScore

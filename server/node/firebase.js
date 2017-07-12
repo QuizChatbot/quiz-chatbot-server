@@ -234,7 +234,7 @@ const saveSummaryToFirebase = (senderID, summary) => {
         "done": summary.done,
         "isDone": summary.isDone,
         "keysQuestionLeft": summary.keysQuestionLeft,
-        "skill": summary.skill,
+        "category": summary.category,
         "grade": summary.grade,
         "score": summary.score,
         "totalScore": summary.totalScore
@@ -247,7 +247,7 @@ const saveSummaryToFirebase = (senderID, summary) => {
         "done": summary.done,
         "isDone": summary.isDone,
         "keysQuestionLeft": summary.keysQuestionLeft,
-        "skill": summary.skill,
+        "category": summary.category,
         "grade": summary.grade,
         "score": summary.score,
         "totalScore": summary.totalScore
