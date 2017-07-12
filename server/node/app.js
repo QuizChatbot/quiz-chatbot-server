@@ -232,7 +232,6 @@ const handleReceivedMessage = async (user, messageText) => {
         // let keysLeftForThatUser = await getKeys()
         //change state to playing
         user.nextRound(keysLeftForThatUser)
-        console.log("user after finish = ", user)
       }
 
       // //shuffle keys of questions that have not answered
@@ -423,11 +422,8 @@ const startNextRound = async (user) => {
   //ready to ask question
   let keysLeftForThatUser = await getKeys()
   user.nextRound(keysLeftForThatUser)
-  console.log("keysLeft = ", keysLeftForThatUser)
-  console.log("user next round = ", user)
 
   let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-  // currentQuestionKey = shuffledKey
   answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
 
   if (answerForEachQuestion == null) {
