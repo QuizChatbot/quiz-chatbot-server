@@ -96,9 +96,6 @@ export function getDeveloper () {
           setDeveloperData(developers, developer)
         })
       })
-      .then(() => {
-        console.log('developers=', developers)
-      })
       // .then(() => {
       //   developers.sort((a, b) => {
       //     return b.maxSummary.score - a.maxSummary.score
@@ -125,7 +122,7 @@ function setDeveloperData (developers, developer) {
     var summary = {}
     var maxSummary = {}
     for (let category in categories) {
-      let cat = _.snakeCase(categories[category])
+      const cat = _.snakeCase(categories[category])
       summary[cat] = _.filter(arraySummary, ['category', categories[category]])
       if (summary[cat].length) {
         if (!summary[cat][summary[cat].length - 1].isDone) {
@@ -145,10 +142,14 @@ function setDeveloperData (developers, developer) {
       }
     }
     if (Object.keys(maxSummary).length) {
+      const cat0 = _.snakeCase(categories[0])
+      const cat1 = _.snakeCase(categories[1])
+
       developers.push({
         id: developer.id,
         profile: developer.profile,
-        maxSummary: maxSummary
+        [cat0]: maxSummary[cat0],
+        [cat1]: maxSummary[cat1]
       })
     }
   }

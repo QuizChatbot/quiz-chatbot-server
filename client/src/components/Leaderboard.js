@@ -11,7 +11,7 @@ max-width: 480px;
 margin: auto;
 `
 
-export const LeaderboardItem = ({ idx, developer }) => (
+export const LeaderboardItem = ({ idx, developer, category }) => (
   <ListItem
     key={idx}
     leftAvatar={<Avatar src={developer.profile.profile_pic} />}
@@ -25,8 +25,8 @@ export const LeaderboardItem = ({ idx, developer }) => (
     }
     secondaryText={
       <p>
-        <span>Grade: {developer.maxSummary.grade}</span><br />
-        Score: {developer.maxSummary.score}
+        <span>Grade: {developer[category].grade}</span><br />
+        Score: {developer[category].score}
       </p>
     }
     secondaryTextLines={2}
@@ -35,15 +35,21 @@ export const LeaderboardItem = ({ idx, developer }) => (
 
 class Leaderboard extends Component {
   render () {
-    const { developers } = this.props
+    const { developers, category } = this.props
+    console.log(developers)
     return (
       <div style={{ textAlign: 'center', margin: 'auto' }}>
         <h2>Leaderboard</h2>
         <ListContainer>
           {!developers.length
-            ? <div>No Players</div>
+            ? <div style={{ textAlign: 'center' }}>No Players</div>
             : developers.map((developer, idx) => (
-              <LeaderboardItem key={idx} idx={idx} developer={developer} />
+              <LeaderboardItem
+                key={idx}
+                idx={idx}
+                developer={developer}
+                category={category}
+                />
               ))}
         </ListContainer>
       </div>
@@ -52,7 +58,8 @@ class Leaderboard extends Component {
 }
 
 Leaderboard.PropTypes = {
-  developers: PropTypes.object.isRequired
+  developers: PropTypes.object.isRequired,
+  category: PropTypes.string.isRequired
 }
 
 export default Leaderboard
