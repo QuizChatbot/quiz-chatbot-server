@@ -1,5 +1,6 @@
 import firedux, { firebaseApp as firebase } from '../store/firedux'
 import { firebaseToArray } from '../utils'
+import _ from 'lodash'
 
 export function addQuiz (quiz) {
   return () => {
@@ -91,13 +92,18 @@ export function getDeveloper () {
     getDevelopers(state.firedux.data)
       .then(devs => {
         developers = []
-        devs.map(developer => setDeveloperData(developers, developer))
-      })
-      .then(() => {
-        developers.sort((a, b) => {
-          return b.maxSummary.score - a.maxSummary.score
+        devs.map(developer => {
+          setDeveloperData(developers, developer)
         })
       })
+      .then(() => {
+        console.log('developers=', developers)
+      })
+      // .then(() => {
+      //   developers.sort((a, b) => {
+      //     return b.maxSummary.score - a.maxSummary.score
+      //   })
+      // })
       .then(() => {
         dispatch({ type: 'developer/set-developer-data', data: developers })
       })
@@ -115,19 +121,30 @@ function getDevelopers (data) {
 function setDeveloperData (developers, developer) {
   if (developer.summary) {
     let arraySummary = developer.summary
-    if (!arraySummary[arraySummary.length - 1].isDone) {
-      arraySummary.splice(arraySummary.length - 1, 1)
+    let categories = ['12 factors app', 'design patterns']
+    var summary = {}
+    var maxSummary = {}
+    for (let category in categories) {
+      let cat = _.snakeCase(categories[category])
+      summary[cat] = _.filter(arraySummary, ['category', categories[category]])
+      if (summary[cat].length) {
+        if (!summary[cat][summary[cat].length - 1].isDone) {
+          summary[cat].splice(summary[cat].length - 1, 1)
+        }
+        if (summary[cat].length) {
+          let maxScore = Math.max.apply(
+            Math,
+            summary[cat].map(summary => {
+              return summary.score
+            })
+          )
+          maxSummary[cat] = summary[cat].find(summary => {
+            return summary.score === maxScore
+          })
+        }
+      }
     }
-    if (arraySummary.length) {
-      let maxScore = Math.max.apply(
-        Math,
-        arraySummary.map(summary => {
-          return summary.score
-        })
-      )
-      let maxSummary = arraySummary.find(summary => {
-        return summary.score === maxScore
-      })
+    if (Object.keys(maxSummary).length) {
       developers.push({
         id: developer.id,
         profile: developer.profile,
