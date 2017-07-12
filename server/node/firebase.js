@@ -90,19 +90,36 @@ const getQuestionFromId = async (id) => {
     return result
 }
 
-//get all questions' keys from firebase
-const getAllQuestionKeys = () => new Promise(async (resolve, reject) => {
+//get all questions' keys from firebase by category or get all question keys
+const getAllQuestionKeys = (category) => new Promise(async (resolve, reject) => {
     const db = admin.database()
     const ref = db.ref("/Quests")
-
-    ref.orderByKey().once("value", (snapshot) => {
-        let keys = Object.keys(snapshot.val())
-        console.log("keys in getAllQuestionKeys =  " + keys)
-        resolve(keys)
-    }, (errorObject) => {
-        console.log("Cannot get all question keys = " + errorObject.code)
-        reject(errorObject)
-    })
+    if (!category) {
+        ref.orderByKey().once("value", (snapshot) => {
+            let keys = Object.keys(snapshot.val())
+            console.log("keys in getAllQuestionKeys =  " + keys)
+            resolve(keys)
+        }, (errorObject) => {
+            console.log("Cannot get all question keys = " + errorObject.code)
+            reject(errorObject)
+        })
+    }
+    else {
+        ref.orderByKey().once("value", (snapshot) => {
+            let keys = []
+            let questionSnapshots = snapshot.val()
+            for (let property in questionSnapshots) {
+                if (questionSnapshots.hasOwnProperty(property)) {
+                    if (questionSnapshots[property].category === category) {
+                        keys.push(property)
+                    }
+                }
+            }
+            resolve(keys)
+        }, (errorObject) => {
+            reject(errorObject)
+        })
+    }
 })
 
 //get key of questions already done by that user
@@ -168,7 +185,8 @@ const saveResultToFirebase = async (senderID, prepareResult) => {
         "question": result.question,
         "result": result.result,
         "round": result.round,
-        "score": result.score
+        "score": result.score,
+        "category": result.category
     })
 
     ref = db.ref("/Developer_cheat/" + senderID)
@@ -182,7 +200,8 @@ const saveResultToFirebase = async (senderID, prepareResult) => {
         "question": result.question,
         "result": result.result,
         "round": result.round,
-        "score": result.score
+        "score": result.score,
+        "category": result.category
     })
 }
 

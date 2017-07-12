@@ -184,8 +184,10 @@ let startedAt
 let skill = "es6"
 
 
-async function getKeys() {
-  let keys = await firebase.getAllQuestionKeys()
+async function getKeys(category) {
+  let keys
+  if(!category) keys = await firebase.getAllQuestionKeys()
+  else keys = await firebase.getAllQuestionKeys(category)
   return keys
 }
 
