@@ -6,7 +6,6 @@ import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import Paper from 'material-ui/Paper'
 import Avatar from 'material-ui/Avatar'
-import FontIcon from 'material-ui/FontIcon'
 import IconButton from 'material-ui/IconButton'
 import NevigationMenu from 'material-ui/svg-icons/navigation/menu'
 
