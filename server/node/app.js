@@ -230,6 +230,7 @@ const handleReceivedMessage = async (user, messageText) => {
       else if (user.state.state === "finish") {
         let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
         // let keysLeftForThatUser = await getKeys()
+        //change state to playing
         user.nextRound(keysLeftForThatUser)
         console.log("user after finish = ", user)
       }
@@ -266,7 +267,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     messenger.sendTextMessage(user.senderID, "Next Round!")
     let buttonCat = await createButton.createButtonCategory(user.senderID)
     messenger.callSendAPI(buttonCat)
-    startNextRound(user)
+    // startNextRound(user)
   }
   else if (payloadObj.nextRound === false) {
     //finish
