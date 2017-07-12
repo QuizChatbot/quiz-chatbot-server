@@ -208,7 +208,7 @@ const handleReceivedMessage = async (user, messageText) => {
     }
 
     // //already quiz with chatbot or user come back after pause
-    else if (user.state.state === "playing" || user.state.state === "pause" || user.state.state === "finish") {
+    else if (user.state.state === "playing" || user.state.state === "pause") {
       console.log("playing")
       console.log("user playing = ", user)
 
@@ -250,6 +250,10 @@ const handleReceivedMessage = async (user, messageText) => {
       startedAt = utillArray.getMoment()
       messenger.callSendAPI(buttonMessage)
 
+    }
+    else if(user.state.state === "finish"){
+      let buttonCat = createButton.createButtonCategory(user.senderID)
+      messenger.callSendAPI(buttonCat)
     }
     else if (user.state.state === "choosing") {
       let buttonCat = await createButton.createButtonCategory(user.senderID)
