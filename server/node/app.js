@@ -249,7 +249,7 @@ const handleReceivedMessage = async (user, messageText) => {
 
     }
     else if(user.state.state === "choosing"){
-      let buttonCat = await createButton.createButtonCategory(user,senderID)
+      let buttonCat = await createButton.createButtonCategory(user.senderID)
       messenger.callSendAPI(buttonCat)
     }
   }
