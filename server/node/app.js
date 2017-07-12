@@ -31,7 +31,8 @@ SERVER_URL = config.SERVER_URL
  */
 
 const app = async () => {
-
+  let t = await firebase.getNumberOfQuestions('design patterns')
+  console.log("__", t)
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
 
