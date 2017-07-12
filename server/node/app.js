@@ -253,7 +253,7 @@ const handleReceivedMessage = async (user, messageText) => {
       messenger.callSendAPI(buttonCat)
     }
   }
-}
+} 
 
 
 async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
