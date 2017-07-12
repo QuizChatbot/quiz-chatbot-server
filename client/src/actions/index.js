@@ -5,10 +5,10 @@ export function addQuiz (quiz) {
   return () => {
     firedux.push('Quests', {
       subject: quiz.subject,
+      category: quiz.category,
       question: quiz.question,
       choices: [quiz.choice_0, quiz.choice_1, quiz.choice_2],
       owner: firebase.auth().currentUser.uid,
-      skills: 'es6',
       point: 10,
       createdAt: Date(),
       updatedAt: Date()

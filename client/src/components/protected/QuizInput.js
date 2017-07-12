@@ -9,6 +9,25 @@ import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
 
+const getFloatingLabelText = form => {
+  switch (form) {
+    case 'subject':
+      return 'Subject'
+    case 'category':
+      return 'Category'
+    case 'question':
+      return 'Question'
+    case 'choice_0':
+      return 'Answer'
+    case 'choice_1':
+      return 'Choice 1'
+    case 'choice_2':
+      return 'Choice 2'
+    default:
+      return form
+  }
+}
+
 class QuizInput extends Component {
   constructor (props, context) {
     super(props, context)
@@ -20,8 +39,15 @@ class QuizInput extends Component {
     const { newQuiz, onSave } = this.props
 
     // Save quiz
-    const { subject, question, choice_0, choice_1, choice_2 } = this.state
-    onSave({ subject, question, choice_0, choice_1, choice_2 })
+    const {
+      subject,
+      category,
+      question,
+      choice_0,
+      choice_1,
+      choice_2
+    } = this.state
+    onSave({ subject, category, question, choice_0, choice_1, choice_2 })
 
     if (newQuiz) {
       this.setState(getBlankQuest())
@@ -57,22 +83,6 @@ class QuizInput extends Component {
 
   renderForm (form, autoFocus) {
     const { newQuiz } = this.props
-    const getFloatingLabelText = form => {
-      switch (form) {
-        case 'subject':
-          return 'Subject'
-        case 'question':
-          return 'Question'
-        case 'choice_0':
-          return 'Answer'
-        case 'choice_1':
-          return 'Choice 1'
-        case 'choice_2':
-          return 'Choice 2'
-        default:
-          return form
-      }
-    }
 
     if (this.state.isEditing[form] || newQuiz) {
       return (
@@ -131,6 +141,7 @@ class QuizInput extends Component {
       <div style={{ padding: '10px' }}>
         {idx && <h4>#{idx}</h4>}
         {this.renderForm('subject', autoFocus)}
+        {this.renderForm('category')}
         {this.renderForm('question')}
         {this.renderForm('choice_0')}
         {this.renderForm('choice_1')}
