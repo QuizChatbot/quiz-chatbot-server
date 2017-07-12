@@ -31,8 +31,6 @@ SERVER_URL = config.SERVER_URL
  */
 
 const app = async () => {
-  let t = await firebase.getNumberOfQuestions('design patterns')
-  console.log("__", t)
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
 
@@ -266,12 +264,14 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   //check for button nextRound payload
   if (payloadObj.nextRound === true) {
     messenger.sendTextMessage(user.senderID, "Next Round!")
+    let buttonCat = await createButton.createButtonCategory(user.senderID)
+    messenger.callSendAPI(buttonCat)
     startNextRound(user)
   }
   else if (payloadObj.nextRound === false) {
-    //pause finish
+    //finish
     user.finish()
-    messenger.sendTextMessage(user.senderID, "Come back when you're ready baby~")
+    messenger.sendTextMessage(user.senderID, "Come back when you're ready~")
     messenger.sendTextMessage(user.senderID, "Bye Bye <3")
   }
 
@@ -283,9 +283,8 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   else if (payloadObj.nextQuestion === false) {
     //pause
     user.pause()
-    console.log("user after pause = ", user)
     messenger.sendTextMessage(user.senderID, "Hell <3")
-    messenger.sendTextMessage(user.senderID, "Come back when you're ready baby~")
+    messenger.sendTextMessage(user.senderID, "Come back when you're ready~")
   }
   //choose category of questions
   else if (payloadObj.category === "12 factors app") {
@@ -366,7 +365,7 @@ function checkAnswer(payload, answerForEachQuestion) {
 async function nextQuestion(user) {
   let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
   let done = user.state.done
-  console.log("user next q = ", user)
+ 
   let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
   //no question left
   //finish that round
