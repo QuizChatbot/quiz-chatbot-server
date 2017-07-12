@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { ListItem } from 'material-ui/List'
 import Avatar from 'material-ui/Avatar'
+import FlatButton from 'material-ui/FlatButton'
 
 const ListContainer = styled.div`
 text-align: left;
@@ -35,11 +36,24 @@ export const LeaderboardItem = ({ idx, developer, category }) => (
 
 class Leaderboard extends Component {
   render () {
-    const { developers, category } = this.props
+    const { developers, category, handleCategory } = this.props
+    console.log('category:', category)
+    const labelColor1 = category === '12_factors_app' ? 'orange' : 'black'
+    const labelColor2 = category === 'design_patterns' ? 'orange' : 'black'
     console.log(developers)
     return (
       <div style={{ textAlign: 'center', margin: 'auto' }}>
         <h2>Leaderboard</h2>
+        <FlatButton
+          label='12 Factors App'
+          labelStyle={{ color: labelColor1 }}
+          onTouchTap={() => handleCategory('12_factors_app')}
+        />
+        <FlatButton
+          label='Design Patterns'
+          labelStyle={{ color: labelColor2 }}
+          onTouchTap={() => handleCategory('design_patterns')}
+        />
         <ListContainer>
           {!developers.length
             ? <div style={{ textAlign: 'center' }}>No Players</div>

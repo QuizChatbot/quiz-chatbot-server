@@ -92,9 +92,7 @@ export function getDeveloper () {
     getDevelopers(state.firedux.data)
       .then(devs => {
         developers = []
-        devs.map(developer => {
-          setDeveloperData(developers, developer)
-        })
+        devs.map(developer => setDeveloperData(developers, developer))
       })
       // .then(() => {
       //   developers.sort((a, b) => {
