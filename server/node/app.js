@@ -259,7 +259,7 @@ const handleReceivedMessage = async (user, messageText) => {
       let buttonCat = await createButton.createButtonCategory(user.senderID)
       messenger.callSendAPI(buttonCat)
     }
-  }
+  } 
 }
 
 
