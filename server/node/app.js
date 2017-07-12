@@ -21,10 +21,10 @@ const
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
 
-  APP_SECRET = config.APP_SECRET 
-  VALIDATION_TOKEN = config.VALIDATION_TOKEN
-  PAGE_ACCESS_TOKEN = config.PAGE_ACCESS_TOKEN
-  SERVER_URL = config.SERVER_URL
+APP_SECRET = config.APP_SECRET
+VALIDATION_TOKEN = config.VALIDATION_TOKEN
+PAGE_ACCESS_TOKEN = config.PAGE_ACCESS_TOKEN
+SERVER_URL = config.SERVER_URL
 
 /**
  * this is Main messenger app .
@@ -165,7 +165,7 @@ const app = async () => {
 
     handleReceivedPostback(user, payloadObj, timeOfPostback)
   }
- 
+
 
   // Start server
   // Webhooks must be available via SSL with a certificate signed by a valid 
@@ -248,12 +248,12 @@ const handleReceivedMessage = async (user, messageText) => {
       messenger.callSendAPI(buttonMessage)
 
     }
-    else if(user.state.state === "choosing"){
+    else if (user.state.state === "choosing") {
       let buttonCat = await createButton.createButtonCategory(user.senderID)
       messenger.callSendAPI(buttonCat)
     }
   }
-} 
+}
 
 
 async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
@@ -283,6 +283,18 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     console.log("user after pause = ", user)
     messenger.sendTextMessage(user.senderID, "Hell <3")
     messenger.sendTextMessage(user.senderID, "Come back when you're ready baby~")
+  }
+  //choose category of questions
+  else if (payloadObj.category === "12 Factors App") {
+    user.playing()
+    user.chooseCategory(payloadObj.category)
+    console.log("_______", user)
+    messenger.sendTextMessage(user.senderID, `Alright, say 'OK' if you are ready to play`)
+  }
+  else if (payloadObj.category === "Javascript es6") {
+    user.playing()
+    user.chooseCategory(payloadObj.category)
+    messenger.sendTextMessage(user.senderID, `Alright, say 'OK' if you are ready to play`)
   }
 
   //Postback for normal questions
