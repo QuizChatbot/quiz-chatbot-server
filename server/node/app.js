@@ -177,11 +177,8 @@ const app = async () => {
 }
 
 
-
-// let numberOfQuestions = await firebase.getNumberOfQuestions()
 let answerForEachQuestion
 let startedAt
-let skill = "es6"
 
 
 async function getKeys(category) {
@@ -215,6 +212,9 @@ const handleReceivedMessage = async (user, messageText) => {
     else if (user.state.state === "playing" || user.state.state === "pause" || user.state.state === "finish") {
       console.log("playing")
       console.log("user playing = ", user)
+
+      let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
+      user.hasKeysLeft(keysLeftForThatUser)
       //get keys question that user done
       let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round, user.state.category)
 
@@ -229,7 +229,8 @@ const handleReceivedMessage = async (user, messageText) => {
         console.log("user after resume = ", user)
       }
       else if (user.state.state === "finish") {
-        let keysLeftForThatUser = await getKeys()
+        let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
+        // let keysLeftForThatUser = await getKeys()
         user.nextRound(keysLeftForThatUser)
         console.log("user after finish = ", user)
       }
@@ -259,8 +260,7 @@ const handleReceivedMessage = async (user, messageText) => {
 
 
 async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
-  let numberOfQuestions = await firebase.getNumberOfQuestions()
-  console.log("_____pay = ", payloadObj)
+  let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
 
   //check for button nextRound payload
   if (payloadObj.nextRound === true) {
@@ -363,7 +363,7 @@ function checkAnswer(payload, answerForEachQuestion) {
 }
 
 async function nextQuestion(user) {
-  let numberOfQuestions = await firebase.getNumberOfQuestions()
+  let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
   let done = user.state.done
   console.log("user next q = ", user)
   let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)

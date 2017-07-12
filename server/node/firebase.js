@@ -11,8 +11,8 @@ const connectToFirebase = () => {
 const admin = connectToFirebase()
 
 //get total number of questions
-const getNumberOfQuestions = async () => {
-    let keys = await getAllQuestionKeys()
+const getNumberOfQuestions = async (category) => {
+    let keys = await getAllQuestionKeys(category)
     let numberOfQuestions = keys.length
     return numberOfQuestions
 }

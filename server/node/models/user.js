@@ -84,9 +84,12 @@ class User {
         this.setState({ state: 'playing', category: category })
     }
 
-
     choosing() {
         this.setState({ state: 'choosing' })
+    }
+
+    hasKeysLeft(keysLeftForThatUser) {
+        this.setState({ keysLeftForThatUser: keysLeftForThatUser })
     }
 
 }
