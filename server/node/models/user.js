@@ -46,7 +46,7 @@ class User {
 
     playing() {
         this.setState(
-            {state: 'playing', welcomed: true}
+            { state: 'playing', welcomed: true }
         )
     }
 
@@ -76,10 +76,18 @@ class User {
     }
 
     removeKeysDone(keysDone) {
-        let keysLeftForThatUser =  utillArray._.pullAll(this.state.keysLeftForThatUser, keysDone)
-        this.setState({keysLeftForThatUser: keysLeftForThatUser})
+        let keysLeftForThatUser = utillArray._.pullAll(this.state.keysLeftForThatUser, keysDone)
+        this.setState({ keysLeftForThatUser: keysLeftForThatUser })
     }
 
+    chooseCategory(category) {
+        this.setState({ state: 'playing', category: category })
+    }
+
+
+    choosing() {
+        this.setState({ state: 'choosing' })
+    }
 
 }
 

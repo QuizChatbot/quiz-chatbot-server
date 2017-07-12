@@ -203,9 +203,9 @@ const handleReceivedMessage = async (user, messageText) => {
     if (user.state.welcomed === false) {
       user.welcome()
       console.log("user set welcome = ", user)
-      user.playing()
+      // user.playing()
+      user.choosing()
       console.log("user set playing = ", user)
-      //sendLetsQuiz(user.senderID, messageText, firstName)
       messenger.sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
     }
 
@@ -247,6 +247,10 @@ const handleReceivedMessage = async (user, messageText) => {
       startedAt = utillArray.getMoment()
       messenger.callSendAPI(buttonMessage)
 
+    }
+    else if(user.state.state === "choosing"){
+      let buttonCat = await createButton.createButtonCategory(user,senderID)
+      messenger.callSendAPI(buttonCat)
     }
   }
 }
