@@ -227,12 +227,11 @@ const handleReceivedMessage = async (user, messageText) => {
         user.resume()
         console.log("user after resume = ", user)
       }
-      else if (user.state.state === "finish") {
-        let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
-        // let keysLeftForThatUser = await getKeys()
-        //change state to playing
-        user.nextRound(keysLeftForThatUser)
-      }
+      // else if (user.state.state === "finish") {
+      //   let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
+      //   //change state to playing
+      //   user.nextRound(keysLeftForThatUser)
+      // }
 
       // //shuffle keys of questions that have not answered
       let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
