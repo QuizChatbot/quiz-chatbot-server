@@ -1,5 +1,5 @@
 require('es6-promise').polyfill();
-require('isomorphic-fetch');
+require('isomorphic-fetch'); 
 
 const
   bodyParser = require('body-parser'),
