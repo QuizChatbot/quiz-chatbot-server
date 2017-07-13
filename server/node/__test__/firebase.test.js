@@ -6,16 +6,16 @@ const firebase = require('../firebase')
 //     })
 // }) 
 
-describe('number of questions', () => {
-    test('get number of questions', () => {
-       expect.assertions(1)
-       return expect(firebase.getNumberOfQuestions()).resolves.toBeDefined()
-    })
-})
+// describe('number of questions', () => {
+//     test('get number of questions', () => {
+//        expect.assertions(1)
+//        return expect(firebase.getNumberOfQuestions()).resolves.toBeDefined()
+//     })
+// })
 
-describe('questions from firebase', () => {
-    test('get all questions keys from firebase', () => {
-       expect.assertions(1)
-       return expect(firebase.getNumberOfQuestions()).resolves.toBeDefined()
-    })
-})
+// describe('questions from firebase', () => {
+//     test('get all questions keys from firebase', () => {
+//        expect.assertions(1)
+//        return expect(firebase.getQuestionsFromFirebase()).resolves.not.toBeNull()
+//     })
+// })
