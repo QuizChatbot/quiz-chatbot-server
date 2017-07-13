@@ -6,7 +6,7 @@ const connectToFirebase = () => {
         databaseURL: "https://quizchatbot-ce222.firebaseio.com"
     })
     return admin 
-}
+} 
 
 const admin = connectToFirebase()
 
