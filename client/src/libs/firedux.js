@@ -229,7 +229,7 @@ export default class Firedux {
           resolve({})
           break
         case 'Quests':
-          firebase.auth().currentUser &&
+          !!firebase.auth().currentUser &&
             this.ref
               .child(path)
               .orderByChild('owner')
