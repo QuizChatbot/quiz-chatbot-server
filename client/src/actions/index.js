@@ -152,3 +152,9 @@ function setDeveloperData (developers, developer) {
     }
   }
 }
+
+export function setCategory (category) {
+  return dispatch => {
+    if (category) dispatch({ type: 'category/set-category', data: category })
+  }
+}
