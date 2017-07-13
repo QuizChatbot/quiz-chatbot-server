@@ -1,94 +1,44 @@
-const app = async () => {
-  require('es6-promise').polyfill();
-  require('isomorphic-fetch');
-  const
-    bodyParser = require('body-parser'),
-    config = require('config'),
-    crypto = require('crypto'),
-    express = require('express'),
-    https = require('https'),
-    request = require('request'),
-    createButton = require('./create_button'),
-    utillArray = require('./utill_array'),
-    firebase = require('./firebase'),
-    tunnelConfig = require('./tunnel.json'),
-    summary = require('./summary'),
-    userClass = require('./models/user'),
-    resultFirebase = require('./result')
+require('es6-promise').polyfill();
+require('isomorphic-fetch'); 
 
+const
+  bodyParser = require('body-parser'),
+  crypto = require('crypto'),
+  express = require('express'),
+  https = require('https'),
+  request = require('request'),
+  createButton = require('./create_button'), 
+  utillArray = require('./utill_array'),
+  firebase = require('./firebase'),
+  tunnelConfig = require('./tunnel.json'),
+  summary = require('./summary'),
+  userClass = require('./models/user'),
+  resultFirebase = require('./result'),
+  api = require('./localUserAPI'),
+  messenger = require('./messenger'),
+  config = require('./config')
+
+
+let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
+
+APP_SECRET = config.APP_SECRET
+VALIDATION_TOKEN = config.VALIDATION_TOKEN
+PAGE_ACCESS_TOKEN = config.PAGE_ACCESS_TOKEN
+SERVER_URL = config.SERVER_URL
+
+/**
+ * this is Main messenger app .
+ */
+
+const app = async () => {
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
-
-  let numberOfQuestions = await firebase.getNumberOfQuestions()
-  let user
-  let results
-  let answerForEachQuestion
-  let currentQuestionKey
-  let startedAt
-  let round = 0
-  let done = 0
-  let skill = "es6"
-  let userScore = 0
-  let usersData = {} //keep users sessions
-  let usersWelcome = {} //keep welcome states for that user only
-
-  async function getKeys() {
-    let keys = await firebase.getAllQuestionKeys()
-    return keys
-  }
 
   let app = express()
   app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
   app.use(express.static('public'))
-
-
-  let state = "initial"
-
-
-  // App Secret can be retrieved from the App Dashboard
-  const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
-    process.env.MESSENGER_APP_SECRET :
-    config.get('appSecret')
-
-  // Arbitrary value used to validate a webhook
-  const VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
-    (process.env.MESSENGER_VALIDATION_TOKEN) :
-    config.get('validationToken')
-
-  // Generate a page access token for your page from the App Dashboard
-  const PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN) ?
-    (process.env.MESSENGER_PAGE_ACCESS_TOKEN) :
-    config.get('pageAccessToken')
-
-  // URL where the app is running (include protocol). Used to point to scripts and 
-  // assets located at this address. 
-  const SERVER_URL = (process.env.SERVER_URL) ?
-    (process.env.SERVER_URL) :
-    config.get('serverURL')
-
-  if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
-    console.error("Missing config values")
-    process.exit(1)
-  }
-
-  // get user information from facebook
-  const getUserDetail = (senderID) => new Promise(async (resolve, reject) => {
-    const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
-    fetch(graph)
-      .then(async function (response) {
-        if (response.status >= 400) {
-          throw new Error("Bad response from server")
-        }
-        let json = await response.json()
-        resolve(json)
-      })
-      .catch((err) => {
-        console.log("Cannot get user information from facebook : ", err)
-        reject(err)
-      })
-  })
 
   app.get('/webhook', (req, res) => {
     if (req.query['hub.mode'] === 'subscribe' &&
@@ -116,27 +66,31 @@ const app = async () => {
         let timeOfEvent = pageEntry.time
 
         // Iterate over each messaging event
-        pageEntry.messaging.forEach(messagingEvent => {
+        pageEntry.messaging.forEach(async messagingEvent => {
           console.log("recieve mssg read")
           console.log("mssg.read ", messagingEvent.read)
           console.log("receive mssg")
-          //console.log(messagingEvent.message.text)
+
+          //get all question keys and save to usersData for that senderID
+          let keysLeftForThatUser = await getKeys()
+          // get user if doesn't have this user before
+          let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
 
 
           if (messagingEvent.optin) {
             receivedAuthentication(messagingEvent)
           } else if (messagingEvent.message) {
-            receivedMessage(messagingEvent)
+            receivedMessage(messagingEvent, user)
           } else if (messagingEvent.delivery) {
             receivedDeliveryConfirmation(messagingEvent);
           } else if (messagingEvent.postback) {
-            receivedPostback(messagingEvent)
+            receivedPostback(messagingEvent, user)
           } else if (messagingEvent.read) {
             receivedMessageRead(messagingEvent)
           } else if (messagingEvent.account_linking) {
             receivedAccountLink(messagingEvent)
           } else {
-            console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+            console.log("Webhook received unknown messagingEvent: ", messagingEvent)
           }
         });
       });
@@ -163,7 +117,7 @@ const app = async () => {
    * then we'll simply confirm that we've received the attachment.
    * 
    */
-  async function receivedMessage(event) {
+  async function receivedMessage(event, user) {
     let senderID = event.sender.id
     let recipientID = event.recipient.id
     let timeOfMessage = event.timestamp
@@ -183,112 +137,12 @@ const app = async () => {
     let messageAttachments = message.attachments
     let quickReply = message.quick_reply
 
-    if (isEcho) {
-      // Just logging message echoes to console
-      console.log("Received echo for message %s and app %d with metadata %s",
-        messageId, appId, metadata)
-      return
-    } else if (quickReply) {
-      let quickReplyPayload = quickReply.payload;
-      console.log("Quick reply for mesage %s with payload %s",
-        messageId, quickReplyPayload)
-
-      sendTextMessage(senderID, "Quick reply tapped");
-      return
-    }
-
     if (messageText) {
-      //TOFIX : Code review , use User and Question class
-
-      //get all question keys and save to usersData for that senderID
-      let keysLeftForThatUser = await getKeys()
-      // //get state of this user
-      user = await userClass.load(senderID)
-
-      // //first time connect to bot, usersData is empty
-      // //let round = 0
-      if (user.state == "initialize") {
-        //set state in usersData
-        user.setState({ state, keysLeftForThatUser, "round": 0, done })
-        console.log("user initialize = ", user)
-      }
-
-      // //when received welcome will setState again
-      else {
-        //user has been paused
-        if (user.state.state == "pause") {
-          user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-        }
-        //user has been paused for next round
-        else if (user.state.state == "finish") {
-          user.setState({ "state": "pause", keysLeftForThatUser, "round": user.state.round, "done": 0 })
-        }
-        //user has been playing
-        else {
-          user.setState({ state, keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-          console.log("user playing = ", user)
-        }
-      }
-
-      // //other users except the first user will add their profile to firebase
-      let userDetail = await getUserDetail(senderID)
-      let firstName = userDetail.first_name
-
-      let tmpReceivedWelcome = await user.getWelcome()
-      console.log("tmpReceivedWelcome = ", tmpReceivedWelcome)
-      firebase.saveUserToFirebase(senderID, userDetail)
-
-      if (!tmpReceivedWelcome) {
-        tmpReceivedWelcome = true
-        user.setStateWelcome(tmpReceivedWelcome)
-        console.log("user after welcome = ", user)
-        sendLetsQuiz(senderID, messageText, firstName)
-      }
-
-
-      // //when set state again, data format will change
-      // //already quiz with chatbot or user come back after pause
-      else if (user.state.state === "playing" || user.state.state === "pause") {
-
-        //get keys question that user done
-        let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
-
-        //remove questions done from questions that not yet answered
-        removeKeysDone(user.state.keysLeftForThatUser, keysDone)
-
-
-        //if user pause -> change to playing
-        if (user.state.state === "pause") {
-          console.log("_________PAUSE__________")
-          user.setState({ "state": "playing", "keysLeftForThatUser" : user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-        }
-        //if user playing
-        else {
-          console.log("playing")
-          console.log(user)
-        }
-
-        // //shuffle keys of questions that have not answered
-        let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-        user.startQuiz(shuffledKey)
-        console.log("user start quiz = ", user)
-        answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-        if (answerForEachQuestion == null) {
-          console.log("Doesn't have this id in questions database")
-          return null
-        }
-        // //create button for that question
-        const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-        const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-        startedAt = utillArray.getMoment()
-        callSendAPI(buttonMessage)
-
-      }
+      handleReceivedMessage(user, messageText)
     } else if (messageAttachments) {
-      sendTextMessage(senderID, "Message with attachment received")
+      messenger.sendTextMessage(senderID, "Message with attachment received")
     }
   }
-
 
   /*
    * Postback Event
@@ -297,11 +151,10 @@ const app = async () => {
    * https://developers.facebook.com/docs/messenger-platform/webhook-reference/postback-received
    * 
    */
-  async function receivedPostback(event) {
+  async function receivedPostback(event, user) {
     let senderID = event.sender.id
     let recipientID = event.recipient.id
     let timeOfPostback = event.timestamp
-
     // The 'payload' param is a developer-defined field which is set in a postback 
     // button for Structured Messages. 
     let payload = event.postback.payload
@@ -309,273 +162,7 @@ const app = async () => {
     console.log("Received postback for user %d and page %d with payload '%s' " +
       "at %d", senderID, recipientID, payload, timeOfPostback)
 
-    //check for button nextRound payload
-    if (payloadObj.nextRound === true) {
-      sendTextMessage(senderID, "Next Round!")
-      startNextRound(senderID, user.state.round)
-    }
-    else if (payloadObj.nextRound === false) {
-        //pause
-      user.setState({ "keysLeftForThatUser": user.state.keysLeftForThatUser, "state": "finish", "done": user.state.done, "round": user.state.round })
-      sendTextMessage(senderID, "Come back when you're ready baby~")
-      sendTextMessage(senderID, "Bye Bye <3")
-    }
-
-    //check for button next question
-    else if (payloadObj.nextQuestion === true) {
-      //call next question
-      nextQuestion(senderID)
-    }
-    else if (payloadObj.nextQuestion === false) {
-      //pause
-      state = "pause"
-      user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "done": user.state.done, "round": user.state.round })
-      sendTextMessage(senderID, "Hell <3")
-      sendTextMessage(senderID, "Come back when you're ready baby~")
-    }
-
-    //Postback for normal questions
-    else {
-      //if in playing question state when receive postback 
-      //number of questions that user already done increase
-      if (user.state.state === "playing") {
-        user.state.done++
-      }
-      console.log("user after done question= ", user)
-
-      // //check answer and ask next question
-      let result = checkAnswer(payloadObj, answerForEachQuestion)
-
-      //send to calculate grade and score for summary
-      let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
-      let totalScore = summary.calculateTotalScore(numberOfQuestions)
-      let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(payloadObj.point, result, duration) //point for that question 
-      userScore += scoreOfThatQuestion
-      let grade = summary.calculateGrade(totalScore, userScore)
-
-      // // answer Correct
-      if (result) {
-        sendTextMessage(senderID, "Good dog!")
-        let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
-                                      result, startedAt,timeOfPostback, scoreOfThatQuestion, senderID)
-        firebase.saveResultToFirebase(senderID, preparedResult)
-      }
-      //answer Wrong
-      else {
-        sendTextMessage(senderID, "Bad dog!")
-        let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
-                                      result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID)
-        firebase.saveResultToFirebase(senderID, preparedResult)
-      }
-
-      let keysDone = await firebase.getQuestionDone(senderID, user.state.round)
-      removeKeysDone(user.state.keysLeftForThatUser, keysDone)
-      user.setState({
-        "state": "playing", "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round,
-        "done": user.state.done
-      })
-
-      //prepare summary object to save in firebase
-      let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
-        user.state.round, skill, grade, userScore, totalScore)
-      firebase.saveSummaryToFirebase(senderID, preparedSummary)
-      console.log("_______keysLeftForThatUser______ = ", user.state.keysLeftForThatUser)
-      let keysLeftForThatUser = user.state.keysLeftForThatUser
-
-
-      //ask whether user ready to play next question 
-      //if there are still questions left that have not done => create next button
-      if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser.length > 0) {
-        let buttonNext = await createButton.createButtonNext(senderID)
-        callSendAPI(buttonNext)
-      }
-      //if there is no question left that have not done => create next round button
-      else {
-        nextQuestion(senderID)
-      }
-    }
-
-  }
-
-  function checkAnswer(payload, answerForEachQuestion) {
-    //the correct answer is always in first element of answers in json file
-    if (payload.answer == answerForEachQuestion[0]) return true
-    else return false
-
-  }
-
-  async function nextQuestion(senderID) {
-    //TOFIX: user class
-    let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-
-    //define current key = key of question about to ask
-    currentQuestionKey = keyOfNextQuestion
-
-    //no question left
-    //finish that round
-    if (keyOfNextQuestion == null) {
-      sendTextMessage(senderID, "Finish!")
-      state = "finish"
-      user.setState({ state, "keysLeftForThatUser": user.state.keysLeftForThatUser, "round": user.state.round, "done": user.state.done })
-
-      done = 0
-      userScore = 0
-
-      nextRound(senderID, user.state.round, user.state.done, numberOfQuestions)
-    }
-
-    //still has questions not answered
-    else {
-      answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
-
-      //no key that matched question
-      if (answerForEachQuestion == null) {
-        console.log("Doesn't have this id in questions json")
-        return null
-      }
-
-      let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
-      let buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-
-      startedAt = utillArray.getMoment()
-
-      callSendAPI(buttonMessage)
-    }
-  }
-
-  //remove array from array
-  //remove questions'keys that already done 
-  const removeKeysDone = (keys, keysDone) => {
-    utillArray._.pullAll(keys, keysDone)
-  }
-
-  const nextRound = (senderID, round, done, numberOfQuestions) => {
-    //if number of done questions equals to number of all questions
-    //then that round is complete -> round increase 
-    if (done == numberOfQuestions) {
-      round++
-      user.setRound(round)
-    }
-    //create button ask for next round
-    let buttonMessage = createButton.createButtonNextRound(senderID)
-    callSendAPI(buttonMessage)
-  }
-
-  const startNextRound = async (senderID, round) => {
-    //ready to ask question
-    //reset state = playing
-    state = "playing"
-    let keysLeftForThatUser = await getKeys()
-    user.setState({ state, keysLeftForThatUser, round, "done": 0 })
-
-    let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-    currentQuestionKey = shuffledKey
-    answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-    console.log("answerForEachQuestion next round = ", answerForEachQuestion)
-
-    if (answerForEachQuestion == null) {
-      console.log("Doesn't have this id in questions database")
-      return null
-    }
-
-    const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
-    const buttonMessage = await createButton.createButtonMessageWithButtons(senderID, buttonsCreated)
-    startedAt = utillArray.getMoment()
-    callSendAPI(buttonMessage)
-  }
-
-  /*
-   * Send a text message using the Send API.
-   *
-   */
-  function sendTextMessage(recipientId, messageText) {
-    let messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        text: messageText,
-        metadata: "DEVELOPER_DEFINED_METADATA"
-      }
-    }
-
-    callSendAPI(messageData)
-  }
-
-
-  /*
-   * Call the Send API. The message data goes in the body. If successful, we'll 
-   * get the message id in a response 
-   *
-   */
-  function callSendAPI(messageData) {
-    request({
-      uri: 'https://graph.facebook.com/v2.6/me/messages',
-      qs: { access_token: PAGE_ACCESS_TOKEN },
-      method: 'POST',
-      json: messageData
-
-    },
-      (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-          let recipientId = body.recipient_id
-          let messageId = body.message_id
-
-          if (messageId) {
-            console.log("Successfully sent message with id %s to recipient %s",
-              messageId, recipientId)
-          } else {
-            console.log("Successfully called Send API for recipient %s",
-              recipientId)
-          }
-        } else {
-          console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
-        }
-      });
-  }
-
-
-  //Greeting message
-  function setGreetingText() {
-    let greetingData = {
-      setting_type: "greeting",
-      greeting: {
-        text: "Welcome to QuizChatbot!"
-      }
-    };
-    createGreetingApi(greetingData)
-  }
-
-  function createGreetingApi(messageData) {
-    request({
-      uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
-      qs: { access_token: PAGE_ACCESS_TOKEN },
-      method: 'POST',
-      json: messageData
-
-    },
-      (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-          console.log("Greeting set successfully!")
-        } else {
-          console.error("Failed calling Thread Reference API", response.statusCode, response.statusMessage, body.error);
-        }
-      })
-  }
-
-
-  async function sendLetsQuiz(recipientId, messageText, firstName) {
-    let messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        text: "Welcome to Quizbot! " + firstName,
-        metadata: "DEVELOPER_DEFINED_METADATA"
-      }
-    }
-    state = "playing"
-    callSendAPI(messageData)
+    handleReceivedPostback(user, payloadObj, timeOfPostback)
   }
 
 
@@ -584,9 +171,274 @@ const app = async () => {
   // certificate authority.
   app.listen(app.get('port'), () => {
     console.log('Node app is running on port', app.get('port'))
-    setGreetingText()
+    messenger.setGreetingText()
   })
 }
 
-module.exports = app
+
+let answerForEachQuestion
+let startedAt
+
+
+async function getKeys(category) {
+  let keys
+  if(!category) keys = await firebase.getAllQuestionKeys()
+  else keys = await firebase.getAllQuestionKeys(category)
+  return keys
+}
+
+
+const handleReceivedMessage = async (user, messageText) => {
+  if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
+    messenger.sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
+  }
+  // //other users except the first user will add their profile to firebase
+  else {
+    let userDetail = await messenger.getUserDetail(user.senderID)
+    let firstName = userDetail.first_name
+    firebase.saveUserToFirebase(user.senderID, userDetail)
+
+    if (user.state.welcomed === false) {
+      user.welcome()
+      console.log("user set welcome = ", user)
+      // user.playing()
+      user.choosing()
+      console.log("user set choosing = ", user)
+      messenger.sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
+    }
+
+    // //already quiz with chatbot or user come back after pause
+    else if (user.state.state === "playing" || user.state.state === "pause") {
+      console.log("playing")
+      console.log("user playing = ", user)
+
+      let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
+      user.hasKeysLeft(keysLeftForThatUser)
+      //get keys question that user done
+      let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round, user.state.category)
+
+      //remove questions done from questions that not yet answered
+      user.removeKeysDone(keysDone)
+
+
+      //if user pause -> change to playing
+      if (user.state.state === "pause") {
+        console.log("_________PAUSE__________")
+        user.resume()
+        console.log("user after resume = ", user)
+      }
+      // else if (user.state.state === "finish") {
+      //   let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
+      //   //change state to playing
+      //   user.nextRound(keysLeftForThatUser)
+      // }
+
+      // //shuffle keys of questions that have not answered
+      let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
+      user.startQuiz(shuffledKey)
+      console.log("user start quiz = ", user)
+      answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+      if (answerForEachQuestion == null) {
+        console.log("Doesn't have this id in questions database")
+        return null
+      }
+      // //create button for that question
+      const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+      const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
+      startedAt = utillArray.getMoment()
+      messenger.callSendAPI(buttonMessage)
+
+    }
+    else if(user.state.state === "finish"){
+      let buttonCat = createButton.createButtonCategory(user.senderID)
+      messenger.callSendAPI(buttonCat)
+    }
+    else if (user.state.state === "choosing") {
+      let buttonCat = await createButton.createButtonCategory(user.senderID)
+      messenger.callSendAPI(buttonCat)
+    }
+  } 
+}
+
+
+async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
+  let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
+
+  //check for button nextRound payload
+  if (payloadObj.nextRound === true) {
+    messenger.sendTextMessage(user.senderID, "Next Round!")
+    let buttonCat = await createButton.createButtonCategory(user.senderID)
+    messenger.callSendAPI(buttonCat)
+    // startNextRound(user)
+  }
+  else if (payloadObj.nextRound === false) {
+    //finish
+    user.finish()
+    messenger.sendTextMessage(user.senderID, "Come back when you're ready~")
+    messenger.sendTextMessage(user.senderID, "Bye Bye <3")
+  }
+
+  //check for button next question
+  else if (payloadObj.nextQuestion === true) {
+    //call next question
+    nextQuestion(user)
+  }
+  else if (payloadObj.nextQuestion === false) {
+    //pause
+    user.pause()
+    messenger.sendTextMessage(user.senderID, "Hell <3")
+    messenger.sendTextMessage(user.senderID, "Come back when you're ready~")
+  }
+  //choose category of questions
+  else if (payloadObj.category === "12 factors app") {
+    user.playing()
+    user.chooseCategory(payloadObj.category)
+    messenger.sendTextMessage(user.senderID, `Alright, say 'OK' if you are ready to play`)
+  }
+  else if (payloadObj.category === "design patterns") {
+    user.playing()
+    user.chooseCategory(payloadObj.category)
+    messenger.sendTextMessage(user.senderID, `Alright, say 'OK' if you are ready to play`)
+  }
+
+  //Postback for normal questions
+  else {
+    //if in playing question state when receive postback 
+    //number of questions that user already done increase
+    if (user.state.state === "playing") {
+      user.doneQuestion()
+    }
+    console.log("user after done question= ", user)
+
+    // //check answer and ask next question
+    let result = checkAnswer(payloadObj, answerForEachQuestion)
+
+    //send to calculate grade and score for summary
+    let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
+    let totalScore = summary.calculateTotalScore(numberOfQuestions)
+    let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(payloadObj.point, result, duration) //point for that question 
+    user.state.userScore += scoreOfThatQuestion
+    let grade = summary.calculateGrade(totalScore, user.state.userScore)
+
+    // // answer Correct
+    if (result) {
+      messenger.sendTextMessage(user.senderID, "Good dog!")
+      let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
+        result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID, user.state.category)
+      firebase.saveResultToFirebase(user.senderID, preparedResult)
+    }
+    //answer Wrong
+    else {
+      messenger.sendTextMessage(user.senderID, "Bad dog!")
+      let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
+        result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID, user.state.category)
+      firebase.saveResultToFirebase(user.senderID, preparedResult)
+    }
+
+    let keysDone = await firebase.getQuestionDone(user.senderID, user.state.round, user.state.category)
+    user.removeKeysDone(keysDone)
+    //prepare summary object to save in firebase
+    let preparedSummary = summary.prepareSummary(user.state.done, numberOfQuestions, user.state.keysLeftForThatUser,
+      user.state.round, user.state.category, grade, user.state.userScore, totalScore)
+    firebase.saveSummaryToFirebase(user.senderID, preparedSummary)
+    console.log("_______keysLeftForThatUser______ = ", user.state.keysLeftForThatUser)
+    let keysLeftForThatUser = user.state.keysLeftForThatUser
+
+
+    //ask whether user ready to play next question 
+    //if there are still questions left that have not done => create next button
+    if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser.length > 0) {
+      let buttonNext = await createButton.createButtonNext(user.senderID)
+      messenger.callSendAPI(buttonNext)
+    }
+    //if there is no question left that have not done => create next round button
+    else {
+      nextQuestion(user)
+    }
+  }
+}
+
+function checkAnswer(payload, answerForEachQuestion) {
+  //the correct answer is always in first element of answers in json file
+  if (payload.answer == answerForEachQuestion[0]) return true
+  else return false
+
+}
+
+async function nextQuestion(user) {
+  let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
+  let done = user.state.done
+ 
+  let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
+  //no question left
+  //finish that round
+  if (keyOfNextQuestion == null) {
+    let grade = await firebase.getGrade(user.senderID, user.state.round)
+    messenger.sendTextMessage(user.senderID, "Finish!")
+    messenger.sendTextMessage(user.senderID, `ได้คะแนน ${user.state.userScore} เกรด ${grade} ถ้าอยากรู้ลำดับก็ไปที่ https://quizchatbot-ce222.firebaseapp.com/ เลยย`)
+    user.finish()
+    nextRound(user, numberOfQuestions, done)
+  }
+
+  //still has questions not answered
+  else {
+    answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
+    //no key that matched question
+    if (answerForEachQuestion == null) {
+      console.log("Doesn't have this id in questions json")
+      return null
+    }
+
+    let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
+    let buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
+
+    startedAt = utillArray.getMoment()
+
+    messenger.callSendAPI(buttonMessage)
+  }
+}
+
+//remove array from array
+//remove questions'keys that already done 
+// const removeKeysDone = (keys, keysDone) => {
+//   utillArray._.pullAll(keys, keysDone)
+// }
+
+const nextRound = (user, numberOfQuestions, done) => {
+  //if number of done questions equals to number of all questions
+  //then that round is complete -> round increase 
+  let round = user.state.round
+  if (done === numberOfQuestions) {
+    round++
+    user.setRound(round)
+  }
+  //create button ask for next round
+  let buttonMessage = createButton.createButtonNextRound(user.senderID)
+  messenger.callSendAPI(buttonMessage)
+}
+
+const startNextRound = async (user) => {
+  //ready to ask question
+  let keysLeftForThatUser = await getKeys()
+  user.nextRound(keysLeftForThatUser)
+
+  let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
+  answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+
+  if (answerForEachQuestion == null) {
+    console.log("Doesn't have this id in questions database")
+    return null
+  }
+
+  const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
+  const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
+  startedAt = utillArray.getMoment()
+  messenger.callSendAPI(buttonMessage)
+}
+
+
+module.exports = {
+  app, handleReceivedMessage, handleReceivedPostback,
+  startNextRound, nextRound, nextQuestion, checkAnswer, getKeys
+}
 

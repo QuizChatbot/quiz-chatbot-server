@@ -110,4 +110,33 @@ const createButtonFromQuestionId = async (id) => {
     return messageData
   }
 
-  module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext }
+  const createButtonCategory = (recipientId) => {
+    let messageData = {
+      recipient: {
+        id: recipientId
+      },
+      message: {
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "button",
+            text: "Choose category, please.",
+            buttons: [{
+              type: "postback",
+              title: "12 Factors App",
+              payload: JSON.stringify({ "category": "12 factors app" })
+            }, {
+              type: "postback",
+              title: "Design Patterns",
+              payload: JSON.stringify({ "category": "design patterns" })
+            }]
+          }
+        }
+      }
+    };
+
+    return messageData
+  }
+
+
+  module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext, createButtonCategory }
