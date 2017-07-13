@@ -1,18 +1,27 @@
-let usersData = {}
-let usersWelcome = {}
+const api = require('../localUserAPI')
+const utillArray = require('../utill_array')
 
-const load = async (userId) => {
-  return new User(userId, await getState(userId))
+const load = async (senderID, keys, api) => {
+    const oldState = await api.getState(senderID)
+    //contact that user for the first time. Dont have oldState of that user
+    if (!oldState) {
+        await api.setState(senderID, { state: "initial", done: 0, round: 0, keysLeftForThatUser: keys, welcomed: false, userScore: 0 })
+    }
+    let state = await api.getState(senderID)
+
+    return new User(senderID, state, api)
 }
 
 class User {
-    constructor(userId, initialState) {
-        this.userId = userId
-        this.state = initialState
+    constructor(senderID, state, api) {
+        this.senderID = senderID
+        this.state = state
+        this.api = api
     }
 
-    setState(newState) {
-        setState(this.userId, newState)
+    setState(updateState) {
+        const newState = Object.assign({}, this.state, updateState)
+        this.api.setState(this.senderID, newState)
         this.state = newState
     }
 
@@ -22,78 +31,68 @@ class User {
             currentQuestionKey: questionKey,
             done: this.state.done,
             round: this.state.round,
-            state: 'playing'
-        })
-    }
-
-    start(){
-        this.setState({
             state: 'playing',
+            userScore: this.state.userScore
         })
     }
 
-    get(field) {
-        return this.state[field]
+    setRound(round) {
+        this.setState({ round: round })
     }
 
-    getWelcome(){
-        return getStateWelcome(this.userId)
+    welcome() {
+        this.setState({ welcomed: true })
     }
 
-    setStateWelcome(stateWelcome){
-        setStateWelcome(this.userId, stateWelcome)
-        this.stateWelcome = stateWelcome
+    playing() {
+        this.setState(
+            { state: 'playing', welcomed: true }
+        )
     }
 
-    setRound(round){
-        setRound(this.userId, round)
-        this.state.round = round
+    pause() {
+        this.setState(
+            { state: 'pause', welcomed: true }
+        )
+    }
+
+    resume() {
+        this.setState({ state: 'playing' })
+
+    }
+
+    //when user answer one question
+    doneQuestion() {
+        let done = this.state.done + 1
+        this.setState({ done: done })
+    }
+
+    finish() {
+        this.setState({ state: 'finish', welcomed: true, done: 0, userScore: 0 })
+    }
+
+    nextRound(keysLeftForThatUser) {
+        this.setState({ state: "playing", done: 0, userScore: 0, keysLeftForThatUser: keysLeftForThatUser, welcomed: true })
+    }
+
+    removeKeysDone(keysDone) {
+        let keysLeftForThatUser = utillArray._.pullAll(this.state.keysLeftForThatUser, keysDone)
+        this.setState({ keysLeftForThatUser: keysLeftForThatUser })
+    }
+
+    chooseCategory(category) {
+        this.setState({ state: 'playing', category: category })
+    }
+
+    choosing() {
+        this.setState({ state: 'choosing' })
+    }
+
+    hasKeysLeft(keysLeftForThatUser) {
+        this.setState({ keysLeftForThatUser: keysLeftForThatUser })
     }
 
 }
 
-
-async function setState(userId, state) {
-    if (!usersData.hasOwnProperty(userId)) {
-        usersData[userId] = state 
-    } else {
-        usersData[userId] = state
-    }
-    console.log('userData = ', usersData)
-}
-
-async function setRound(userId, round) {
-    if (!usersData.hasOwnProperty(userId)) {
-        usersData[userId] = { round }
-    } else {
-        usersData[userId].round = round
-    }
-}
-
-async function getState(userId) {
-    if (!usersData.hasOwnProperty(userId)) {
-        return "initialize"
-    } else {
-        return usersData[userId]
-    }
-}
-
-async function setStateWelcome(userId, welcome) {
-    if (!usersData.hasOwnProperty(userId)) {
-        usersWelcome[userId] = {welcome}
-    } else {
-        usersWelcome[userId] = welcome
-    }
-    console.log('setStateWelcome = ', usersWelcome)
-}
-
-async function getStateWelcome(userId) {
-    if (!usersWelcome.hasOwnProperty(userId)) {
-        return false
-    } else {
-        return usersWelcome[userId]
-    }
-}
-
-module.exports = {load}
+module.exports = { load, User }
 
