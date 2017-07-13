@@ -2,26 +2,28 @@ import Leaderboard from '../components/Leaderboard'
 import withFiredux from '../libs/withFiredux'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { setCategory } from '../actions'
+import { bindActionCreators } from 'redux'
 
-const category = '12_factors_app'
-// const category = '12_factors_app'
-const filterDeveloperByCategory = developers =>
+const filterDeveloperByCategory = (developers, category) =>
   developers
     .filter(item => !!item[category])
     .sort((a, b) => b[category].score - a[category].score)
 
-const handleCategory = cat => {
-  this.category = cat
-  console.log('category', this.category)
-}
-
 export default compose(
   withFiredux,
-  connect(state => ({
-    developers: filterDeveloperByCategory(state.developerData.developers),
-    category,
-    handleCategory
-  }))
+  connect(
+    state => ({
+      developers: filterDeveloperByCategory(
+        state.developerData.developers,
+        state.categoryData.category
+      ),
+      category: state.categoryData.category
+    }),
+    dispatch => {
+      return { setCategory: bindActionCreators(setCategory, dispatch) }
+    }
+  )
 )(Leaderboard)
 
 // const LeaderboardWithFiredux = withFiredux(Leaderboard);

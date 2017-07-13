@@ -36,7 +36,7 @@ export const LeaderboardItem = ({ idx, developer, category }) => (
 
 class Leaderboard extends Component {
   render () {
-    const { developers, category, handleCategory } = this.props
+    const { developers, category, setCategory } = this.props
     console.log('category:', category)
     const labelColor1 = category === '12_factors_app' ? 'orange' : 'black'
     const labelColor2 = category === 'design_patterns' ? 'orange' : 'black'
@@ -47,12 +47,12 @@ class Leaderboard extends Component {
         <FlatButton
           label='12 Factors App'
           labelStyle={{ color: labelColor1 }}
-          onTouchTap={() => handleCategory('12_factors_app')}
+          onTouchTap={() => setCategory('12_factors_app')}
         />
         <FlatButton
           label='Design Patterns'
           labelStyle={{ color: labelColor2 }}
-          onTouchTap={() => handleCategory('design_patterns')}
+          onTouchTap={() => setCategory('design_patterns')}
         />
         <ListContainer>
           {!developers.length
@@ -73,7 +73,8 @@ class Leaderboard extends Component {
 
 Leaderboard.PropTypes = {
   developers: PropTypes.object.isRequired,
-  category: PropTypes.string.isRequired
+  category: PropTypes.string.isRequired,
+  setCategory: PropTypes.func.isRequired
 }
 
 export default Leaderboard
