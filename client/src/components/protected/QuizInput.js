@@ -6,8 +6,10 @@ import {
   getQuizStatefromQuest
 } from '../../libs/quizHelper'
 import RaisedButton from 'material-ui/RaisedButton'
+import FlatButton from 'material-ui/FlatButton'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
+import './bubble.css'
 
 const getFloatingLabelText = form => {
   switch (form) {
@@ -86,7 +88,7 @@ class QuizInput extends Component {
 
     if (this.state.isEditing[form] || newQuiz) {
       return (
-        <div>
+        <div style={{ textAlign: 'center' }}>
           <TextField
             ref={form}
             type='text'
@@ -100,14 +102,33 @@ class QuizInput extends Component {
           />
         </div>
       )
+    } else if (form.indexOf('choice') > -1) {
+      return (
+        <div style={{ textAlign: 'center' }}>
+          <FlatButton
+            label={this.state[form]}
+            onTouchTap={() => this.handleDoubleClick(form)}
+            style={{
+              width: '260px',
+              margin: '0px',
+              borderRadius: '25px',
+              marginLeft: '5%',
+              borderStyle: 'solid',
+              borderWidth: 'thin',
+              borderColor: 'darkgrey'
+            }}
+          />
+        </div>
+      )
     } else {
       return (
-        <div>
-          <label onDoubleClick={() => this.handleDoubleClick(form)}>
-            <b>{getFloatingLabelText(form)}:</b> {this.state[form]}
-          </label>
-          <br />
-        </div>
+        <dl className='ios7'>
+          <dd className='from' onClick={() => this.handleDoubleClick(form)}>
+            <p style={{ margin: '0px' }}>
+              <b>{getFloatingLabelText(form)}:</b> {this.state[form]}
+            </p>
+          </dd>
+        </dl>
       )
     }
   }
@@ -139,7 +160,7 @@ class QuizInput extends Component {
     const autoFocus = true
     return (
       <div style={{ padding: '10px' }}>
-        {idx && <h4>#{idx}</h4>}
+        {idx && <h4 style={{ margin: '0px' }}>#{idx}</h4>}
         {this.renderForm('subject', autoFocus)}
         {this.renderForm('category')}
         {this.renderForm('question')}
