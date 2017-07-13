@@ -192,7 +192,6 @@ const app = async () => {
 }
 
 
-let answerForEachQuestion
 let startedAt
 
 /**
@@ -264,11 +263,12 @@ const handleReceivedMessage = async (user, messageText) => {
       let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
       user.startQuiz(shuffledKey)
       console.log("user start quiz = ", user)
-      answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+      let answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
       if (answerForEachQuestion == null) {
         console.log("Doesn't have this id in questions database")
         return null
       }
+      user.hasAnswers(answerForEachQuestion)
       // //create button for that question
       const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
       const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
@@ -343,7 +343,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     console.log("user after done question= ", user)
 
     // //check answer and ask next question
-    let result = checkAnswer(payloadObj, answerForEachQuestion)
+    let result = checkAnswer(payloadObj, user.state.answerForEachQuestion)
 
     //send to calculate grade and score for summary
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
@@ -425,12 +425,13 @@ async function nextQuestion(user) {
 
   //still has questions not answered
   else {
-    answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
+    let answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
     //no key that matched question
     if (answerForEachQuestion == null) {
       console.log("Doesn't have this id in questions json")
       return null
     }
+    user.hasAnswers(answerForEachQuestion)
 
     let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
     let buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
@@ -476,12 +477,13 @@ const startNextRound = async (user) => {
   user.nextRound(keysLeftForThatUser)
 
   let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-  answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+  let answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
 
   if (answerForEachQuestion == null) {
     console.log("Doesn't have this id in questions database")
     return null
   }
+  user.hasAnswers(answerForEachQuestion)
 
   const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
   const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)

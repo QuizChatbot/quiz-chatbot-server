@@ -110,6 +110,10 @@ class User {
         this.setState({ keysLeftForThatUser: keysLeftForThatUser })
     }
 
+    hasAnswers(answers) {
+        this.setState({ answerForEachQuestion: answers })
+    }
+
 }
 
 module.exports = { load, User }
