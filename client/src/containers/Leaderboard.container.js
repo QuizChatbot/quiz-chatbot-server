@@ -18,7 +18,7 @@ export default compose(
         state.developerData.developers,
         state.categoryData.category
       ),
-      category: state.categoryData.category
+      currentCategory: state.categoryData.category
     }),
     dispatch => {
       return { setCategory: bindActionCreators(setCategory, dispatch) }

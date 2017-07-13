@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import CategoryButton from './CategoryButton'
 import styled from 'styled-components'
 import { ListItem } from 'material-ui/List'
 import Avatar from 'material-ui/Avatar'
-import FlatButton from 'material-ui/FlatButton'
+import _ from 'lodash'
 
 const ListContainer = styled.div`
 text-align: left;
@@ -36,24 +37,23 @@ export const LeaderboardItem = ({ idx, developer, category }) => (
 
 class Leaderboard extends Component {
   render () {
-    const { developers, category, setCategory } = this.props
-    console.log('category:', category)
-    const labelColor1 = category === '12_factors_app' ? 'orange' : 'black'
-    const labelColor2 = category === 'design_patterns' ? 'orange' : 'black'
-    console.log(developers)
+    const { developers, currentCategory, setCategory } = this.props
+    const categories = ['12 Factors App', 'Design Patterns']
     return (
       <div style={{ textAlign: 'center', margin: 'auto' }}>
         <h2>Leaderboard</h2>
-        <FlatButton
-          label='12 Factors App'
-          labelStyle={{ color: labelColor1 }}
-          onTouchTap={() => setCategory('12_factors_app')}
-        />
-        <FlatButton
-          label='Design Patterns'
-          labelStyle={{ color: labelColor2 }}
-          onTouchTap={() => setCategory('design_patterns')}
-        />
+        {categories.map((category, idx) => (
+          <CategoryButton
+            key={idx}
+            category={category}
+            categoryLabel={_.snakeCase(category)}
+            labelColor={
+              currentCategory === _.snakeCase(category) ? 'orange' : 'black'
+            }
+            setCategory={setCategory}
+          />
+        ))}
+
         <ListContainer>
           {!developers.length
             ? <div style={{ textAlign: 'center' }}>No Players</div>
@@ -62,7 +62,7 @@ class Leaderboard extends Component {
                 key={idx}
                 idx={idx}
                 developer={developer}
-                category={category}
+                category={currentCategory}
                 />
               ))}
         </ListContainer>
@@ -73,7 +73,7 @@ class Leaderboard extends Component {
 
 Leaderboard.PropTypes = {
   developers: PropTypes.object.isRequired,
-  category: PropTypes.string.isRequired,
+  currentCategory: PropTypes.string.isRequired,
   setCategory: PropTypes.func.isRequired
 }
 
