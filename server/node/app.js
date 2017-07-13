@@ -30,6 +30,9 @@ SERVER_URL = config.SERVER_URL
  * this is Main messenger app .
  */
 
+/**
+ * Main messenger application
+ */
 const app = async () => {
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
@@ -52,8 +55,9 @@ const app = async () => {
     }
   });
 
-
-  //occur when user send something to bot
+/**
+ * occur when user send something to bot
+ */
   app.post('/webhook', (req, res) => {
 
     let data = req.body
@@ -117,6 +121,12 @@ const app = async () => {
    * then we'll simply confirm that we've received the attachment.
    * 
    */
+
+  /**
+   * When bot received message from user
+   * @param {*} event 
+   * @param {*} user 
+   */
   async function receivedMessage(event, user) {
     let senderID = event.sender.id
     let recipientID = event.recipient.id
@@ -151,6 +161,12 @@ const app = async () => {
    * https://developers.facebook.com/docs/messenger-platform/webhook-reference/postback-received
    * 
    */
+
+  /**
+   * When bot received postback(ex.click button) from user
+   * @param {*} event 
+   * @param {*} user 
+   */
   async function receivedPostback(event, user) {
     let senderID = event.sender.id
     let recipientID = event.recipient.id
@@ -161,7 +177,7 @@ const app = async () => {
     let payloadObj = JSON.parse(payload)
     console.log("Received postback for user %d and page %d with payload '%s' " +
       "at %d", senderID, recipientID, payload, timeOfPostback)
-
+   
     handleReceivedPostback(user, payloadObj, timeOfPostback)
   }
 
@@ -179,7 +195,12 @@ const app = async () => {
 let answerForEachQuestion
 let startedAt
 
-
+/**
+ * Get all questions keys
+ * @async
+ * @param {String} category - category of question
+ * @return {[String]}  
+ */
 async function getKeys(category) {
   let keys
   if(!category) keys = await firebase.getAllQuestionKeys()
@@ -188,6 +209,12 @@ async function getKeys(category) {
 }
 
 
+/**
+ * Handle received message
+ * @async
+ * @param {object} user 
+ * @param {string} messageText
+ */
 const handleReceivedMessage = async (user, messageText) => {
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
     messenger.sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
@@ -260,7 +287,12 @@ const handleReceivedMessage = async (user, messageText) => {
   } 
 }
 
-
+/**
+ * Handle received postback from user
+ * @param {object} user 
+ * @param {object} payloadObj 
+ * @param {string} timeOfPostback - timestamp
+ */
 async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
 
@@ -323,14 +355,14 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     // // answer Correct
     if (result) {
       messenger.sendTextMessage(user.senderID, "Good dog!")
-      let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
+      let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, user.state.round,
         result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID, user.state.category)
       firebase.saveResultToFirebase(user.senderID, preparedResult)
     }
     //answer Wrong
     else {
       messenger.sendTextMessage(user.senderID, "Bad dog!")
-      let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, answerForEachQuestion, user.state.round,
+      let preparedResult = await resultFirebase.prepareResultForFirebase(payloadObj, user.state.round,
         result, startedAt, timeOfPostback, scoreOfThatQuestion, user.senderID, user.state.category)
       firebase.saveResultToFirebase(user.senderID, preparedResult)
     }
@@ -358,6 +390,12 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   }
 }
 
+/**
+ * Check if answer correct or wrong
+ * @param {object} payload - payload received from postback
+ * @param {[String]} answerForEachQuestion 
+ * @return {Boolean}
+ */
 function checkAnswer(payload, answerForEachQuestion) {
   //the correct answer is always in first element of answers in json file
   if (payload.answer == answerForEachQuestion[0]) return true
@@ -365,6 +403,11 @@ function checkAnswer(payload, answerForEachQuestion) {
 
 }
 
+/**
+ * Ask next question
+ * @async
+ * @param {object} user 
+ */
 async function nextQuestion(user) {
   let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
   let done = user.state.done
@@ -404,6 +447,12 @@ async function nextQuestion(user) {
 //   utillArray._.pullAll(keys, keysDone)
 // }
 
+/**
+ * Increase round & ask for next round
+ * @param {object} user 
+ * @param {Number} numberOfQuestions - number of total questions in that category
+ * @param {Number} done - number of questions already done
+ */
 const nextRound = (user, numberOfQuestions, done) => {
   //if number of done questions equals to number of all questions
   //then that round is complete -> round increase 
@@ -417,6 +466,10 @@ const nextRound = (user, numberOfQuestions, done) => {
   messenger.callSendAPI(buttonMessage)
 }
 
+/**
+ * Start to play next round
+ * @param {object} user 
+ */
 const startNextRound = async (user) => {
   //ready to ask question
   let keysLeftForThatUser = await getKeys()

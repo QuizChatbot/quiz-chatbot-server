@@ -1,3 +1,15 @@
+/**
+ * Prepare summary of answered question to save in firebase
+ * @param {number} done - number of questions user answered
+ * @param {number} numberOfQuestions - number of total questions
+ * @param {[string]} keys - keys of questions left unanswered
+ * @param {number} round - number of round user playing
+ * @param {string} category - category of question
+ * @param {string} grade - grade that user get
+ * @param {number} score - score that user get
+ * @param {number} totalScore - total score of all questions in that round
+ * @return {object}
+ */
 const prepareSummary = (done, numberOfQuestions, keys, round, category, grade, score, totalScore) => {
     let summaryObj = {}
 
@@ -13,7 +25,14 @@ const prepareSummary = (done, numberOfQuestions, keys, round, category, grade, s
 
     return summaryObj
 }
-//score for one question that user just answered 
+
+/**
+ * Calculate score by time for one question that user just answered
+ * @param {number} point - score of that question
+ * @param {boolean} result - user answer correct/wrong
+ * @param {number} duration - duration since asked untill user answered
+ * @return {number} 
+ */
 const calculateScoreForThatQuestion = (point, result, duration) => {
     let score = 0
     //If answer correctly
@@ -25,11 +44,22 @@ const calculateScoreForThatQuestion = (point, result, duration) => {
     return score
 }
 
+/**
+ * Calculate total score of all questions in that round
+ * @param {number} totalQuestions 
+ * @return {number}
+ */
 const calculateTotalScore = (totalQuestions) => {
     let totalScore = totalQuestions * 15
     return totalScore
 }
 
+/**
+ * Calculate grade that user get
+ * @param {number} totalScore - total score of that round
+ * @param {number} userScore - score that user get 
+ * @return {string}
+ */
 const calculateGrade = (totalScore, userScore) => {
     if (userScore >= totalScore * 86 / 100) {
         return 'A+'

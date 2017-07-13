@@ -8,6 +8,11 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
   PAGE_ACCESS_TOKEN = config.PAGE_ACCESS_TOKEN
   SERVER_URL = config.SERVER_URL
 
+/**
+ * Send text message in messenger
+ * @param {string} recipientId 
+ * @param {string} messageText 
+ */
 function sendTextMessage(recipientId, messageText) {
   let messageData = {
     recipient: {
@@ -27,6 +32,11 @@ function sendTextMessage(recipientId, messageText) {
  * Call the Send API. The message data goes in the body. If successful, we'll 
  * get the message id in a response 
  *
+ */
+
+/**
+ * Send message in messenger
+ * @param {obj} messageData 
  */
 function callSendAPI(messageData) {
   request({
@@ -55,6 +65,12 @@ function callSendAPI(messageData) {
 }
 
 // get user information from facebook
+/**
+ * Get user profile information from facebook
+ * @param {string} senderID 
+ * @return {object}
+ * @async
+ */
 const getUserDetail = (senderID) => new Promise(async (resolve, reject) => {
   const graph = `https://graph.facebook.com/v2.9/${senderID}?access_token=${PAGE_ACCESS_TOKEN}`
   fetch(graph)
@@ -71,6 +87,12 @@ const getUserDetail = (senderID) => new Promise(async (resolve, reject) => {
     })
 })
 
+/**
+ * Send welcome at the first time user talk to bot.
+ * @param {string} recipientId 
+ * @param {string} messageText 
+ * @param {string} firstName 
+ */
 async function sendLetsQuiz(recipientId, messageText, firstName) {
   let messageData = {
     recipient: {
@@ -84,6 +106,10 @@ async function sendLetsQuiz(recipientId, messageText, firstName) {
   messenger.callSendAPI(messageData)
 }
 
+/**
+ * Create api for greeting
+ * @param {*} messageData 
+ */
 function createGreetingApi(messageData) {
   request({
     uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
@@ -101,6 +127,9 @@ function createGreetingApi(messageData) {
     })
 }
 
+/**
+ * Set greeting text in messenger
+ */
 function setGreetingText() {
   let greetingData = {
     setting_type: "greeting",

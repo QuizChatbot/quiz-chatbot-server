@@ -1,3 +1,6 @@
+/**
+ * Connect to firebase database
+ */
 const connectToFirebase = () => {
     const admin = require("firebase-admin");
     let serviceAccount = require("./config/quizchatbot-ce222-firebase-adminsdk.json")
@@ -13,8 +16,9 @@ const admin = connectToFirebase()
 
 /**
  * get total number of questions
- * @param {String} category 
- * @return {Number}
+ * @param {String} category - category of question
+ * @return {Number} 
+ * @async
  */
 const getNumberOfQuestions = async (category) => {
     let keys = await getAllQuestionKeys(category)
@@ -22,7 +26,11 @@ const getNumberOfQuestions = async (category) => {
     return numberOfQuestions
 }
 
-//get all questions from firebase
+
+/**
+ * get all questions from firebase
+ * @async
+ */
 const getQuestionsFromFirebase = async () => {
     // Get a database reference to our posts 
     let db = admin.database()
@@ -47,7 +55,13 @@ const getQuestionsFromFirebase = async () => {
     return result
 }
 
-//get all answers from that question by id
+//
+/**
+ * Get all answers(choices) from that question by id
+ * @param {String} id - id of question
+ * @return {[String]}
+ * @async
+ */
 const getAllAnswersFromQuestion = async (id) => {
     let db = admin.database()
     let ref = db.ref("/Quests")
@@ -73,7 +87,13 @@ const getAllAnswersFromQuestion = async (id) => {
     return result
 }
 
-//get question by id
+
+/**
+ * Get question by id
+ * @param {String} id 
+ * @return {object}
+ * @async
+ */
 const getQuestionFromId = async (id) => {
     let db = admin.database()
     let ref = db.ref("/Quests")
@@ -95,7 +115,12 @@ const getQuestionFromId = async (id) => {
     return result
 }
 
-//get all questions' keys from firebase by category or get all question keys
+/**
+ * get all questions' keys from firebase by category or get all question keys
+ * @param {String} category - category of question
+ * @return {[String]}
+ * @async
+ */
 const getAllQuestionKeys = (category) => new Promise(async (resolve, reject) => {
     const db = admin.database()
     const ref = db.ref("/Quests")
@@ -127,8 +152,16 @@ const getAllQuestionKeys = (category) => new Promise(async (resolve, reject) => 
     }
 })
 
-//get key of questions already done by that user
-//query only question that done in that round
+
+/**
+ * Get key of questions already done by that user.
+ * Query only question that done in that round+category
+ * @param {String} senderID 
+ * @param {Number} round 
+ * @param {String} category 
+ * @return {[string]}
+ * @async
+ */
 const getQuestionDone = async (senderID, round, category) => new Promise(async (resolve) => {
     const db = admin.database()
     const ref = db.ref("/Developer/" + senderID)
@@ -151,6 +184,13 @@ const getQuestionDone = async (senderID, round, category) => new Promise(async (
 
 })
 
+/**
+ * Get grade of user after finish that round
+ * @param {String} senderID 
+ * @param {Number} round 
+ * @return {String}
+ * @async
+ */
 const getGrade = async (senderID, round) => new Promise(async (resolve) => {
     const db = admin.database()
     const ref = db.ref("/Developer/" + senderID)
@@ -173,7 +213,13 @@ const getGrade = async (senderID, round) => new Promise(async (resolve) => {
 })
 
 
-//save result of answered question
+
+/**
+ * Save result of answered question
+ * @param {String} senderID 
+ * @param {object} prepareResult 
+ * @async
+ */
 const saveResultToFirebase = async (senderID, prepareResult) => {
     let result = prepareResult[0]
     let keyQuestion = result.question
@@ -210,6 +256,11 @@ const saveResultToFirebase = async (senderID, prepareResult) => {
     })
 }
 
+/**
+ * Save user profile to firebase
+ * @param {String} senderID 
+ * @param {object} user - user detail from facebook
+ */
 const saveUserToFirebase = (senderID, user) => {
     console.log("User in firebase= ", user)
     let db = admin.database()
@@ -250,6 +301,11 @@ const saveUserToFirebase = (senderID, user) => {
     ref.update({ profile: user })
 }
 
+/**
+ * Save summary of answered question to firebase
+ * @param {string} senderID 
+ * @param {object} summary 
+ */
 const saveSummaryToFirebase = (senderID, summary) => {
     let db = admin.database()
     let ref = db.ref("/Developer/" + senderID)
