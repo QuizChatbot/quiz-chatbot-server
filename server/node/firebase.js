@@ -7,7 +7,7 @@ const connectToFirebase = () => {
     })
     return admin 
 } 
-
+ 
 const admin = connectToFirebase()
 
 
