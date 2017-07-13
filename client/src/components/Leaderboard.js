@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import CategoryButton from './CategoryButton'
+import LeaderboardItem from './LeaderboardItem'
 import styled from 'styled-components'
-import { ListItem } from 'material-ui/List'
-import Avatar from 'material-ui/Avatar'
 import _ from 'lodash'
 
 const ListContainer = styled.div`
@@ -12,28 +11,6 @@ width: 100%;
 max-width: 480px;
 margin: auto;
 `
-
-export const LeaderboardItem = ({ idx, developer, category }) => (
-  <ListItem
-    key={idx}
-    leftAvatar={<Avatar src={developer.profile.profile_pic} />}
-    primaryText={
-      idx +
-        1 +
-        ' ' +
-        developer.profile.first_name +
-        ' ' +
-        developer.profile.last_name
-    }
-    secondaryText={
-      <p>
-        <span>Grade: {developer[category].grade}</span><br />
-        Score: {developer[category].score}
-      </p>
-    }
-    secondaryTextLines={2}
-  />
-)
 
 class Leaderboard extends Component {
   render () {
