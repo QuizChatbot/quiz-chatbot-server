@@ -16,10 +16,18 @@ const
   resultFirebase = require('./result'),
   api = require('./localUserAPI'),
   messenger = require('./messenger'),
-  config = require('./config')
+  config = require('./config'),
+  emitter = require('./emitter'),
+  analytics = require('./analytics'),
+  ua = require("universal-analytics")
 
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
+
+emitter.on('*', (type, payload) => analytics.track(type, payload))
+emitter.on('startApp', () => {
+  console.log('sent email to admin')
+})
 
 APP_SECRET = config.APP_SECRET
 VALIDATION_TOKEN = config.VALIDATION_TOKEN
@@ -34,16 +42,27 @@ SERVER_URL = config.SERVER_URL
  * Main messenger application
  */
 const app = async () => {
+  // let mitt1 = emitter
+  // mitt1.emit('foo', { a: 'b' })
+  // const emitter = require('./analytics/emitter2')
+  // emitter.emit('foo', { a: 'b2' })
+  // emitter.on()
+
   // config.serverURL = tunnelConfig.serverURL
   // console.log("config ", config, tunnelConfig)
 
   let app = express()
+  emitter.emit('startApp')
   app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
   app.use(express.static('public'))
+  app.use(ua.middleware("UA-102602039-1", {cookieName: '_ga'}))
+
+  // let visitor = ua.createFromSession(socket.handshake.session)
 
   app.get('/webhook', (req, res) => {
+    console.log('____', req.visitor)
     if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === VALIDATION_TOKEN) {
       console.log("Validating webhook")
@@ -253,15 +272,11 @@ const handleReceivedMessage = async (user, messageText) => {
         user.resume()
         console.log("user after resume = ", user)
       }
-      // else if (user.state.state === "finish") {
-      //   let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
-      //   //change state to playing
-      //   user.nextRound(keysLeftForThatUser)
-      // }
 
       // //shuffle keys of questions that have not answered
       let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
       user.startQuiz(shuffledKey)
+      emitter.emit('startQuiz', user)
       console.log("user start quiz = ", user)
       let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
       if (answersForEachQuestion == null) {
@@ -457,6 +472,7 @@ async function nextQuestion(user) {
 const nextRound = (user, numberOfQuestions, done) => {
   //if number of done questions equals to number of all questions
   //then that round is complete -> round increase 
+  emitter.emit('nextRound', user)
   let round = user.state.round
   if (done === numberOfQuestions) {
     round++

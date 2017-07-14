@@ -4,10 +4,13 @@
 const connectToFirebase = () => {
     const admin = require("firebase-admin");
     let serviceAccount = require("./config/quizchatbot-ce222-firebase-adminsdk.json")
-    admin.initializeApp(functions.config().firebase)
-    return admin 
-} 
- 
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: "https://quizchatbot-ce222.firebaseio.com"
+    })
+    return admin
+}
+
 const admin = connectToFirebase()
 
 
@@ -336,4 +339,9 @@ module.exports = {
     getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone,
     getGrade
 }
+
+// exports.testEvent = functions.analytics.event('SELECT_CONTENT').onLog(event => {
+ 
+//     return "testttt"
+// })
 
