@@ -156,12 +156,12 @@ const app = async () => {
    */
   async function receivedMessage(event, user) {
 
-    analytics.create(UNIVERSAL_ANALYTICS, {
+    uga.create(UNIVERSAL_ANALYTICS, {
       name: 'anotherTracker',
       clientId: user.senderID
     })
 
-    analytics.event('category', 'action', { eventValue: 123 })
+    uga.event('category', 'action', { eventValue: 123 })
 
 
     let senderID = event.sender.id
