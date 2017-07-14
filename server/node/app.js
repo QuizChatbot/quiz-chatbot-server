@@ -60,7 +60,7 @@ const app = async () => {
   app.use(express.static('public')) 
   app.use(ua.middleware(UNIVERSAL_ANALYTICS, {cookieName: '_ga'}))
 
-  let visitor = ua(UNIVERSAL_ANALYTICS)
+  // let visitor = ua(UNIVERSAL_ANALYTICS)
   console.log("visitor = ", visitor)
 
   // let visitor = ua.createFromSession(socket.handshake.session)
