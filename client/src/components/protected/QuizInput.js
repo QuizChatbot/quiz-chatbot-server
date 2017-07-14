@@ -76,7 +76,6 @@ class QuizInput extends Component {
             type='text'
             name={form}
             floatingLabelText={getFloatingLabelText(form)}
-            // defaultValue={this.state[form]}
             value={this.state[form]}
             autoFocus={autoFocus || this.state.isEditing[form]}
             onChange={this.handleChange}
