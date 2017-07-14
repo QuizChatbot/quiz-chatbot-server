@@ -109,10 +109,12 @@ class QuizInput extends Component {
             label={this.state[form]}
             onTouchTap={() => this.handleDoubleClick(form)}
             style={{
-              width: '260px',
+              maxWidth: '260px',
+              width: '100%',
               margin: '0px',
               borderRadius: '25px',
               marginLeft: '5%',
+              marginRight: '5%',
               borderStyle: 'solid',
               borderWidth: 'thin',
               borderColor: 'darkgrey'
@@ -123,7 +125,11 @@ class QuizInput extends Component {
     } else {
       return (
         <dl className='ios7'>
-          <dd className='from' onClick={() => this.handleDoubleClick(form)}>
+          <dd
+            className='from'
+            style={{ paddingRight: '5%' }}
+            onClick={() => this.handleDoubleClick(form)}
+          >
             <p style={{ margin: '0px' }}>
               <b>{getFloatingLabelText(form)}:</b> {this.state[form]}
             </p>

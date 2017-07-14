@@ -3,9 +3,12 @@
   padding: 0;
 } */
 .ios7 {
-	width: 320px;
-	margin: 0 auto;
-	padding: .1em .8em;
+  max-width: 320px;
+  width: 100%;
+  margin: 0 auto;
+   /* margin-right: 5%;  */
+  padding-right: 5%;
+	padding: .1em .8em; 
 	font-weight: 200;
 	font-size: 16px;
 	font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
