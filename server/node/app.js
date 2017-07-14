@@ -56,7 +56,7 @@ const app = async () => {
   app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
-  app.use(express.static('public'))
+  app.use(express.static('public')) 
   app.use(ua.middleware("UA-102602039-1", {cookieName: '_ga'}))
 
   // let visitor = ua.createFromSession(socket.handshake.session)
