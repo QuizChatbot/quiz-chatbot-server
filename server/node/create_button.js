@@ -1,6 +1,12 @@
 const firebase = require('./firebase.js')
 const utillArray = require('./utill_array')
 
+/**
+ * Create buttons object include choices,subject,question
+ * @param {string} id 
+ * @return {object} 
+ * @async
+ */
 const createButtonFromQuestionId = async (id) => {
   let question = await firebase.getQuestionFromId(id)
   console.log("questions in createButtonFromQuestionId = ", question)
@@ -28,6 +34,12 @@ const createButtonFromQuestionId = async (id) => {
     }
   }
 
+/**
+ * Create buttons ready to send
+ * @param {string} recipientId 
+ * @param {object} buttons 
+ * @return {object}
+ */
   const createButtonMessageWithButtons = (recipientId, buttons) => {
     //delete 'subject' and 'question' key that comes with buttons
     let subject = buttons.subject
@@ -54,6 +66,11 @@ const createButtonFromQuestionId = async (id) => {
     return messageData
   }
 
+/**
+ * Create button asked for next round
+ * @param {string} recipientId 
+ * @return {object}
+ */
   const createButtonNextRound = (recipientId) => {
     let messageData = {
       recipient: {
@@ -82,6 +99,11 @@ const createButtonFromQuestionId = async (id) => {
     return messageData
   }
 
+/**
+ * Create button asked for next question 
+ * @param {string} recipientId
+ * @return {object} 
+ */
   const createButtonNext = (recipientId) => {
     let messageData = {
       recipient: {
@@ -110,6 +132,11 @@ const createButtonFromQuestionId = async (id) => {
     return messageData
   }
 
+/**
+ * Create button asked which category to play
+ * @param {string} recipientId 
+ * @return {object}
+ */
   const createButtonCategory = (recipientId) => {
     let messageData = {
       recipient: {

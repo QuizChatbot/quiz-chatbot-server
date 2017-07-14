@@ -137,29 +137,36 @@ describe('User', () => {
     it('remove keys that user already done', () => {
         const user = new User('123', { state: 'playing', keysLeftForThatUser: ['dog', 'duck', 'cat'] }, api)
         user.removeKeysDone(['cat', 'dog'])
-       expect(user.state.keysLeftForThatUser).toEqual(['duck'])
+        expect(user.state.keysLeftForThatUser).toEqual(['duck'])
     })
 
-      //change state to choosing
+    //change state to choosing
     it('change state to choosing', () => {
-        const user = new User('123', { state: 'playing'}, api)
+        const user = new User('123', { state: 'playing' }, api)
         user.choosing()
-       expect(user.state.state).toBe('choosing')
+        expect(user.state.state).toBe('choosing')
     })
 
-        //choose catagory of questions
+    //choose catagory of questions
     it('choose catagory of questions', () => {
-        const user = new User('123', { state: 'playing'}, api)
+        const user = new User('123', { state: 'playing' }, api)
         user.chooseCategory("kitty")
-       expect(user.state.category).toBe('kitty')
+        expect(user.state.category).toBe('kitty')
     })
 
-    
-        //choose catagory of questions
-    it('choose catagory of questions', () => {
-        const user = new User('123', { state: 'playing'}, api)
+
+    //has questons unanswered
+    it('user has questons unanswered', () => {
+        const user = new User('123', { state: 'playing' }, api)
         user.hasKeysLeft(['a', 'b', 'c'])
-       expect(user.state.keysLeftForThatUser).toEqual(['a', 'b', 'c'])
+        expect(user.state.keysLeftForThatUser).toEqual(['a', 'b', 'c'])
+    })
+
+    //set answers for that question
+    it('set answers for that question', () => {
+        const user = new User('123', { state: 'playing' }, api)
+        user.hasAnswers(['a', 'b', 'c'])
+        expect(user.state.answersForEachQuestion).toEqual(['a', 'b', 'c']) 
     })
 
 })

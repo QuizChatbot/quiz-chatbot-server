@@ -1,6 +1,12 @@
 const api = require('../localUserAPI')
 const utillArray = require('../utill_array')
 
+/**
+ * Load existing user of create new one
+ * @param {String} senderID 
+ * @param {[String]} keys 
+ * @param {module} api 
+ */
 const load = async (senderID, keys, api) => {
     const oldState = await api.getState(senderID)
     //contact that user for the first time. Dont have oldState of that user
@@ -12,19 +18,31 @@ const load = async (senderID, keys, api) => {
     return new User(senderID, state, api)
 }
 
+/**
+ * @class user - handle states of user
+ */
 class User {
+    /**
+     * @constructor
+     * @param {String} senderID 
+     * @param {object} state - state of user
+     * @param {Module} api - localUserAPI
+     */
     constructor(senderID, state, api) {
         this.senderID = senderID
         this.state = state
         this.api = api
     }
-
+    /**
+     * Set state of user
+     * @param {object} updateState 
+     */
     setState(updateState) {
         const newState = Object.assign({}, this.state, updateState)
         this.api.setState(this.senderID, newState)
         this.state = newState
     }
-
+    
     startQuiz(questionKey) {
         this.setState({
             keysLeftForThatUser: this.state.keysLeftForThatUser,
@@ -90,6 +108,10 @@ class User {
 
     hasKeysLeft(keysLeftForThatUser) {
         this.setState({ keysLeftForThatUser: keysLeftForThatUser })
+    }
+
+    hasAnswers(answers) {
+        this.setState({ answersForEachQuestion: answers })
     }
 
 }
