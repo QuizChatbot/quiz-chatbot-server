@@ -141,21 +141,20 @@ class QuizInput extends Component {
     } else {
       return (
         <div
-          style={{ textAlign: 'center', marginRight: '5%', marginLeft: '5%' }}
+          style={{ textAlign: 'center', marginRight: '5%', marginLeft: '10%' }}
         >
-          <label
-            onClick={() => this.handleDoubleClick(form)}
+          <div
             style={{
+              textAlign: 'left',
+              margin: 'auto',
               maxWidth: '260px',
-              width: '100%',
-              // margin: '0px',
-              // marginLeft: '5%',
-              // marginRight: '5%',
-              textAlign: 'left'
+              width: '100%'
             }}
           >
-            <b>{getFloatingLabelText(form)}:</b>{this.state[form]}
-          </label>
+            <label onClick={() => this.handleDoubleClick(form)}>
+              <b>{getFloatingLabelText(form)}:</b>{this.state[form]}
+            </label>
+          </div>
         </div>
       )
     }
