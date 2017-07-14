@@ -111,7 +111,7 @@ class User {
     }
 
     hasAnswers(answers) {
-        this.setState({ answerForEachQuestion: answers })
+        this.setState({ answersForEachQuestion: answers })
     }
 
 }

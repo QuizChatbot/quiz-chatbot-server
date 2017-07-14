@@ -263,12 +263,12 @@ const handleReceivedMessage = async (user, messageText) => {
       let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
       user.startQuiz(shuffledKey)
       console.log("user start quiz = ", user)
-      let answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
-      if (answerForEachQuestion == null) {
+      let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+      if (answersForEachQuestion == null) {
         console.log("Doesn't have this id in questions database")
         return null
       }
-      user.hasAnswers(answerForEachQuestion)
+      user.hasAnswers(answersForEachQuestion)
       // //create button for that question
       const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
       const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
@@ -343,7 +343,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     console.log("user after done question= ", user)
 
     // //check answer and ask next question
-    let result = checkAnswer(payloadObj, user.state.answerForEachQuestion)
+    let result = checkAnswer(payloadObj, user.state.answersForEachQuestion)
 
     //send to calculate grade and score for summary
     let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
@@ -393,12 +393,12 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 /**
  * Check if answer correct or wrong
  * @param {object} payload - payload received from postback
- * @param {[String]} answerForEachQuestion 
+ * @param {[String]} answersForEachQuestion 
  * @return {Boolean}
  */
-function checkAnswer(payload, answerForEachQuestion) {
+function checkAnswer(payload, answersForEachQuestion) {
   //the correct answer is always in first element of answers in json file
-  if (payload.answer == answerForEachQuestion[0]) return true
+  if (payload.answer == answersForEachQuestion[0]) return true
   else return false
 
 }
@@ -425,13 +425,13 @@ async function nextQuestion(user) {
 
   //still has questions not answered
   else {
-    let answerForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
+    let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
     //no key that matched question
-    if (answerForEachQuestion == null) {
+    if (answersForEachQuestion == null) {
       console.log("Doesn't have this id in questions json")
       return null
     }
-    user.hasAnswers(answerForEachQuestion)
+    user.hasAnswers(answersForEachQuestion)
 
     let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
     let buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
@@ -477,13 +477,13 @@ const startNextRound = async (user) => {
   user.nextRound(keysLeftForThatUser)
 
   let shuffledKey = utillArray.shuffleKeyFromQuestions(keysLeftForThatUser)
-  let answerForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
+  let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
 
-  if (answerForEachQuestion == null) {
+  if (answersForEachQuestion == null) {
     console.log("Doesn't have this id in questions database")
     return null
   }
-  user.hasAnswers(answerForEachQuestion)
+  user.hasAnswers(answersForEachQuestion)
 
   const buttonsCreated = await createButton.createButtonFromQuestionId(shuffledKey)
   const buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)

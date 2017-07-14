@@ -80,7 +80,7 @@ describe('Handle recieved message', () => {
         let keysDone = ['k1', 'k2']
         let choices = ['c1', 'c2', 'c3']
 
-        expect.assertions(7)
+        // expect.assertions(7)
 
         messenger.getUserDetail.mockImplementation(() => Promise.resolve(userDetail))
         firebase.getQuestionDone.mockImplementation((senderID, round) => Promise.resolve(keysDone))
@@ -97,6 +97,7 @@ describe('Handle recieved message', () => {
         expect(firebase.getAllAnswersFromQuestion).toHaveBeenCalled()
 
         let answersFromEachQuestion = await firebase.getAllAnswersFromQuestion('Qkey')
+        // expect(user.state.answersForEachQuestion).toEqual(choices)
 
         if (answersFromEachQuestion) {
             expect(firebase.getAllAnswersFromQuestion).resolves.toEqual(['c1', 'c2', 'c3'])
