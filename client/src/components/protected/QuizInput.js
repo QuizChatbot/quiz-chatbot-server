@@ -104,7 +104,9 @@ class QuizInput extends Component {
       )
     } else if (form.indexOf('choice') > -1) {
       return (
-        <div style={{ textAlign: 'center' }}>
+        <div
+          style={{ textAlign: 'center', marginRight: '5%', marginLeft: '5%' }}
+        >
           <FlatButton
             label={this.state[form]}
             onTouchTap={() => this.handleDoubleClick(form)}
