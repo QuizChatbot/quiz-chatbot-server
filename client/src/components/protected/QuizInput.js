@@ -3,32 +3,14 @@ import PropTypes from 'prop-types'
 import {
   getBlankQuest,
   getQuestFromProps,
-  getQuizStatefromQuest
+  getQuizStatefromQuest,
+  getFloatingLabelText
 } from '../../libs/quizHelper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
 import './bubble.css'
-
-const getFloatingLabelText = form => {
-  switch (form) {
-    case 'subject':
-      return 'Subject'
-    case 'category':
-      return 'Category'
-    case 'question':
-      return 'Question'
-    case 'choice_0':
-      return 'Choice 1 (correct answer)'
-    case 'choice_1':
-      return 'Choice 2'
-    case 'choice_2':
-      return 'Choice 3'
-    default:
-      return form
-  }
-}
 
 class QuizInput extends Component {
   constructor (props, context) {

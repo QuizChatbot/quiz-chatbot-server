@@ -46,4 +46,28 @@ const getQuizStatefromQuest = ({
   open: false
 })
 
-export { getBlankQuest, getQuestFromProps, getQuizStatefromQuest }
+const getFloatingLabelText = form => {
+  switch (form) {
+    case 'subject':
+      return 'Subject'
+    case 'category':
+      return 'Category'
+    case 'question':
+      return 'Question'
+    case 'choice_0':
+      return 'Choice 1 (correct answer)'
+    case 'choice_1':
+      return 'Choice 2'
+    case 'choice_2':
+      return 'Choice 3'
+    default:
+      return form
+  }
+}
+
+export {
+  getBlankQuest,
+  getQuestFromProps,
+  getQuizStatefromQuest,
+  getFloatingLabelText
+}
