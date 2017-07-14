@@ -124,7 +124,7 @@ class QuizInput extends Component {
           />
         </div>
       )
-    } else {
+    } else if (form.indexOf('question') > -1) {
       return (
         <dl className='ios7'>
           <dd
@@ -132,11 +132,31 @@ class QuizInput extends Component {
             style={{ paddingRight: '5%' }}
             onClick={() => this.handleDoubleClick(form)}
           >
-            <p style={{ margin: '0px' }}>
+            <p style={{ margin: '0px', maxWidth: '260px' }}>
               <b>{getFloatingLabelText(form)}:</b> {this.state[form]}
             </p>
           </dd>
         </dl>
+      )
+    } else {
+      return (
+        <div
+          style={{ textAlign: 'center', marginRight: '5%', marginLeft: '5%' }}
+        >
+          <label
+            onClick={() => this.handleDoubleClick(form)}
+            style={{
+              maxWidth: '260px',
+              width: '100%',
+              // margin: '0px',
+              // marginLeft: '5%',
+              // marginRight: '5%',
+              textAlign: 'left'
+            }}
+          >
+            <b>{getFloatingLabelText(form)}:</b>{this.state[form]}
+          </label>
+        </div>
       )
     }
   }
