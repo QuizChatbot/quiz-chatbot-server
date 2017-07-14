@@ -7,7 +7,7 @@ export const QuizWord = ({ count }) => {
   return (
     <span>
       Your {quizWord} ({count || 'No'} {itemWord}) : <br />
-      <i>You can edit the quiz by double click on text</i>
+      <i>You can edit the quiz by click on text</i>
     </span>
   )
 }
