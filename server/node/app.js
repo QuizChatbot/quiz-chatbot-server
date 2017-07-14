@@ -22,7 +22,7 @@ const
   ua = require("universal-analytics")
 
 
-let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
+let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
 
 emitter.on('*', (type, payload) => analytics.track(type, payload))
 emitter.on('startApp', () => {
@@ -33,6 +33,7 @@ APP_SECRET = config.APP_SECRET
 VALIDATION_TOKEN = config.VALIDATION_TOKEN
 PAGE_ACCESS_TOKEN = config.PAGE_ACCESS_TOKEN
 SERVER_URL = config.SERVER_URL
+UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
 
 /**
  * this is Main messenger app .
@@ -57,7 +58,10 @@ const app = async () => {
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
   app.use(express.static('public')) 
-  app.use(ua.middleware("UA-102602039-1", {cookieName: '_ga'}))
+  app.use(ua.middleware(UNIVERSAL_ANALYTICS, {cookieName: '_ga'}))
+
+  let visitor = ua(UNIVERSAL_ANALYTICS)
+  console.log("visitor = ", visitor)
 
   // let visitor = ua.createFromSession(socket.handshake.session)
 

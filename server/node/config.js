@@ -1,7 +1,7 @@
 const config = require('config')
 
-let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL
-try{
+let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
+try {
   // App Secret can be retrieved from the App Dashboard
   APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
     process.env.MESSENGER_APP_SECRET :
@@ -23,13 +23,17 @@ try{
     (process.env.SERVER_URL) :
     config.get('serverURL')
 
-  if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
+  UNIVERSAL_ANALYTICS = (process.env.UNIVERSAL_ANALYTICS) ?
+    (process.env.UNIVERSAL_ANALYTICS) :
+    config.get('universalAnalytics')
+
+  if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL && UNIVERSAL_ANALYTICS)) {
     console.error("Missing config values")
     process.exit(1)
   }
 
-}catch(err){
-    
+} catch (err) {
+
 }
 
-  module.exports = {APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL}
+module.exports = { APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS }
