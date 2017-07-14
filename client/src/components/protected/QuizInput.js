@@ -20,11 +20,11 @@ const getFloatingLabelText = form => {
     case 'question':
       return 'Question'
     case 'choice_0':
-      return 'Answer'
+      return 'Choice 1 (correct answer)'
     case 'choice_1':
-      return 'Choice 1'
-    case 'choice_2':
       return 'Choice 2'
+    case 'choice_2':
+      return 'Choice 3'
     default:
       return form
   }
