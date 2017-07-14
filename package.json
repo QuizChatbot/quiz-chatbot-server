@@ -32,7 +32,8 @@
     "mitt": "^1.1.2",
     "moment": "^2.18.1",
     "request": "^2.81.0",
-    "universal-analytics": "^0.4.13"
+    "universal-analytics": "^0.4.13",
+    "universal-ga": "^1.1.0"
   },
   "engines": {
     "node": "7.10.0",

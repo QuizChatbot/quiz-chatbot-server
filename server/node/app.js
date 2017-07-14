@@ -1,5 +1,5 @@
 require('es6-promise').polyfill();
-require('isomorphic-fetch'); 
+require('isomorphic-fetch');
 
 const
   bodyParser = require('body-parser'),
@@ -7,7 +7,7 @@ const
   express = require('express'),
   https = require('https'),
   request = require('request'),
-  createButton = require('./create_button'), 
+  createButton = require('./create_button'),
   utillArray = require('./utill_array'),
   firebase = require('./firebase'),
   tunnelConfig = require('./tunnel.json'),
@@ -19,7 +19,8 @@ const
   config = require('./config'),
   emitter = require('./emitter'),
   analytics = require('./analytics'),
-  ua = require("universal-analytics")
+  ua = require("universal-analytics"),
+  uga = require('universal-ga')
 
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
@@ -57,8 +58,11 @@ const app = async () => {
   app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
-  app.use(express.static('public')) 
-  app.use(ua.middleware(UNIVERSAL_ANALYTICS, {cookieName: '_ga'}))
+  app.use(express.static('public'))
+
+  uga.initialize(UNIVERSAL_ANALYTICS)
+
+  // app.use(ua.middleware(UNIVERSAL_ANALYTICS, {cookieName: '_ga'}))
 
   // let visitor = ua(UNIVERSAL_ANALYTICS)
   // console.log("visitor = ", visitor)
@@ -78,9 +82,9 @@ const app = async () => {
     }
   });
 
-/**
- * occur when user send something to bot
- */
+  /**
+   * occur when user send something to bot
+   */
   app.post('/webhook', (req, res) => {
 
     let data = req.body
@@ -151,6 +155,15 @@ const app = async () => {
    * @param {*} user 
    */
   async function receivedMessage(event, user) {
+
+    analytics.create(UNIVERSAL_ANALYTICS, {
+      name: 'anotherTracker',
+      clientId: user.senderID
+    })
+
+    analytics.event('category', 'action', { eventValue: 123 })
+
+
     let senderID = event.sender.id
     let recipientID = event.recipient.id
     let timeOfMessage = event.timestamp
@@ -200,7 +213,7 @@ const app = async () => {
     let payloadObj = JSON.parse(payload)
     console.log("Received postback for user %d and page %d with payload '%s' " +
       "at %d", senderID, recipientID, payload, timeOfPostback)
-   
+
     handleReceivedPostback(user, payloadObj, timeOfPostback)
   }
 
@@ -225,7 +238,7 @@ let startedAt
  */
 async function getKeys(category) {
   let keys
-  if(!category) keys = await firebase.getAllQuestionKeys()
+  if (!category) keys = await firebase.getAllQuestionKeys()
   else keys = await firebase.getAllQuestionKeys(category)
   return keys
 }
@@ -295,7 +308,7 @@ const handleReceivedMessage = async (user, messageText) => {
       messenger.callSendAPI(buttonMessage)
 
     }
-    else if(user.state.state === "finish"){
+    else if (user.state.state === "finish") {
       let buttonCat = createButton.createButtonCategory(user.senderID)
       messenger.callSendAPI(buttonCat)
     }
@@ -303,7 +316,7 @@ const handleReceivedMessage = async (user, messageText) => {
       let buttonCat = await createButton.createButtonCategory(user.senderID)
       messenger.callSendAPI(buttonCat)
     }
-  } 
+  }
 }
 
 /**
@@ -430,7 +443,7 @@ function checkAnswer(payload, answersForEachQuestion) {
 async function nextQuestion(user) {
   let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
   let done = user.state.done
- 
+
   let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
   //no question left
   //finish that round
