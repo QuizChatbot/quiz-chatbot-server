@@ -39,6 +39,9 @@ emitter.on('playing', (senderID) => {
   analytics.playing(senderID)
 })
 
+emitter.on('answer', ({user, result}) => {
+  analytics.answer(user.senderID, result)
+})
 
 
 APP_SECRET = config.APP_SECRET
@@ -279,7 +282,7 @@ const handleReceivedMessage = async (user, messageText) => {
   
 
 
-  emitter.emit('startQuiz', user.senderID)
+  // emitter.emit('startQuiz', user.senderID)
 
 
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
@@ -319,12 +322,13 @@ const handleReceivedMessage = async (user, messageText) => {
       if (user.state.state === "pause") {
         console.log("_________PAUSE__________")
         user.resume()
+        emitter.emit('playing', user.senderID)
       }
 
       // //shuffle keys of questions that have not answered
       let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
       user.startQuiz(shuffledKey)
-      emitter.emit('startQuiz', user)
+      // emitter.emit('startQuiz', user)
 
       let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
       if (answersForEachQuestion == null) {
@@ -415,6 +419,8 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     user.state.userScore += scoreOfThatQuestion
     let grade = summary.calculateGrade(totalScore, user.state.userScore)
 
+
+    emitter.emit('answer', {user, result})
     // // answer Correct
     if (result) {
       messenger.sendTextMessage(user.senderID, "Good dog!")

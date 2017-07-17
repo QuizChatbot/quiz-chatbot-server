@@ -41,12 +41,21 @@ function startQuiz(user) {
     visitor.event("Chat", "Received message").send()
 }
 
-function playing(user, visitor) {
+function playing(user) {
     console.log('__playing__', user, visitor)
     visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Playing", (err) => {
         console.log("Analytics error = ", err)
     })
-    visitor.event("Playing", "Answer quesyion").send()
+    visitor.event("Playing", "playing").send()
 }
 
-module.exports = { track, startQuiz, playing, getVisitorFromFBID, welcome }
+function answer(user, result) {
+    let visitor = getVisitorFromFBID(user)
+    console.log('__answer__', user, visitor)
+    visitor.pageview("/questions", "http://quizchatbot-ce222.firebaseapp.com/", "Playing", (err) => {
+        console.log("Analytics error = ", err)
+    })
+    visitor.event("Playing", "answer question", "result", result).send()
+}
+
+module.exports = { track, startQuiz, playing, getVisitorFromFBID, welcome, answer }
