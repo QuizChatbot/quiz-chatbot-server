@@ -29,6 +29,7 @@ emitter.on('*', (type, payload) => analytics.track(type, payload))
 emitter.on('startApp', () => {
   console.log('sent email to admin')
 })
+emitter.on('startQuiz', (user, visitor) => analytics.startQuiz(user, visitor))
 
 APP_SECRET = config.APP_SECRET
 VALIDATION_TOKEN = config.VALIDATION_TOKEN
@@ -170,11 +171,13 @@ const app = async () => {
     console.log("APP = ", APP_SECRET)
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
+    emitter.emit('startQuiz', user, visitor)
+
   //  visitor.pageview('/').send()
-    visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
-      console.log("Analytics error = ", err)
-    })
-    visitor.event("Chat", "Received message", "label", 42).send()
+    // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
+    //   console.log("Analytics error = ", err)
+    // })
+    // visitor.event("Chat", "Received message", "label", 42).send()
     console.log("__Visitor = ", visitor)
 
 
@@ -304,14 +307,13 @@ const handleReceivedMessage = async (user, messageText) => {
       if (user.state.state === "pause") {
         console.log("_________PAUSE__________")
         user.resume()
-        console.log("user after resume = ", user)
       }
 
       // //shuffle keys of questions that have not answered
       let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
       user.startQuiz(shuffledKey)
       emitter.emit('startQuiz', user)
-      console.log("user start quiz = ", user)
+      
       let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
       if (answersForEachQuestion == null) {
         console.log("Doesn't have this id in questions database")
