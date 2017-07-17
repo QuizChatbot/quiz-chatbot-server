@@ -60,7 +60,8 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  */
 const app = async () => {
 
-
+analytics.getVisitorFromFBID('1462233120486829')
+emitter.emit('welcome', '1462233120486829')
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
   // const emitter = require('./analytics/emitter2')
@@ -125,8 +126,8 @@ const app = async () => {
 
         
 
-           let visitor = analytics.getVisitorFromFBID(messagingEvent.sender.id)
-           console.log("visitor = ", visitor)
+           analytics.getVisitorFromFBID(messagingEvent.sender.id)
+          
 
 
 
