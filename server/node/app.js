@@ -170,6 +170,7 @@ const app = async () => {
     visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
       console.log("Analytics error = ", err)
     })
+    visitor.event("Event Category", "Event Action", "label", 42).send()
     console.log("__Visitor = ", visitor)
 
     // uga.create(UNIVERSAL_ANALYTICS, {
