@@ -166,6 +166,7 @@ const app = async () => {
     visitor.pageview("/", (err) => {
       console.log("err = ", err)
     })
+    visitor.screenview("Home Screen", "Chatbot").send()
     console.log("__Visitor = ", visitor)
 
     // uga.create(UNIVERSAL_ANALYTICS, {
