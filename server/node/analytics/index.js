@@ -8,23 +8,20 @@ let sessions = {}
 
 
 function track(eventName, payload) {
-    console.log('track', eventName, payload)
+    // console.log('track', eventName, payload)
 }
 
-function getVisitorFromFBID(id){
+function getVisitorFromFBID(id) {
     let visitor = null
-    if(sessions.hasOwnProperty(id)){
-        visitor = ua.createFromSession({uid: sessions[id]})
-        console.log("have visitor1 = ", visitor)
-    }
-    else{
-        // let visitor = ua.Visitor({tid: UNIVERSAL_ANALYTICS, uid: id})
-        visitor = ua(UNIVERSAL_ANALYTICS)
-        console.log("have visitor2 = ", visitor)
-        
-    }
+
+
+    // let visitor = ua.Visitor({tid: UNIVERSAL_ANALYTICS, uid: id})
+    visitor = ua(UNIVERSAL_ANALYTICS, id, { strictCidFormat: false })
+    console.log("have visitor2 = ", visitor)
+
+
     sessions[id] = visitor.cid
-    console.log("cid = ", visitor.cid)
+    // console.log("cid = ", visitor.cid)
     return visitor
 }
 
@@ -45,4 +42,4 @@ function playing(user, visitor) {
     visitor.event("Playing", "Answer quesyion").send()
 }
 
-module.exports = { track, startQuiz, playing, getVisitorFromFBID}
+module.exports = { track, startQuiz, playing, getVisitorFromFBID }
