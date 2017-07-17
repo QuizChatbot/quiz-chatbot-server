@@ -25,10 +25,10 @@ const
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
 
-emitter.on('*', (type, payload) => analytics.track(type, payload))
-emitter.on('startApp', () => {
-  console.log('sent email to admin')
-})
+// emitter.on('*', (type, payload) => analytics.track(type, payload))
+// emitter.on('startApp', () => {
+//   console.log('sent email to admin')
+// })
 emitter.on('startQuiz', (user, visitor) => analytics.startQuiz(user, visitor))
 
 APP_SECRET = config.APP_SECRET
@@ -56,7 +56,7 @@ const app = async () => {
   // console.log("config ", config, tunnelConfig)
 
   let app = express()
-  emitter.emit('startApp')
+  // emitter.emit('startApp')
   app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
