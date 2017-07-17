@@ -172,7 +172,7 @@ const app = async () => {
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
     console.log("__Visitor = ", visitor)
-    emitter.emit('startQuiz', user, visitor)
+    emitter.emit('startQuiz', user, await visitor)
 
   //  visitor.pageview('/').send()
     // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
