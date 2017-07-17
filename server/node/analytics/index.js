@@ -17,7 +17,7 @@ function getVisitorFromFBID(id){
         console.log("have visitor1 = ", visitor)
     }
     else{
-        let visitor = ua.visitor({tid: UNIVERSAL_ANALYTICS, uid: id})
+        let visitor = ua.Visitor({tid: UNIVERSAL_ANALYTICS, uid: id})
         console.log("have visitor2 = ", visitor)
     }
 }
