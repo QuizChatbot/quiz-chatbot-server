@@ -27,7 +27,7 @@ function getVisitorFromFBID(id) {
 
 function welcome(user) {
     let visitor = getVisitorFromFBID(user)
-    console.log('__startQuiz__', user, visitor)
+    console.log('__Welcome__', user, visitor)
     visitor.pageview("/welcome").send()
     visitor.event("Welcome", "Received welcome").send()
 }
