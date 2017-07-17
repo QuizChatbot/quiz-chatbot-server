@@ -28,7 +28,7 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALY
 // emitter.on('startApp', () => {
 //   console.log('sent email to admin')
 // })
-emitter.on('startQuiz', ({user, visitor}) => {
+emitter.on('startQuiz', ({ user, visitor }) => {
   console.log("vis = ", visitor)
   analytics.startQuiz(user, visitor)
 })
@@ -69,7 +69,7 @@ const app = async () => {
 
 
   app.get('/webhook', (req, res) => {
-   
+
     if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === VALIDATION_TOKEN) {
       console.log("Validating webhook")
@@ -87,8 +87,8 @@ const app = async () => {
   app.post('/webhook', (req, res) => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
-  
-    
+
+
 
 
 
@@ -113,10 +113,10 @@ const app = async () => {
           // get user if doesn't have this user before
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
 
-            let visitor = ua({tid: UNIVERSAL_ANALYTICS, uid: messagingEvent.sender.id})
+          let visitor = ua(UNIVERSAL_ANALYTICS, messagingEvent.sender.id, {uid: messagingEvent.sender.id })
 
 
-          visitor.set("uid", messagingEvent.sender.id)
+          // visitor.set("uid", messagingEvent.sender.id)
 
 
 
@@ -172,14 +172,14 @@ const app = async () => {
 
     // emitter.emit('startQuiz', user, await visitor)
 
-  //  visitor.pageview('/').send()
+    //  visitor.pageview('/').send()
     // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
     //   console.log("Analytics error = ", err)
     // })
     // visitor.event("Chat", "Received message", "label", 42).send()
 
 
-   
+
 
 
     let senderID = event.sender.id
@@ -270,7 +270,7 @@ async function getKeys(category) {
  */
 const handleReceivedMessage = async (user, messageText, visitor) => {
   console.log("visitor in handle = ", visitor)
-   emitter.emit('startQuiz', {user, visitor})
+  emitter.emit('startQuiz', { user, visitor })
 
 
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
@@ -315,7 +315,7 @@ const handleReceivedMessage = async (user, messageText, visitor) => {
       let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
       user.startQuiz(shuffledKey)
       emitter.emit('startQuiz', user)
-      
+
       let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
       if (answersForEachQuestion == null) {
         console.log("Doesn't have this id in questions database")
