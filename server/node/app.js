@@ -27,12 +27,16 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALY
 // emitter.on('startApp', () => {
 //   console.log('sent email to admin')
 // })
-emitter.on('startQuiz', (id) => {
-  analytics.startQuiz(id)
+emitter.on('welcome', (senderID) => {
+  analytics.welcome(senderID)
 })
 
-emitter.on('playing', (id) => {
-  analytics.playing(id)
+emitter.on('startQuiz', (senderID) => {
+  analytics.startQuiz(senderID)
+})
+
+emitter.on('playing', (senderID) => {
+  analytics.playing(senderID)
 })
 
 
@@ -53,8 +57,6 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  */
 const app = async () => {
 
-  let visitor  = analytics.getVisitorFromFBID('1462233120486829')
-  emitter.emit("startQuiz", '1462233120486829')
 
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
@@ -118,10 +120,7 @@ const app = async () => {
           // get user if doesn't have this user before
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
 
-          // let visitor = ua({ tid: UNIVERSAL_ANALYTICS, uid: messagingEvent.sender.id })
-          // let visitor = ua.createFromSession({cid: '371dc08d-fd04-410d-bd54-9946edd36bd4'})
-
-          // visitor.set("uid", messagingEvent.sender.id)
+        
 
            let visitor = analytics.getVisitorFromFBID(messagingEvent.sender.id)
            console.log("visitor = ", visitor)
@@ -293,9 +292,10 @@ const handleReceivedMessage = async (user, messageText) => {
     firebase.saveUserToFirebase(user.senderID, userDetail)
 
     if (user.state.welcomed === false) {
+      emitter.emit("welcome", user.senderID)
+
       user.welcome()
       console.log("user set welcome = ", user)
-      // user.playing()
       user.choosing()
       console.log("user set choosing = ", user)
       messenger.sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)

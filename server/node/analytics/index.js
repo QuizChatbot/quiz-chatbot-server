@@ -25,6 +25,13 @@ function getVisitorFromFBID(id) {
     return visitor
 }
 
+function welcome(user) {
+    let visitor = getVisitorFromFBID(user)
+    console.log('__startQuiz__', user, visitor)
+    visitor.pageview("/welcome").send()
+    visitor.event("Welcome", "Received welcome").send()
+}
+
 function startQuiz(user) {
     let visitor = getVisitorFromFBID(user)
     console.log('__startQuiz__', user, visitor)
@@ -36,7 +43,7 @@ function startQuiz(user) {
 
 function playing(user, visitor) {
     console.log('__playing__', user, visitor)
-    visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Playing", function (err) {
+    visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Playing", (err) => {
         console.log("Analytics error = ", err)
     })
     visitor.event("Playing", "Answer quesyion").send()
