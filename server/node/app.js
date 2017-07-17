@@ -88,9 +88,9 @@ const app = async () => {
    */
   app.post('/webhook', (req, res) => {
 
-    // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
-    let visitor = ua(UNIVERSAL_ANALYTICS)
-    console.log("visitor = ", visitor)
+    app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
+    // let visitor = ua(UNIVERSAL_ANALYTICS)
+    // console.log("visitor = ", visitor)
 
 
 
@@ -119,7 +119,7 @@ const app = async () => {
           if (messagingEvent.optin) {
             receivedAuthentication(messagingEvent)
           } else if (messagingEvent.message) {
-            receivedMessage(messagingEvent, user, visitor)
+            receivedMessage(messagingEvent, user, req.visitor)
           } else if (messagingEvent.delivery) {
             receivedDeliveryConfirmation(messagingEvent);
           } else if (messagingEvent.postback) {
@@ -166,7 +166,7 @@ const app = async () => {
     console.log("APP = ", APP_SECRET)
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
-   visitor.pageview('/').send()
+   visitor.pageview('/welcome').send()
     // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
     //   console.log("Analytics error = ", err)
     // })
