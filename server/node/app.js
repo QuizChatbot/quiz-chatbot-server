@@ -121,7 +121,7 @@ const app = async () => {
           if (messagingEvent.optin) {
             receivedAuthentication(messagingEvent)
           } else if (messagingEvent.message) {
-            receivedMessage(messagingEvent, user, req.visitor)
+            receivedMessage(messagingEvent, user, visitor)
           } else if (messagingEvent.delivery) {
             receivedDeliveryConfirmation(messagingEvent);
           } else if (messagingEvent.postback) {
@@ -175,12 +175,8 @@ const app = async () => {
     visitor.event("Event Category", "Event Action", "label", 42).send()
     console.log("__Visitor = ", visitor)
 
-    // uga.create(UNIVERSAL_ANALYTICS, {
-    //   name: 'anotherTracker',
-    //   clientId: user.senderID
-    // })
 
-    // uga.event('category', 'action', { eventValue: 123 })
+   
 
 
     let senderID = event.sender.id
