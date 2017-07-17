@@ -163,7 +163,9 @@ const app = async () => {
    */
   async function receivedMessage(event, user, visitor) {
 
-    visitor.pageview("/").send()
+    visitor.pageview("/", (err) => {
+      console.log("err = ", err)
+    })
     console.log("__Visitor = ", visitor)
 
     // uga.create(UNIVERSAL_ANALYTICS, {
