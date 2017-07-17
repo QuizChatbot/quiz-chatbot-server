@@ -35,8 +35,7 @@ VALIDATION_TOKEN = config.VALIDATION_TOKEN
 PAGE_ACCESS_TOKEN = config.PAGE_ACCESS_TOKEN
 SERVER_URL = config.SERVER_URL
 UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
-console.log("APP = ", APP_SECRET)
-console.log("analytic = ", UNIVERSAL_ANALYTICS)
+
 
 /**
  * this is Main messenger app .
@@ -91,7 +90,6 @@ const app = async () => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
     let visitor = ua(UNIVERSAL_ANALYTICS)
-     console.log("ua = ", UNIVERSAL_ANALYTICS)
     console.log("visitor = ", visitor)
 
 
@@ -168,10 +166,10 @@ const app = async () => {
     console.log("APP = ", APP_SECRET)
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
-    visitor.pageview("/", (err) => {
-      console.log("err = ", err)
+   
+    visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
+      console.log("Analytics error = ", err)
     })
-    visitor.screenview("Home Screen", "Chatbot").send()
     console.log("__Visitor = ", visitor)
 
     // uga.create(UNIVERSAL_ANALYTICS, {
