@@ -12,15 +12,20 @@ function track(eventName, payload) {
 }
 
 function getVisitorFromFBID(id){
+    let visitor = null
     if(sessions.hasOwnProperty(id)){
-        let visitor = ua.createFromSession({uid: sessions[id]})
+        visitor = ua.createFromSession({uid: sessions[id]})
         console.log("have visitor1 = ", visitor)
     }
     else{
         // let visitor = ua.Visitor({tid: UNIVERSAL_ANALYTICS, uid: id})
-        let visitor = ua(UNIVERSAL_ANALYTICS)
+        visitor = ua(UNIVERSAL_ANALYTICS)
         console.log("have visitor2 = ", visitor)
+        
     }
+    sessions[id] = visitor.cid
+    console.log("cid = ", visitor.cid)
+    return visitor
 }
 
 function startQuiz(user, visitor) {

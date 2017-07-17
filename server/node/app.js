@@ -117,14 +117,15 @@ const app = async () => {
 
           // visitor.set("uid", messagingEvent.sender.id)
 
-           analytics.getVisitorFromFBID(messagingEvent.sender.id)
+           let visitor = analytics.getVisitorFromFBID(messagingEvent.sender.id)
+           console.log("visitor = ", visitor)
 
 
 
           if (messagingEvent.optin) {
             receivedAuthentication(messagingEvent)
           } else if (messagingEvent.message) {
-            receivedMessage(messagingEvent, user)
+            receivedMessage(messagingEvent, user, visitor)
           } else if (messagingEvent.delivery) {
             receivedDeliveryConfirmation(messagingEvent);
           } else if (messagingEvent.postback) {
@@ -203,7 +204,7 @@ const app = async () => {
     let quickReply = message.quick_reply
 
     if (messageText) {
-      handleReceivedMessage(user, messageText)
+      handleReceivedMessage(user, messageText, visitor)
     } else if (messageAttachments) {
       messenger.sendTextMessage(senderID, "Message with attachment received")
     }
@@ -269,11 +270,11 @@ async function getKeys(category) {
  * @param {object} user 
  * @param {string} messageText
  */
-const handleReceivedMessage = async (user, messageText) => {
+const handleReceivedMessage = async (user, messageText, visitor) => {
   
 
 
-  emitter.emit('startQuiz', user.senderID)
+  emitter.emit('startQuiz', user.senderID, visitor)
 
 
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
