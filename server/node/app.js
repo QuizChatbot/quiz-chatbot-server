@@ -19,7 +19,8 @@ const
   config = require('./config'),
   emitter = require('./emitter'),
   analytics = require('./analytics'),
-  ua = require('universal-analytics')
+  ua = require('universal-analytics'),
+  uga = require('universal-ga')
 
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
@@ -60,7 +61,7 @@ const app = async () => {
   app.use(express.static('public'))
 
 
-  uga.initialize(UNIVERSAL_ANALYTICS)
+  // uga.initialize(UNIVERSAL_ANALYTICS)
 
 
 
