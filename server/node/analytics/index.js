@@ -49,4 +49,4 @@ function playing(user, visitor) {
     visitor.event("Playing", "Answer quesyion").send()
 }
 
-module.exports = { track, startQuiz, playing, getVisitorFromFBID }
+module.exports = { track, startQuiz, playing, getVisitorFromFBID, welcome }
