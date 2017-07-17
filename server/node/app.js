@@ -172,7 +172,7 @@ const app = async () => {
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
     console.log("__Visitor = ", visitor)
-    emitter.emit('startQuiz', user, await visitor)
+    // emitter.emit('startQuiz', user, await visitor)
 
   //  visitor.pageview('/').send()
     // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
@@ -204,7 +204,7 @@ const app = async () => {
     let quickReply = message.quick_reply
 
     if (messageText) {
-      handleReceivedMessage(user, messageText)
+      handleReceivedMessage(user, messageText, visitor)
     } else if (messageAttachments) {
       messenger.sendTextMessage(senderID, "Message with attachment received")
     }
@@ -270,7 +270,11 @@ async function getKeys(category) {
  * @param {object} user 
  * @param {string} messageText
  */
-const handleReceivedMessage = async (user, messageText) => {
+const handleReceivedMessage = async (user, messageText, visitor) => {
+
+   emitter.emit('startQuiz', user, await visitor)
+   
+
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
     messenger.sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
   }
