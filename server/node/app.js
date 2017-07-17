@@ -170,10 +170,10 @@ const app = async () => {
     console.log("APP = ", APP_SECRET)
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
-   visitor.pageview('/').send()
-    // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
-    //   console.log("Analytics error = ", err)
-    // })
+  //  visitor.pageview('/').send()
+    visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
+      console.log("Analytics error = ", err)
+    })
     visitor.event("Chat", "Received message", "label", 42).send()
     console.log("__Visitor = ", visitor)
 
