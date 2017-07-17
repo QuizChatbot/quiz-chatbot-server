@@ -19,8 +19,7 @@ const
   config = require('./config'),
   emitter = require('./emitter'),
   analytics = require('./analytics'),
-  ua = require('universal-analytics'),
-  uga = require('universal-ga')
+  ua = require('universal-analytics')
 
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
@@ -31,7 +30,10 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALY
 // })
 emitter.on('startQuiz', (user, visitor) => {
   console.log("vis = ", visitor)
-  analytics.startQuiz(user, visitor)})
+  analytics.startQuiz(user, visitor)
+})
+
+
 
 APP_SECRET = config.APP_SECRET
 VALIDATION_TOKEN = config.VALIDATION_TOKEN
@@ -267,7 +269,7 @@ async function getKeys(category) {
  */
 const handleReceivedMessage = async (user, messageText, visitor) => {
   console.log("visitor in handle = ", visitor)
-   emitter.emit('startQuiz', user, await visitor)
+   emitter.emit('startQuiz', {user, visitor})
 
 
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
