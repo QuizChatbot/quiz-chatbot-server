@@ -7,7 +7,7 @@ import QuizCount from './QuizCount'
 export const Footer = quizCount => <QuizCount quizCount={quizCount.quizCount} />
 
 const QuizItemContainer = styled.ul`
-    max-width: 1024px;
+    max-width: 760px;
     width: 100%;
     margin: auto;
     padding: 10px;

@@ -22,7 +22,7 @@ export const Element = ({ idx, quest, deleteQuiz, editQuiz }) => {
         quest={quest}
         onSave={(quiz, isChoice) => handleSave(quest.id, quiz, isChoice)}
       />
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'right' }}>
         <IconButton tooltip='Delete'>
           <ActionDelete onTouchTap={() => deleteQuiz(quest.id)} />
         </IconButton>

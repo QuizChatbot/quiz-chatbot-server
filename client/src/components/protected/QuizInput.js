@@ -3,30 +3,14 @@ import PropTypes from 'prop-types'
 import {
   getBlankQuest,
   getQuestFromProps,
-  getQuizStatefromQuest
+  getQuizStatefromQuest,
+  getFloatingLabelText
 } from '../../libs/quizHelper'
 import RaisedButton from 'material-ui/RaisedButton'
+import FlatButton from 'material-ui/FlatButton'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
-
-const getFloatingLabelText = form => {
-  switch (form) {
-    case 'subject':
-      return 'Subject'
-    case 'category':
-      return 'Category'
-    case 'question':
-      return 'Question'
-    case 'choice_0':
-      return 'Answer'
-    case 'choice_1':
-      return 'Choice 1'
-    case 'choice_2':
-      return 'Choice 2'
-    default:
-      return form
-  }
-}
+import './bubble.css'
 
 class QuizInput extends Component {
   constructor (props, context) {
@@ -86,13 +70,12 @@ class QuizInput extends Component {
 
     if (this.state.isEditing[form] || newQuiz) {
       return (
-        <div>
+        <div style={{ textAlign: 'center' }}>
           <TextField
             ref={form}
             type='text'
             name={form}
             floatingLabelText={getFloatingLabelText(form)}
-            // defaultValue={this.state[form]}
             value={this.state[form]}
             autoFocus={autoFocus || this.state.isEditing[form]}
             onChange={this.handleChange}
@@ -100,13 +83,59 @@ class QuizInput extends Component {
           />
         </div>
       )
+    } else if (form.indexOf('choice') > -1) {
+      return (
+        <div
+          style={{ textAlign: 'center', marginRight: '5%', marginLeft: '5%' }}
+        >
+          <FlatButton
+            label={this.state[form]}
+            onTouchTap={() => this.handleDoubleClick(form)}
+            style={{
+              maxWidth: '260px',
+              width: '100%',
+              margin: '0px',
+              borderRadius: '25px',
+              marginLeft: '5%',
+              marginRight: '5%',
+              borderStyle: 'solid',
+              borderWidth: 'thin',
+              borderColor: 'darkgrey'
+            }}
+          />
+        </div>
+      )
+    } else if (form.indexOf('question') > -1) {
+      return (
+        <dl className='ios7'>
+          <dd
+            className='from'
+            style={{ paddingRight: '5%' }}
+            onClick={() => this.handleDoubleClick(form)}
+          >
+            <p style={{ margin: '0px', maxWidth: '260px' }}>
+              <b>{getFloatingLabelText(form)}:</b> {this.state[form]}
+            </p>
+          </dd>
+        </dl>
+      )
     } else {
       return (
-        <div>
-          <label onDoubleClick={() => this.handleDoubleClick(form)}>
-            <b>{getFloatingLabelText(form)}:</b> {this.state[form]}
-          </label>
-          <br />
+        <div
+          style={{ textAlign: 'center', marginRight: '5%', marginLeft: '10%' }}
+        >
+          <div
+            style={{
+              textAlign: 'left',
+              margin: 'auto',
+              maxWidth: '260px',
+              width: '100%'
+            }}
+          >
+            <label onClick={() => this.handleDoubleClick(form)}>
+              <b>{getFloatingLabelText(form)}:</b>{this.state[form]}
+            </label>
+          </div>
         </div>
       )
     }
@@ -139,7 +168,7 @@ class QuizInput extends Component {
     const autoFocus = true
     return (
       <div style={{ padding: '10px' }}>
-        {idx && <h4>#{idx}</h4>}
+        {idx && <h4 style={{ margin: '0px' }}>#{idx}</h4>}
         {this.renderForm('subject', autoFocus)}
         {this.renderForm('category')}
         {this.renderForm('question')}
