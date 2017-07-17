@@ -28,7 +28,7 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALY
 // emitter.on('startApp', () => {
 //   console.log('sent email to admin')
 // })
-emitter.on('startQuiz', (user, visitor) => {
+emitter.on('startQuiz', ({user, visitor}) => {
   console.log("vis = ", visitor)
   analytics.startQuiz(user, visitor)
 })
