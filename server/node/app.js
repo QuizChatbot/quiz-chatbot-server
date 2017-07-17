@@ -35,6 +35,8 @@ VALIDATION_TOKEN = config.VALIDATION_TOKEN
 PAGE_ACCESS_TOKEN = config.PAGE_ACCESS_TOKEN
 SERVER_URL = config.SERVER_URL
 UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
+console.log("APP = ", APP_SECRET)
+console.log("analytic = ", UNIVERSAL_ANALYTICS)
 
 /**
  * this is Main messenger app .
@@ -163,6 +165,7 @@ const app = async () => {
    * @param {*} user 
    */
   async function receivedMessage(event, user, visitor) {
+    console.log("APP = ", APP_SECRET)
 
     visitor.pageview("/", (err) => {
       console.log("err = ", err)
