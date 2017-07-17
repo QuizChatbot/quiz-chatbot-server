@@ -65,13 +65,6 @@ const app = async () => {
   app.use(express.static('public'))
 
 
-  // uga.initialize(UNIVERSAL_ANALYTICS)
-
-
-
-  // let visitor = ua.createFromSession(socket.handshake.session)
-
-
 
   app.get('/webhook', (req, res) => {
     console.log('____', req.visitor)
@@ -273,7 +266,7 @@ async function getKeys(category) {
  * @param {string} messageText
  */
 const handleReceivedMessage = async (user, messageText, visitor) => {
-
+  console.log("visitor in handle = ", visitor)
    emitter.emit('startQuiz', user, await visitor)
 
 
