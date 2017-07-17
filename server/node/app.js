@@ -89,6 +89,7 @@ const app = async () => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
     let visitor = ua(UNIVERSAL_ANALYTICS)
+     console.log("ua = ", UNIVERSAL_ANALYTICS)
     console.log("visitor = ", visitor)
 
 
