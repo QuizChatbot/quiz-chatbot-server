@@ -18,8 +18,7 @@ const
   messenger = require('./messenger'),
   config = require('./config'),
   emitter = require('./emitter'),
-  analytics = require('./analytics'),
-  ua = require('universal-analytics')
+  analytics = require('./analytics')
 
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
@@ -28,9 +27,8 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALY
 // emitter.on('startApp', () => {
 //   console.log('sent email to admin')
 // })
-emitter.on('startQuiz', ({ user, visitor }) => {
-  console.log("vis = ", visitor)
-  analytics.startQuiz(user, visitor)
+emitter.on('startQuiz', (id) => {
+  analytics.startQuiz(id)
 })
 
 
@@ -66,6 +64,7 @@ const app = async () => {
   app.use(bodyParser.json({ extended: false }))
   app.use(express.static('public'))
 
+  // ua.middleware(UNIVERSAL_ANALYTICS, {uid})
 
 
   app.get('/webhook', (req, res) => {
@@ -88,7 +87,7 @@ const app = async () => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
 
-
+   
 
 
 
@@ -114,16 +113,18 @@ const app = async () => {
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
 
           // let visitor = ua({ tid: UNIVERSAL_ANALYTICS, uid: messagingEvent.sender.id })
-          let visitor = ua.createFromSession({cid: '371dc08d-fd04-410d-bd54-9946edd36bd4'})
+          // let visitor = ua.createFromSession({cid: '371dc08d-fd04-410d-bd54-9946edd36bd4'})
 
           // visitor.set("uid", messagingEvent.sender.id)
+
+           analytics.getVisitorFromFBID(messagingEvent.sender.id)
 
 
 
           if (messagingEvent.optin) {
             receivedAuthentication(messagingEvent)
           } else if (messagingEvent.message) {
-            receivedMessage(messagingEvent, user, visitor)
+            receivedMessage(messagingEvent, user)
           } else if (messagingEvent.delivery) {
             receivedDeliveryConfirmation(messagingEvent);
           } else if (messagingEvent.postback) {
@@ -166,7 +167,7 @@ const app = async () => {
    * @param {*} event 
    * @param {*} user 
    */
-  async function receivedMessage(event, user, visitor) {
+  async function receivedMessage(event, user) {
     console.log("APP = ", APP_SECRET)
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
@@ -202,7 +203,7 @@ const app = async () => {
     let quickReply = message.quick_reply
 
     if (messageText) {
-      handleReceivedMessage(user, messageText, visitor)
+      handleReceivedMessage(user, messageText)
     } else if (messageAttachments) {
       messenger.sendTextMessage(senderID, "Message with attachment received")
     }
@@ -268,9 +269,11 @@ async function getKeys(category) {
  * @param {object} user 
  * @param {string} messageText
  */
-const handleReceivedMessage = async (user, messageText, visitor) => {
-  console.log("visitor in handle = ", visitor)
-  emitter.emit('startQuiz', { user, visitor })
+const handleReceivedMessage = async (user, messageText) => {
+  
+
+
+  emitter.emit('startQuiz', user.senderID)
 
 
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
