@@ -118,6 +118,8 @@ const app = async () => {
 
           visitor.set("uid", messagingEvent.sender.id)
 
+
+
           if (messagingEvent.optin) {
             receivedAuthentication(messagingEvent)
           } else if (messagingEvent.message) {
@@ -168,11 +170,11 @@ const app = async () => {
     console.log("APP = ", APP_SECRET)
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
-   visitor.pageview('/welcome').send()
+   visitor.pageview('/').send()
     // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
     //   console.log("Analytics error = ", err)
     // })
-    visitor.event("Event Category", "Event Action", "label", 42).send()
+    visitor.event("Chat", "Received message", "label", 42).send()
     console.log("__Visitor = ", visitor)
 
 
