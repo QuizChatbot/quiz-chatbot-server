@@ -19,8 +19,8 @@ const
   config = require('./config'),
   emitter = require('./emitter'),
   analytics = require('./analytics'),
-  ua = require("universal-analytics"),
-  uga = require('universal-ga')
+  ua = require('universal-analytics')
+uga = require('universal-ga')
 
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
@@ -60,14 +60,14 @@ const app = async () => {
   app.use(bodyParser.json({ extended: false }))
   app.use(express.static('public'))
 
+
   uga.initialize(UNIVERSAL_ANALYTICS)
 
-  // app.use(ua.middleware(UNIVERSAL_ANALYTICS, {cookieName: '_ga'}))
 
-  // let visitor = ua(UNIVERSAL_ANALYTICS)
-  // console.log("visitor = ", visitor)
 
   // let visitor = ua.createFromSession(socket.handshake.session)
+
+
 
   app.get('/webhook', (req, res) => {
     console.log('____', req.visitor)
@@ -86,6 +86,13 @@ const app = async () => {
    * occur when user send something to bot
    */
   app.post('/webhook', (req, res) => {
+
+    app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
+    let visitor = ua(UNIVERSAL_ANALYTICS)
+    console.log("visitor = ", visitor)
+
+
+
 
     let data = req.body
     // Make sure this is a page subscription
@@ -111,7 +118,7 @@ const app = async () => {
           if (messagingEvent.optin) {
             receivedAuthentication(messagingEvent)
           } else if (messagingEvent.message) {
-            receivedMessage(messagingEvent, user)
+            receivedMessage(messagingEvent, user, visitor)
           } else if (messagingEvent.delivery) {
             receivedDeliveryConfirmation(messagingEvent);
           } else if (messagingEvent.postback) {
@@ -154,14 +161,17 @@ const app = async () => {
    * @param {*} event 
    * @param {*} user 
    */
-  async function receivedMessage(event, user) {
+  async function receivedMessage(event, user, visitor) {
 
-    uga.create(UNIVERSAL_ANALYTICS, {
-      name: 'anotherTracker',
-      clientId: user.senderID
-    })
+    visitor.pageview("/").send()
+    console.log("__Visitor = ", visitor)
 
-    uga.event('category', 'action', { eventValue: 123 })
+    // uga.create(UNIVERSAL_ANALYTICS, {
+    //   name: 'anotherTracker',
+    //   clientId: user.senderID
+    // })
+
+    // uga.event('category', 'action', { eventValue: 123 })
 
 
     let senderID = event.sender.id
