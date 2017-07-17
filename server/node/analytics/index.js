@@ -28,7 +28,8 @@ function getVisitorFromFBID(id){
     return visitor
 }
 
-function startQuiz(user, visitor) {
+function startQuiz(user) {
+    let visitor = getVisitorFromFBID(user)
     console.log('__startQuiz__', user, visitor)
     visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", (err) => {
         console.log("Analytics error = ", err)

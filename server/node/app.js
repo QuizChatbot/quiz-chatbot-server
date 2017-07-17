@@ -125,7 +125,7 @@ const app = async () => {
           if (messagingEvent.optin) {
             receivedAuthentication(messagingEvent)
           } else if (messagingEvent.message) {
-            receivedMessage(messagingEvent, user, visitor)
+            receivedMessage(messagingEvent, user)
           } else if (messagingEvent.delivery) {
             receivedDeliveryConfirmation(messagingEvent);
           } else if (messagingEvent.postback) {
@@ -204,7 +204,7 @@ const app = async () => {
     let quickReply = message.quick_reply
 
     if (messageText) {
-      handleReceivedMessage(user, messageText, visitor)
+      handleReceivedMessage(user, messageText)
     } else if (messageAttachments) {
       messenger.sendTextMessage(senderID, "Message with attachment received")
     }
@@ -270,11 +270,11 @@ async function getKeys(category) {
  * @param {object} user 
  * @param {string} messageText
  */
-const handleReceivedMessage = async (user, messageText, visitor) => {
+const handleReceivedMessage = async (user, messageText) => {
   
 
 
-  emitter.emit('startQuiz', user.senderID, visitor)
+  emitter.emit('startQuiz', user.senderID)
 
 
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
