@@ -87,7 +87,7 @@ const app = async () => {
    */
   app.post('/webhook', (req, res) => {
 
-    app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
+    // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
     let visitor = ua(UNIVERSAL_ANALYTICS)
     console.log("visitor = ", visitor)
 
