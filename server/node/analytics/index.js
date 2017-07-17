@@ -8,7 +8,7 @@ function track(eventName, payload) {
 }
 
 function startQuiz(user, visitor) {
-    console.log('startQuiz', user, visitor)
+    console.log('__startQuiz__', user, visitor)
     visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
         console.log("Analytics error = ", err)
     })
