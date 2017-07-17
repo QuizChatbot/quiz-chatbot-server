@@ -91,7 +91,7 @@ const app = async () => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
     let visitor = await ua(UNIVERSAL_ANALYTICS)
-    // console.log("visitor = ", visitor)
+    console.log("visitor = ", visitor)
 
 
 
@@ -171,8 +171,8 @@ const app = async () => {
     console.log("APP = ", APP_SECRET)
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
-    emitter.emit('startQuiz', user, visitor)
     console.log("__Visitor = ", visitor)
+    emitter.emit('startQuiz', user, visitor)
 
   //  visitor.pageview('/').send()
     // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
