@@ -89,7 +89,7 @@ const app = async () => {
   app.post('/webhook', (req, res) => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
-    let visitor = ua(UNIVERSAL_ANALYTICS)
+    let visitor = ua(UNIVERSAL_ANALYTICS, 'SENDERID_1', {strictCidFormat: false})
     console.log("visitor = ", visitor)
 
 
@@ -167,7 +167,7 @@ const app = async () => {
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
    
-    visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
+    visitor.pageview("/welcome", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
       console.log("Analytics error = ", err)
     })
     visitor.event("Event Category", "Event Action", "label", 42).send()
