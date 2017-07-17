@@ -89,8 +89,9 @@ const app = async () => {
   app.post('/webhook', (req, res) => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
-    let visitor = ua(UNIVERSAL_ANALYTICS, 'SENDERID_1', {strictCidFormat: false})
-    console.log("visitor = ", visitor)
+    // let visitor = ua(UNIVERSAL_ANALYTICS, 'SENDERID_1', {strictCidFormat: false})
+    
+    
 
 
 
@@ -114,6 +115,9 @@ const app = async () => {
           let keysLeftForThatUser = await getKeys()
           // get user if doesn't have this user before
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
+
+
+          let visitor = ua(UNIVERSAL_ANALYTICS, messagingEvent.sender.id)
 
 
           if (messagingEvent.optin) {
