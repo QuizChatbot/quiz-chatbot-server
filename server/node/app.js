@@ -19,8 +19,8 @@ const
   config = require('./config'),
   emitter = require('./emitter'),
   analytics = require('./analytics'),
-  ua = require('universal-analytics')
-uga = require('universal-ga')
+  ua = require('universal-analytics'),
+  uga = require('universal-ga')
 
 
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
