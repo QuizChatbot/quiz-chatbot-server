@@ -69,7 +69,7 @@ const app = async () => {
 
 
   app.get('/webhook', (req, res) => {
-    console.log('____', req.visitor)
+   
     if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === VALIDATION_TOKEN) {
       console.log("Validating webhook")
@@ -84,11 +84,11 @@ const app = async () => {
   /**
    * occur when user send something to bot
    */
-  app.post('/webhook', async (req, res) => {
+  app.post('/webhook', (req, res) => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
-    let visitor = await ua(UNIVERSAL_ANALYTICS)
-    console.log("visitor = ", visitor)
+  
+    
 
 
 
@@ -112,6 +112,8 @@ const app = async () => {
           let keysLeftForThatUser = await getKeys()
           // get user if doesn't have this user before
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
+
+            let visitor = ua({tid: UNIVERSAL_ANALYTICS, uid: messagingEvent.sender.id})
 
 
           visitor.set("uid", messagingEvent.sender.id)
@@ -168,7 +170,6 @@ const app = async () => {
     console.log("APP = ", APP_SECRET)
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
-    console.log("__Visitor = ", visitor)
     // emitter.emit('startQuiz', user, await visitor)
 
   //  visitor.pageview('/').send()
