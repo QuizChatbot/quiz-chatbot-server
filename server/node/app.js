@@ -90,8 +90,7 @@ const app = async () => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
     let visitor = ua(UNIVERSAL_ANALYTICS)
-    
-    
+    console.log("visitor = ", visitor)
 
 
 
@@ -115,9 +114,6 @@ const app = async () => {
           let keysLeftForThatUser = await getKeys()
           // get user if doesn't have this user before
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
-
-
-
 
 
           if (messagingEvent.optin) {
