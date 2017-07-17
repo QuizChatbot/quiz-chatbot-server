@@ -31,6 +31,10 @@ emitter.on('startQuiz', (id) => {
   analytics.startQuiz(id)
 })
 
+emitter.on('playing', (id) => {
+  analytics.playing(id)
+})
+
 
 
 APP_SECRET = config.APP_SECRET
@@ -48,17 +52,19 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  * Main messenger application
  */
 const app = async () => {
+
+  let visitor  = analytics.getVisitorFromFBID('1462233120486829')
+  emitter.emit("startQuiz", '1462233120486829')
+
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
   // const emitter = require('./analytics/emitter2')
   // emitter.emit('foo', { a: 'b2' })
   // emitter.on()
 
-  // config.serverURL = tunnelConfig.serverURL
-  // console.log("config ", config, tunnelConfig)
 
   let app = express()
-  // emitter.emit('startApp')
+ 
   app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
