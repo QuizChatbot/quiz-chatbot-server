@@ -28,7 +28,8 @@ function getVisitorFromFBID(id) {
 function welcome(user) {
     let visitor = getVisitorFromFBID(user)
     console.log('__Welcome__', user, visitor)
-    visitor.pageview("/","http://quizchatbot-ce222.firebaseapp.com/", "welcome").send()
+    visitor.pageview("/").send()
+    // visitor.pageview("/","http://quizchatbot-ce222.firebaseapp.com/", "welcome").send()
     visitor.event("Welcome", "Received welcome").send()
 }
 
