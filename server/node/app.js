@@ -166,6 +166,7 @@ const app = async () => {
    */
   async function receivedMessage(event, user, visitor) {
     console.log("APP = ", APP_SECRET)
+    console.log("UA = ", UNIVERSAL_ANALYTICS)
 
     visitor.pageview("/", (err) => {
       console.log("err = ", err)
