@@ -87,10 +87,10 @@ const app = async () => {
   /**
    * occur when user send something to bot
    */
-  app.post('/webhook', (req, res) => {
+  app.post('/webhook', async (req, res) => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
-    let visitor = ua(UNIVERSAL_ANALYTICS)
+    let visitor = await ua(UNIVERSAL_ANALYTICS)
     // console.log("visitor = ", visitor)
 
 
@@ -172,13 +172,13 @@ const app = async () => {
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
     emitter.emit('startQuiz', user, visitor)
+    console.log("__Visitor = ", visitor)
 
   //  visitor.pageview('/').send()
     // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
     //   console.log("Analytics error = ", err)
     // })
     // visitor.event("Chat", "Received message", "label", 42).send()
-    console.log("__Visitor = ", visitor)
 
 
    
