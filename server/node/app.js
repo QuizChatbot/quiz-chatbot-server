@@ -29,7 +29,9 @@ let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALY
 // emitter.on('startApp', () => {
 //   console.log('sent email to admin')
 // })
-emitter.on('startQuiz', (user, visitor) => analytics.startQuiz(user, visitor))
+emitter.on('startQuiz', (user, visitor) => {
+  console.log("vis = ", visitor)
+  analytics.startQuiz(user, visitor)})
 
 APP_SECRET = config.APP_SECRET
 VALIDATION_TOKEN = config.VALIDATION_TOKEN
@@ -273,7 +275,7 @@ async function getKeys(category) {
 const handleReceivedMessage = async (user, messageText, visitor) => {
 
    emitter.emit('startQuiz', user, await visitor)
-   
+
 
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
     messenger.sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")

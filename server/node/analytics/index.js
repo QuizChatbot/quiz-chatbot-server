@@ -15,4 +15,12 @@ function startQuiz(user, visitor) {
     visitor.event("Chat", "Received message").send()
 }
 
-module.exports = { track, startQuiz }
+function playing(user, visitor) {
+    console.log('__playing__', user, visitor)
+    visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Playing", function (err) {
+        console.log("Analytics error = ", err)
+    })
+    visitor.event("Playing", "Answer quesyion").send()
+}
+
+module.exports = { track, startQuiz, playing }
