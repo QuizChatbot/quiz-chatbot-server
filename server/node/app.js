@@ -113,8 +113,8 @@ const app = async () => {
           // get user if doesn't have this user before
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
 
-          let visitor = ua(UNIVERSAL_ANALYTICS, messagingEvent.sender.id, {uid: messagingEvent.sender.id })
-
+          // let visitor = ua({ tid: UNIVERSAL_ANALYTICS, uid: messagingEvent.sender.id })
+          let visitor = ua.createFromSession({cid: '371dc08d-fd04-410d-bd54-9946edd36bd4'})
 
           // visitor.set("uid", messagingEvent.sender.id)
 
