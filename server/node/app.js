@@ -89,7 +89,7 @@ const app = async () => {
   app.post('/webhook', (req, res) => {
 
     // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
-    // let visitor = ua(UNIVERSAL_ANALYTICS, 'SENDERID_1', {strictCidFormat: false})
+    let visitor = ua(UNIVERSAL_ANALYTICS)
     
     
 
@@ -117,7 +117,7 @@ const app = async () => {
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
 
 
-          let visitor = ua(UNIVERSAL_ANALYTICS, messagingEvent.sender.id)
+
 
 
           if (messagingEvent.optin) {
