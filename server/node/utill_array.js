@@ -3,35 +3,33 @@ const moment = require('moment')
 
 /**
  * Shuffle question to ask from questions keys, and return first element of shuffled keys
- * @param {[string]} keys 
+ * @param {[string]} keys
  * @return {string}
  */
-const shuffleKeyFromQuestions = (keys) => {
-    console.log("shuffle function")
-    if (keys == null) {
-        console.log("keys are null")
-        return null
-    }
-    else {
-        let shuffled = _.shuffle(keys)
-        return shuffled[0]
-    }
+const shuffleKeyFromQuestions = keys => {
+  console.log('shuffle function')
+  if (keys == null) {
+    console.log('keys are null')
+    return null
+  } else {
+    let shuffled = _.shuffle(keys)
+    return shuffled[0]
+  }
 }
 
 /**
  * Shuffle choices to ask from choices of that question
- * @param {[string]} choices 
+ * @param {[string]} choices
  * @return {[string]}
  */
-const shuffleChoices = (choices) => {
-    if (choices == null) {
-        console.log("choices are null")
-        return null
-    }
-    else {
-        let shuffled = _.shuffle(choices)
-        return shuffled
-    }
+const shuffleChoices = choices => {
+  if (choices == null) {
+    console.log('choices are null')
+    return null
+  } else {
+    let shuffled = _.shuffle(choices)
+    return shuffled
+  }
 }
 
 // const startTimer = () => {
@@ -43,7 +41,7 @@ const shuffleChoices = (choices) => {
  * @return {string}
  */
 const getMoment = () => {
-    return moment().format()   
+  return moment().format()
 }
 
 // const stopTimer = () => {
@@ -53,12 +51,14 @@ const getMoment = () => {
 
 /**
  * Change timestamp to date
- * @param {string} timestamp 
+ * @param {string} timestamp
  * @return {Date}
  */
-const getFormattedDate = (timestamp) => {
-    let date = moment(timestamp).format()
-    return date
+const getFormattedDate = timestamp => {
+  let date = moment(timestamp).format()
+  // use Date() like...
+  // let date = new Date(timestamp).toISOString()
+  return date
 }
 
 /**
@@ -68,9 +68,16 @@ const getFormattedDate = (timestamp) => {
  * @return {number} - in millisecond
  */
 const calculateDuration = (startedAt, timeOfPostback) => {
-    let doneAt = moment(timeOfPostback)
-    let duration = moment.duration(doneAt.diff(startedAt))
-    return duration.asMilliseconds()
+  let doneAt = moment(timeOfPostback)
+  let duration = moment.duration(doneAt.diff(startedAt))
+  return duration.asMilliseconds()
 }
 
-module.exports = { shuffleKeyFromQuestions, _, getMoment, calculateDuration, shuffleChoices, getFormattedDate}
+module.exports = {
+  shuffleKeyFromQuestions,
+  _,
+  getMoment,
+  calculateDuration,
+  shuffleChoices,
+  getFormattedDate
+}
