@@ -39,10 +39,21 @@ emitter.on('playing', (senderID) => {
   analytics.playing(senderID)
 })
 
-emitter.on('answer', ({user, result}) => {
+emitter.on('answer', ({ user, result }) => {
   analytics.answer(user.senderID, result)
 })
 
+emitter.on('category', ({ user, cat }) => {
+  analytics.chooseCategory(user.senderID, cat)
+})
+
+emitter.on('nextRound', (user) => {
+  analytics.nextRound(user.senderID, user.state.round)
+})
+
+emitter.on('finish', (senderID) => {
+  analytics.finish(senderID)
+})
 
 APP_SECRET = config.APP_SECRET
 VALIDATION_TOKEN = config.VALIDATION_TOKEN
@@ -60,8 +71,8 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  */
 const app = async () => {
 
-analytics.getVisitorFromFBID('1462233120486829')
-emitter.emit('welcome', '1462233120486829')
+  analytics.getVisitorFromFBID('1462233120486829')
+  emitter.emit('welcome', '1462233120486829')
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
   // const emitter = require('./analytics/emitter2')
@@ -70,7 +81,7 @@ emitter.emit('welcome', '1462233120486829')
 
 
   let app = express()
- 
+
   app.set('port', process.env.PORT || 4000)
   app.set('view engine', 'ejs')
   app.use(bodyParser.json({ extended: false }))
@@ -97,13 +108,6 @@ emitter.emit('welcome', '1462233120486829')
    */
   app.post('/webhook', (req, res) => {
 
-    // app.use(ua.middleware(UNIVERSAL_ANALYTICS, { cookieName: '_ga' }))
-
-   
-
-
-
-
     let data = req.body
     // Make sure this is a page subscription
     if (data.object == 'page') {
@@ -124,10 +128,9 @@ emitter.emit('welcome', '1462233120486829')
           // get user if doesn't have this user before
           let user = await userClass.load(messagingEvent.sender.id, keysLeftForThatUser, api)
 
-        
 
-           analytics.getVisitorFromFBID(messagingEvent.sender.id)
-          
+          //get visitor for analytics
+          analytics.getVisitorFromFBID(messagingEvent.sender.id)
 
 
 
@@ -188,10 +191,6 @@ emitter.emit('welcome', '1462233120486829')
     //   console.log("Analytics error = ", err)
     // })
     // visitor.event("Chat", "Received message", "label", 42).send()
-
-
-
-
 
     let senderID = event.sender.id
     let recipientID = event.recipient.id
@@ -280,11 +279,6 @@ async function getKeys(category) {
  * @param {string} messageText
  */
 const handleReceivedMessage = async (user, messageText) => {
-  
-
-
-  // emitter.emit('startQuiz', user.senderID)
-
 
   if (messageText !== "OK" && user.state.welcomed === true && user.state.state !== "pause" && user.state.state !== "finish") {
     messenger.sendTextMessage(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
@@ -297,19 +291,16 @@ const handleReceivedMessage = async (user, messageText) => {
 
     if (user.state.welcomed === false) {
       emitter.emit("welcome", user.senderID)
-
       user.welcome()
-      console.log("user set welcome = ", user)
       user.choosing()
-      console.log("user set choosing = ", user)
       messenger.sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
     }
 
     // //already quiz with chatbot or user come back after pause
     else if (user.state.state === "playing" || user.state.state === "pause") {
-      console.log("playing")
-      console.log("user playing = ", user)
 
+      emitter.emit('playing', user.senderID)
+  
       let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
       user.hasKeysLeft(keysLeftForThatUser)
       //get keys question that user done
@@ -317,7 +308,6 @@ const handleReceivedMessage = async (user, messageText) => {
 
       //remove questions done from questions that not yet answered
       user.removeKeysDone(keysDone)
-
 
       //if user pause -> change to playing
       if (user.state.state === "pause") {
@@ -329,7 +319,7 @@ const handleReceivedMessage = async (user, messageText) => {
       // //shuffle keys of questions that have not answered
       let shuffledKey = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
       user.startQuiz(shuffledKey)
-      // emitter.emit('startQuiz', user)
+
 
       let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(shuffledKey)
       if (answersForEachQuestion == null) {
@@ -366,6 +356,8 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
   //check for button nextRound payload
   if (payloadObj.nextRound === true) {
+    emitter.emit('nextRound', user)
+
     messenger.sendTextMessage(user.senderID, "Next Round!")
     let buttonCat = await createButton.createButtonCategory(user.senderID)
     messenger.callSendAPI(buttonCat)
@@ -391,11 +383,17 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   }
   //choose category of questions
   else if (payloadObj.category === "12 factors app") {
+    let cat = "12 factors app"
+    emitter.emit('category', {user,cat})
+
     user.playing()
     user.chooseCategory(payloadObj.category)
     messenger.sendTextMessage(user.senderID, `Alright, say 'OK' if you are ready to play`)
   }
   else if (payloadObj.category === "design patterns") {
+    let cat = "design patterns"
+    emitter.emit('category', {user,cat})
+
     user.playing()
     user.chooseCategory(payloadObj.category)
     messenger.sendTextMessage(user.senderID, `Alright, say 'OK' if you are ready to play`)
@@ -421,7 +419,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     let grade = summary.calculateGrade(totalScore, user.state.userScore)
 
 
-    emitter.emit('answer', {user, result})
+    emitter.emit('answer', { user, result })
     // // answer Correct
     if (result) {
       messenger.sendTextMessage(user.senderID, "Good dog!")
