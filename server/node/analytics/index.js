@@ -80,4 +80,14 @@ function finish(user) {
     visitor.event("Playing", "finish round").send()
 }
 
+
+function resume(user) {
+    let visitor = getVisitorFromFBID(user)
+    console.log("__resume__", user, visitor)
+    visitor.pageview("/questions", "http://quizchatbot-ce222.firebaseapp.com/", "resume", (err) => {
+        console.log("Analytics error = ", err)
+    })
+    visitor.event("Playing", "resume").send()
+}
+
 module.exports = { track, startQuiz, playing, getVisitorFromFBID, welcome, answer, chooseCategory, nextRound, finish }
