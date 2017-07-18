@@ -1,6 +1,6 @@
 const result = require('../result')
 
-describe('prepare result to save to firebase', () => {
+describe.skip('prepare result to save to firebase', () => {
     test('prepare result', () => {
 
         expect.assertions(1)
