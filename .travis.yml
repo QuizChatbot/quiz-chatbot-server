@@ -4,6 +4,10 @@ cache:
 language: node_js # set language to node_js
 node_js:
   8 # use node version 8
+sudo: required
+before_script:
+  # this install.sh script requires sudo
+  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
 script: # run after installed
 - npm install # install node module
 deploy:
