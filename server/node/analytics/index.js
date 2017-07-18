@@ -41,7 +41,7 @@ function playing(user) {
     visitor.pageview("/playing", "http://quizchatbot-ce222.firebaseapp.com/", "Playing", (err) => {
         console.log("Analytics error = ", err)
     })
-    visitor.event("Playing", "playing").send()
+    visitor.event("Playing", "playing", "playing").send()
 }
 
 function answer(user, result) {
