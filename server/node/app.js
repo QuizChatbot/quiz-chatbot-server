@@ -51,7 +51,7 @@ emitter.on('nextRound', (user) => {
   analytics.nextRound(user.senderID, user.state.round)
 })
 
-emitter.on('finish', (senderID) => {
+emitter.on('finish', (senderID) => { 
   analytics.finish(senderID)
 })
 
