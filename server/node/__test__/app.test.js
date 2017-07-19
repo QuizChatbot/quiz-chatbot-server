@@ -109,7 +109,7 @@ describe('Handle recieved message', () => {
         expect(messenger.callSendAPI).toHaveBeenCalled()
     })
 
-    //not sure
+    //not sure 
     it.skip('already chat with bot, then wait for question to be asked -> answers for each question ERROR!', async () => {
         const user = new User('123', { state: 'playing', welcomed: true, round: 2 }, api)
         let userDetail = {
