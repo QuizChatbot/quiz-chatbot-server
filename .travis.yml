@@ -9,5 +9,8 @@ deploy:
   buildpack: nodejs
   api_key:
     secore: ${HEROKU_AUTH_TOKEN}
+  on:
+    repo: QuizChatbot/quiz-chatbot-server
+    branch: master
   run : 
   - npm run start
