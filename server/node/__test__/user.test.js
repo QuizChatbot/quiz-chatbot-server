@@ -169,4 +169,11 @@ describe('User', () => {
         expect(user.state.answersForEachQuestion).toEqual(['a', 'b', 'c']) 
     })
 
+      //set time of start each round
+    it('set start round time', () => {
+        const user = new User('123', { state: 'playing' }, api)
+        user.setStartRoundTime('17-02-2017')
+        expect(user.state.timeStartRound).toEqual('17-02-2017') 
+    })
+
 })

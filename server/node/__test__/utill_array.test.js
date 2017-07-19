@@ -40,7 +40,7 @@ describe('get moment', () => {
     expect(utillArray.getMoment()).toBeDefined()
   })
 })
-
+ 
 // getFormattedDate (timestamp)
 describe.skip('Formatted date', () => {
   test('calculate duration in ms', () => {
