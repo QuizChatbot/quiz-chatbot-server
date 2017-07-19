@@ -8,7 +8,7 @@ deploy:
   provider: heroku
   buildpack: nodejs
   api_key:
-    secore: ${HEROKU_AUTH_TOKEN}
+    secure: ${HEROKU_AUTH_TOKEN}
   on:
     repo: QuizChatbot/quiz-chatbot-server
     branch: master
