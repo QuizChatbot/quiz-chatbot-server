@@ -70,7 +70,7 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  * Main messenger application
  */
 const app = async () => {
-
+console.log("HIIII")
   analytics.getVisitorFromFBID('1462233120486829')
   emitter.emit('welcome', '1462233120486829')
   // let mitt1 = emitter
