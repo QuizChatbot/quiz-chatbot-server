@@ -9,3 +9,5 @@ deploy:
   buildpack: nodejs
   api_key:
     secore: ${HEROKU_AUTH_TOKEN}
+  run : 
+  - npm run start
