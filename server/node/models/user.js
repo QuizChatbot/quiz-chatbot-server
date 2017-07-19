@@ -42,7 +42,7 @@ class User {
         this.api.setState(this.senderID, newState)
         this.state = newState
     }
-    
+
     startQuiz(questionKey) {
         this.setState({
             keysLeftForThatUser: this.state.keysLeftForThatUser,
@@ -112,6 +112,10 @@ class User {
 
     hasAnswers(answers) {
         this.setState({ answersForEachQuestion: answers })
+    }
+
+    setStartRoundTime(startTime) {
+        this.setState({ timeStartRound: startTime })
     }
 
 }

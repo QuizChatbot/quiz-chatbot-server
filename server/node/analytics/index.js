@@ -20,74 +20,77 @@ function getVisitorFromFBID(id) {
     return visitor
 }
 
-function welcome(user) {
-    let visitor = getVisitorFromFBID(user)
-    visitor.pageview("/welcome").send()
-    // visitor.pageview("/","http://quizchatbot-ce222.firebaseapp.com/", "welcome").send()
+function welcome(id) {
+    let visitor = getVisitorFromFBID(id)
+    visitor.pageview("/welcome", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome").send()
+   
     visitor.event("Welcome", "Received welcome").send()
 }
 
-function startQuiz(user) {
-    let visitor = getVisitorFromFBID(user)
-    visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", (err) => {
-        console.log("Analytics error = ", err)
-    })
-    visitor.event("Chat", "Received message").send()
-}
-
-function playing(user) {
-    let visitor = getVisitorFromFBID(user)
-    console.log("__playing__", user, visitor)
-    visitor.pageview("/playing", "http://quizchatbot-ce222.firebaseapp.com/", "Playing", (err) => {
+function playing(id, round) {
+    let visitor = getVisitorFromFBID(id)
+    console.log("__playing__", id, visitor)
+    visitor.pageview("/playing", "http://quizchatbot-ce222.firebaseapp.com/", `Playing round_${round}`, (err) => {
         console.log("Analytics error = ", err)
     })
     visitor.event("Playing", "playing", "playing").send()
 }
 
-function answer(user, result) {
-    let visitor = getVisitorFromFBID(user)
-    console.log("__playing__", user, visitor, result)
-    visitor.pageview("/questions", "http://quizchatbot-ce222.firebaseapp.com/", "Playing", (err) => {
-        console.log("Analytics error = ", err)
-    })
+function answer(id, result, question, duration, cat) {
+    let visitor = getVisitorFromFBID(id)
+    console.log("__answer__", id, visitor, result, question, duration, cat)
     visitor.event("Playing", "answer question", "result", result).send()
-}
-
-function chooseCategory(user, cat) {
-    let visitor = getVisitorFromFBID(user)
-    console.log("__playing__", user, visitor, cat)
-    visitor.pageview("/category", "http://quizchatbot-ce222.firebaseapp.com/", "Category", (err) => {
+    visitor.timing("user answered question", "question duration", duration).send()
+    visitor.pageview(`/questions/${cat}`, "http://quizchatbot-ce222.firebaseapp.com/", `Answer question_${question}`, (err) => {
         console.log("Analytics error = ", err)
     })
-    visitor.event("Playing", "choose category", "category", cat).send()
 }
 
-function nextRound(user, round) {
-    let visitor = getVisitorFromFBID(user)
-    console.log("__next round__", user, visitor, round)
-    visitor.pageview("/questions", "http://quizchatbot-ce222.firebaseapp.com/", "Next round", (err) => {
+function chooseCategory(id, cat) {
+    let visitor = getVisitorFromFBID(id)
+    console.log("__choose cat__", id, visitor, cat)
+    visitor.event("Playing", "choose category", "category", cat).send()
+    visitor.pageview(`/category/${cat}`, "http://quizchatbot-ce222.firebaseapp.com/", "Category", (err) => {
+        console.log("Analytics error = ", err)
+    })
+}
+
+function nextRound(id, round, cat) {
+    let visitor = getVisitorFromFBID(id)
+    console.log("__next round__", id, visitor, round, cat)
+    visitor.pageview(`/questions/${cat}`, "http://quizchatbot-ce222.firebaseapp.com/", `Next round_${round}`, (err) => {
         console.log("Analytics error = ", err)
     })
     visitor.event("Playing", "play next round", "round", round).send()
 }
 
-function finish(user) {
-    let visitor = getVisitorFromFBID(user)
-    console.log("__finish round__", user, visitor)
-    visitor.pageview("/questions", "http://quizchatbot-ce222.firebaseapp.com/", "finish round", (err) => {
+function finish(id, round, cat, roundDuration) {
+    let visitor = getVisitorFromFBID(id)
+    console.log("__finish round__", id, visitor, round)
+    visitor.pageview(`/questions/${cat}`, "http://quizchatbot-ce222.firebaseapp.com/", `finish round_${round}`, (err) => {
         console.log("Analytics error = ", err)
     })
-    visitor.event("Playing", "finish round").send()
-}
+    visitor.event("Playing", "finish round", "round", round).send()
+    visitor.event("Playing", "finish round", "round duration", roundDuration).send()
+} 
 
 
-function resume(user) {
-    let visitor = getVisitorFromFBID(user)
-    console.log("__resume__", user, visitor)
+function resume(id) {
+    let visitor = getVisitorFromFBID(id)
+    console.log("__resume__", id, visitor)
     visitor.pageview("/questions", "http://quizchatbot-ce222.firebaseapp.com/", "resume", (err) => {
         console.log("Analytics error = ", err)
     })
-    visitor.event("Playing", "resume").send()
+    visitor.event("Resume", "resume").send()
 }
 
-module.exports = { track, startQuiz, playing, getVisitorFromFBID, welcome, answer, chooseCategory, nextRound, finish }
+function pause(id) {
+    let visitor = getVisitorFromFBID(id)
+    console.log("__pause__", id, visitor)
+    visitor.pageview("/pause", "http://quizchatbot-ce222.firebaseapp.com/", "pause", (err) => {
+        console.log("Analytics error = ", err)
+    })
+    visitor.event("Pause", "pause").send()
+}
+
+module.exports = { track, playing, getVisitorFromFBID, welcome, answer, chooseCategory, nextRound, finish, resume, pause }

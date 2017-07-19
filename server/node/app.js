@@ -24,35 +24,38 @@ const
 let APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL, UNIVERSAL_ANALYTICS
 
 // emitter.on('*', (type, payload) => analytics.track(type, payload))
-// emitter.on('startApp', () => {
-//   console.log('sent email to admin')
-// })
-emitter.on('welcome', (senderID) => {
-  analytics.welcome(senderID)
+
+emitter.on('welcome', (user) => {
+  analytics.welcome(user.senderID)
 })
 
-emitter.on('startQuiz', (senderID) => {
-  analytics.startQuiz(senderID)
+emitter.on('playing', (user) => {
+  analytics.playing(user.senderID, user.state.round)
 })
 
-emitter.on('playing', (senderID) => {
-  analytics.playing(senderID)
-})
-
-emitter.on('answer', ({ user, result }) => {
-  analytics.answer(user.senderID, result)
+emitter.on('answer', ({ user, result, question, duration, category }) => {
+  analytics.answer(user.senderID, result, question, duration, category)
 })
 
 emitter.on('category', ({ user, cat }) => {
+  console.log("_______test = ", user.senderID, cat)
   analytics.chooseCategory(user.senderID, cat)
 })
 
 emitter.on('nextRound', (user) => {
-  analytics.nextRound(user.senderID, user.state.round)
+  analytics.nextRound(user.senderID, user.state.round, user.state.category)
 })
 
-emitter.on('finish', (senderID) => { 
-  analytics.finish(senderID)
+emitter.on('finish', ({ user, roundDuration }) => {
+  analytics.finish(user.senderID, user.state.round,user.state.category, roundDuration)
+})
+
+emitter.on('resume', (user) => {
+  analytics.resume(user.senderID)
+})
+
+emitter.on('pause', (user) => {
+  analytics.pause(user.senderID)
 })
 
 APP_SECRET = config.APP_SECRET
@@ -70,9 +73,7 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  * Main messenger application
  */
 const app = async () => {
-console.log("HIIII")
-  analytics.getVisitorFromFBID('1462233120486829')
-  emitter.emit('welcome', '1462233120486829')
+
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
   // const emitter = require('./analytics/emitter2')
@@ -184,13 +185,6 @@ console.log("HIIII")
     console.log("APP = ", APP_SECRET)
     console.log("UA = ", UNIVERSAL_ANALYTICS)
 
-    // emitter.emit('startQuiz', user, await visitor)
-
-    //  visitor.pageview('/').send()
-    // visitor.pageview("/", "http://quizchatbot-ce222.firebaseapp.com/", "Welcome", function (err) {
-    //   console.log("Analytics error = ", err)
-    // })
-    // visitor.event("Chat", "Received message", "label", 42).send()
 
     let senderID = event.sender.id
     let recipientID = event.recipient.id
@@ -290,7 +284,7 @@ const handleReceivedMessage = async (user, messageText) => {
     firebase.saveUserToFirebase(user.senderID, userDetail)
 
     if (user.state.welcomed === false) {
-      emitter.emit("welcome", user.senderID)
+      emitter.emit("welcome", user)
       user.welcome()
       user.choosing()
       messenger.sendTextMessage(user.senderID, `Welcome to QuizBot! ${firstName}` + "\n" + `say 'OK' if you want to play`)
@@ -299,8 +293,6 @@ const handleReceivedMessage = async (user, messageText) => {
     // //already quiz with chatbot or user come back after pause
     else if (user.state.state === "playing" || user.state.state === "pause") {
 
-      emitter.emit('playing', user.senderID)
-  
       let keysLeftForThatUser = await firebase.getAllQuestionKeys(user.state.category)
       user.hasKeysLeft(keysLeftForThatUser)
       //get keys question that user done
@@ -313,7 +305,13 @@ const handleReceivedMessage = async (user, messageText) => {
       if (user.state.state === "pause") {
         console.log("_________PAUSE__________")
         user.resume()
-        emitter.emit('playing', user.senderID)
+        emitter.emit('resume', user)
+        // emitter.emit('playing', user)
+      }
+      else {
+        let timeStartRound = utillArray.getMoment()
+        user.setStartRoundTime(timeStartRound)
+        emitter.emit('playing', user)
       }
 
       // //shuffle keys of questions that have not answered
@@ -335,6 +333,10 @@ const handleReceivedMessage = async (user, messageText) => {
 
     }
     else if (user.state.state === "finish") {
+      //get start time of new round
+      let timeStartRound = utillArray.getMoment()
+      user.setStartRoundTime(timeStartRound)
+
       let buttonCat = createButton.createButtonCategory(user.senderID)
       messenger.callSendAPI(buttonCat)
     }
@@ -356,12 +358,17 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
   //check for button nextRound payload
   if (payloadObj.nextRound === true) {
+    //analytic
     emitter.emit('nextRound', user)
+
+    let timeStartRound = utillArray.getMoment()
+    user.setStartRoundTime(timeStartRound)
+
 
     messenger.sendTextMessage(user.senderID, "Next Round!")
     let buttonCat = await createButton.createButtonCategory(user.senderID)
     messenger.callSendAPI(buttonCat)
-    // startNextRound(user)
+
   }
   else if (payloadObj.nextRound === false) {
     //finish
@@ -376,6 +383,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     nextQuestion(user)
   }
   else if (payloadObj.nextQuestion === false) {
+    emitter.emit('pause', user)
     //pause
     user.pause()
     messenger.sendTextMessage(user.senderID, "Hell <3")
@@ -384,7 +392,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   //choose category of questions
   else if (payloadObj.category === "12 factors app") {
     let cat = "12 factors app"
-    emitter.emit('category', {user,cat})
+    emitter.emit('category', { user, cat })
 
     user.playing()
     user.chooseCategory(payloadObj.category)
@@ -392,7 +400,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   }
   else if (payloadObj.category === "design patterns") {
     let cat = "design patterns"
-    emitter.emit('category', {user,cat})
+    emitter.emit('category', { user, cat })
 
     user.playing()
     user.chooseCategory(payloadObj.category)
@@ -418,8 +426,10 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     user.state.userScore += scoreOfThatQuestion
     let grade = summary.calculateGrade(totalScore, user.state.userScore)
 
+    let question = payloadObj.question 
+    let category = user.state.category
+    emitter.emit('answer', { user, result, question, duration, category })
 
-    emitter.emit('answer', { user, result })
     // // answer Correct
     if (result) {
       messenger.sendTextMessage(user.senderID, "Good dog!")
@@ -488,6 +498,13 @@ async function nextQuestion(user) {
     messenger.sendTextMessage(user.senderID, "Finish!")
     messenger.sendTextMessage(user.senderID, `ได้คะแนน ${user.state.userScore} เกรด ${grade} ถ้าอยากรู้ลำดับก็ไปที่ https://quizchatbot-ce222.firebaseapp.com/ เลยย`)
     user.finish()
+
+    //for analytics
+    let timeFinishedRound = Date.now()
+    let roundDuration = utillArray.calculateDuration(user.state.timeStartRound, timeFinishedRound)
+    emitter.emit('finish', { user, roundDuration })
+
+ 
     nextRound(user, numberOfQuestions, done)
   }
 
@@ -525,7 +542,6 @@ async function nextQuestion(user) {
 const nextRound = (user, numberOfQuestions, done) => {
   //if number of done questions equals to number of all questions
   //then that round is complete -> round increase 
-  emitter.emit('nextRound', user)
   let round = user.state.round
   if (done === numberOfQuestions) {
     round++
