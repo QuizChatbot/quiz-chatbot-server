@@ -39,11 +39,11 @@ function playing(id, round) {
 function answer(id, result, question, duration, cat) {
     let visitor = getVisitorFromFBID(id)
     console.log("__answer__", id, visitor, result, question, duration, cat)
-    visitor.event("Playing", "answer question", "result", result).send()
-    visitor.timing("user answered question", "question duration", duration).send()
-    visitor.pageview(`/questions/${cat}`, "http://quizchatbot-ce222.firebaseapp.com/", `Answer question_${question}`, (err) => {
-        console.log("Analytics error = ", err)
-    })
+    // visitor.event("Playing", "answer question", "result", result).send()
+    // visitor.timing("user answered question", "question duration", duration).send()
+    // visitor.pageview(`/questions/${cat}`, "http://quizchatbot-ce222.firebaseapp.com/", `Answer question_${question}`, (err) => {
+    //     console.log("Analytics error = ", err)
+    // })
 }
 
 function chooseCategory(id, cat) {
