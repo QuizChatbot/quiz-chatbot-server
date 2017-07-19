@@ -57,7 +57,8 @@ const getMoment = () => {
  * @return {Date}
  */
 const getFormattedDate = (timestamp) => {
-    let date = moment(timestamp).format()
+    // let date = moment(timestamp).format()
+    let date = new Date(timestamp).toISOString()
     return date
 }
 
