@@ -43,7 +43,7 @@ function answer(id, result, question, duration, cat) {
     // visitor.timing("user answered question", "question duration", duration).send()
     // visitor.pageview(`/questions/${cat}`, "http://quizchatbot-ce222.firebaseapp.com/", `Answer question_${question}`, (err) => {
     //     console.log("Analytics error = ", err)
-    // })
+    // }) 
 }
 
 function chooseCategory(id, cat) {
