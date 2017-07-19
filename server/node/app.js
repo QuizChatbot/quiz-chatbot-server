@@ -79,7 +79,7 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  * Main messenger application
  */
 const app = async () => {
-  
+
   console.log("DOG")
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
@@ -306,7 +306,7 @@ const handleReceivedMessage = async (user, messageText) => {
       user.choosing()
       messenger.sendTextMessage(
         user.senderID,
-        `Welcome to QuizBot! ${firstName}` +
+        `CATTTTTTTTTT! ${firstName}` +
           '\n' +
           `say 'OK' if you want to play`
       )
