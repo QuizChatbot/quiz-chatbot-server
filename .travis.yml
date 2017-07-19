@@ -4,7 +4,7 @@ cache:
 language: node_js
 node_js: 8
 deploy:
-  app: quiz-chatbot-server
+  app: quiz-chatbot-server-2
   provider: heroku
   buildpack: nodejs
   api_key:
