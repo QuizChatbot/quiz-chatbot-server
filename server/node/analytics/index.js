@@ -36,7 +36,7 @@ function playing(id, round) {
     visitor.event("Playing", "playing", "playing").send()
 }
 
-function answer(id, result, question, duration, cat) {
+function answer(id, result, question, duration, cat) { 
     let visitor = getVisitorFromFBID(id)
     console.log("__answer__", id, visitor, result, question, duration, cat)
     // visitor.event("Playing", "answer question", "result", result).send()
