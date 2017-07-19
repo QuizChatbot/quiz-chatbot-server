@@ -119,7 +119,7 @@ describe('Handle recieved message', () => {
         let keysDone = ['k1', 'k2']
         let choices = ['c1', 'c2', 'c3']
 
-        expect.assertions(7)
+        expect.assertions(6)
 
         messenger.getUserDetail.mockImplementation(() => Promise.resolve(userDetail))
         firebase.getQuestionDone.mockImplementation((senderID, round) => Promise.resolve(keysDone))
