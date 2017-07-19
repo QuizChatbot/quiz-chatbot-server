@@ -79,6 +79,7 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  * Main messenger application
  */
 const app = async () => {
+  
   console.log("DOG")
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
