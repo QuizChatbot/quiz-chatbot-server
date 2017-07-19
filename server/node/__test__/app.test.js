@@ -110,7 +110,7 @@ describe('Handle recieved message', () => {
     })
 
     //not sure
-    it('already chat with bot, then wait for question to be asked -> answers for each question ERROR!', async () => {
+    it.skip('already chat with bot, then wait for question to be asked -> answers for each question ERROR!', async () => {
         const user = new User('123', { state: 'playing', welcomed: true, round: 2 }, api)
         let userDetail = {
             first_name: 'Clark',
