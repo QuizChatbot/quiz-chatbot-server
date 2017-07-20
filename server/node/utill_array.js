@@ -68,7 +68,8 @@ const getFormattedDate = (timestamp) => {
  * @param {string} timeOfPostback - timestamp when question being answered
  * @return {number} - in millisecond
  */
-const calculateDuration = (startedAt, timeOfPostback) => {
+const calculateDuration = (timeOfStart, timeOfPostback) => {
+    let startedAt = moment(timeOfStart)
     let doneAt = moment(timeOfPostback)
     let duration = moment.duration(doneAt.diff(startedAt))
     return duration.asMilliseconds()

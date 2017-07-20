@@ -83,7 +83,6 @@ const app = async () => {
   let stopMoment = utillArray.getMoment()
   console.log("ISO = ",startISO)
   console.log("moment = ",stopMoment)
-  console.log("date = ",Date.now())
   console.log("DOG")
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
@@ -267,7 +266,7 @@ const app = async () => {
   })
 }
 
-let startedAt
+let timeOfStart
 
 /**
  * Get all questions keys
@@ -362,7 +361,8 @@ const handleReceivedMessage = async (user, messageText) => {
         user.senderID,
         buttonsCreated
       )
-      startedAt = utillArray.getMoment()
+      // startedAt = utillArray.getMoment()
+      timeOfStart = Date.now()
       messenger.callSendAPI(buttonMessage)
       
     } else if (user.state.state === 'finish') {
@@ -450,7 +450,7 @@ async function handleReceivedPostback (user, payloadObj, timeOfPostback) {
     let result = checkAnswer(payloadObj, user.state.answersForEachQuestion)
 
     // send to calculate grade and score for summary
-    let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
+    let duration = utillArray.calculateDuration(timeOfStart, timeOfPostback)
     let totalScore = summary.calculateTotalScore(numberOfQuestions)
     let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(
       payloadObj.point,
@@ -471,7 +471,7 @@ async function handleReceivedPostback (user, payloadObj, timeOfPostback) {
         payloadObj,
         user.state.round,
         result,
-        startedAt,
+        timeOfStart,
         timeOfPostback,
         scoreOfThatQuestion,
         user.senderID,
@@ -485,7 +485,7 @@ async function handleReceivedPostback (user, payloadObj, timeOfPostback) {
         payloadObj,
         user.state.round,
         result,
-        startedAt,
+        timeOfStart,
         timeOfPostback,
         scoreOfThatQuestion,
         user.senderID,
@@ -599,7 +599,7 @@ async function nextQuestion (user) {
       buttonsCreated
     )
 
-    startedAt = utillArray.getMoment()
+    timeOfStart = Date.now()
 
     messenger.callSendAPI(buttonMessage)
   }
@@ -657,7 +657,7 @@ const startNextRound = async user => {
     user.senderID,
     buttonsCreated
   )
-  startedAt = utillArray.getMoment()
+  timeOfStart = Date.now()
   messenger.callSendAPI(buttonMessage)
 }
 

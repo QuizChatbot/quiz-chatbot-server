@@ -15,12 +15,13 @@ const utillArray = require('./utill_array')
  * @return {object}
  * @async
  */
-const prepareResultForFirebase = async (payload, round, result, startedAt, timeOfPostback, scoreOfThatQuestion, senderID, category) => {
+const prepareResultForFirebase = async (payload, round, result, timeOfStart, timeOfPostback, scoreOfThatQuestion, senderID, category) => {
     //in payload contain answer, question key, point
     let prepareObj = []
     let userAnswerObj = payload
+    let startedAt = utillArray.getFormattedDate(timeOfStart)
     let doneAt = utillArray.getFormattedDate(timeOfPostback)
-    let duration = utillArray.calculateDuration(startedAt, timeOfPostback)
+    let duration = utillArray.calculateDuration(timeOfStart, timeOfPostback)
 
     //add key to userAnswerObj
     userAnswerObj.result = result
