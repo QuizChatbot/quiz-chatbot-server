@@ -79,7 +79,11 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  * Main messenger application
  */
 const app = async () => {
-    console.log("CAT")
+  let  startISO = utillArray.getFormattedDate(1499167085389)
+  let stopMoment = utillArray.getMoment()
+  console.log("ISO = ",startISO)
+  console.log("moment = ",stopMoment)
+  console.log("date = ",Date.now())
   console.log("DOG")
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
@@ -191,8 +195,6 @@ const app = async () => {
    * @param {*} user
    */
   async function receivedMessage (event, user) {
-    console.log('APP = ', APP_SECRET)
-    console.log('UA = ', UNIVERSAL_ANALYTICS)
 
     let senderID = event.sender.id
     let recipientID = event.recipient.id
@@ -304,9 +306,9 @@ const handleReceivedMessage = async (user, messageText) => {
       emitter.emit('welcome', user)
       user.welcome()
       user.choosing()
-      messenger.sendTextMessage( 
+      messenger.sendTextMessage(
         user.senderID,
-        `CATTTTTTTTTT CORGIII! ${firstName}` + 
+        `Welcome to QuizBot! ${firstName}` +
           '\n' +
           `say 'OK' if you want to play`
       )
@@ -362,6 +364,7 @@ const handleReceivedMessage = async (user, messageText) => {
       )
       startedAt = utillArray.getMoment()
       messenger.callSendAPI(buttonMessage)
+      
     } else if (user.state.state === 'finish') {
       // get start time of new round
       let timeStartRound = utillArray.getMoment()
