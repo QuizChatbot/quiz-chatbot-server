@@ -42,10 +42,10 @@ describe('get moment', () => {
 })
  
 // getFormattedDate (timestamp)
-describe.skip('Formatted date', () => {
+describe('Formatted date', () => {
   test('calculate duration in ms', () => {
-    expect(utillArray.getFormattedDate(1499167085389)).toBe(
-      '2017-07-04T18:18:05+07:00'
+    expect(utillArray.getFormattedDate(1600531736193)).toBe(
+      '2020-09-19T16:08:56.193Z'
     )
   })
 })

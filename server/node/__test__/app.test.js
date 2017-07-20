@@ -110,7 +110,7 @@ describe('Handle recieved message', () => {
     })
 
     //not sure 
-    it.skip('already chat with bot, then wait for question to be asked -> answers for each question ERROR!', async () => {
+    it('already chat with bot, then wait for question to be asked -> answers for each question ERROR!', async () => {
         const user = new User('123', { state: 'playing', welcomed: true, round: 2 }, api)
         let userDetail = {
             first_name: 'Clark',
@@ -137,10 +137,8 @@ describe('Handle recieved message', () => {
 
         let answersFromEachQuestion = await firebase.getAllAnswersFromQuestion('Qkey')
 
-
         expect(createButton.createButtonFromQuestionId).not.toHaveBeenCalled()
         expect(createButton.createButtonMessageWithButtons).not.toHaveBeenCalled()
-        expect(utillArray.getMoment).not.toHaveBeenCalled()
         expect(messenger.callSendAPI).not.toHaveBeenCalled()
     })
 
@@ -263,7 +261,6 @@ describe('increase round and send button ask for next round', () => {
     })
 })
 
-//not done
 //startNextRound(user)
 describe('start next round and start ask questions', () => {
 
@@ -278,7 +275,7 @@ describe('start next round and start ask questions', () => {
         api = { getState, setState }
     })
 
-    it.skip('start next round, answerForEachQuestion not null ', async () => {
+    it('start next round, answerForEachQuestion not null ', async () => {
         const user = new User('123', { state: 'finish', welcomed: true, round: 2 }, api)
         let answers = ['a1', 'a2', 'a3']
         firebase.getAllQuestionKeys.mockImplementation(() => Promise.resolve(['k1', 'k2', 'k3']))
@@ -299,7 +296,6 @@ describe('start next round and start ask questions', () => {
         console.log("_____", answersTest)
         await expect(createButton.createButtonFromQuestionId).toHaveBeenCalledWith(shuffled)
         await expect(createButton.createButtonMessageWithButtons).toHaveBeenCalled()
-        expect(utillArray.getMoment).toHaveBeenCalled()
         expect(messenger.callSendAPI).toHaveBeenCalled()
     })
 
@@ -329,7 +325,7 @@ describe('start next round and start ask questions', () => {
     })
 })
 
-//not done
+
 //nextQuestion(user)
 describe('check next question', () => {
 
@@ -344,7 +340,7 @@ describe('check next question', () => {
         api = { getState, setState }
     })
 
-    it.skip('still have questions not answered => answersForEachQuestion is not null', async () => {
+    it('still have questions not answered => answersForEachQuestion is not null', async () => {
         const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
 
         firebase.getNumberOfQuestions.mockImplementation(() => Promise.resolve(10))
@@ -363,7 +359,6 @@ describe('check next question', () => {
 
         expect(createButton.createButtonFromQuestionId).toHaveBeenCalled()
         expect(createButton.createButtonMessageWithButtons).toHaveBeenCalled()
-        expect(utillArray.getMoment).toHaveBeenCalled()
         expect(messenger.callSendAPI).toHaveBeenCalled()
     })
 
