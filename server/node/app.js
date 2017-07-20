@@ -304,9 +304,9 @@ const handleReceivedMessage = async (user, messageText) => {
       emitter.emit('welcome', user)
       user.welcome()
       user.choosing()
-      messenger.sendTextMessage(
+      messenger.sendTextMessage( 
         user.senderID,
-        `CATTTTTTTTTT! ${firstName}` + 
+        `CATTTTTTTTTT CORGIII! ${firstName}` + 
           '\n' +
           `say 'OK' if you want to play`
       )
