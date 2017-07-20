@@ -250,7 +250,7 @@ const app = async () => {
     console.log(
       "Received postback for user %d and page %d with payload '%s' " + 'at %d',
       senderID,
-      recipientID,
+      recipientID, 
       payload,
       timeOfPostback
     )
