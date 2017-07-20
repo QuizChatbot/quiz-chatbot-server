@@ -598,7 +598,7 @@ async function nextQuestion (user) {
       user.senderID,
       buttonsCreated
     )
-
+ 
     timeOfStart = Date.now()
 
     messenger.callSendAPI(buttonMessage)
