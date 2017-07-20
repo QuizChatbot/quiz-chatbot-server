@@ -278,7 +278,7 @@ describe('start next round and start ask questions', () => {
         api = { getState, setState }
     })
 
-    it('start next round, answerForEachQuestion not null ', async () => {
+    it.skip('start next round, answerForEachQuestion not null ', async () => {
         const user = new User('123', { state: 'finish', welcomed: true, round: 2 }, api)
         let answers = ['a1', 'a2', 'a3']
         firebase.getAllQuestionKeys.mockImplementation(() => Promise.resolve(['k1', 'k2', 'k3']))
@@ -344,7 +344,7 @@ describe('check next question', () => {
         api = { getState, setState }
     })
 
-    it('still have questions not answered => answersForEachQuestion is not null', async () => {
+    it.skip('still have questions not answered => answersForEachQuestion is not null', async () => {
         const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
 
         firebase.getNumberOfQuestions.mockImplementation(() => Promise.resolve(10))
