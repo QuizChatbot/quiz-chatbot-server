@@ -170,6 +170,12 @@ const createButtonCategory = (recipientId) => {
   return messageData
 }
 
+/**
+ * Create share button in messenger
+ * @param {number} recipientId 
+ * @param {number} score 
+ * @param {string} grade 
+ */
 const createButtonShare = (recipientId, score, grade) => {
   let messageData = {
     recipient: {
@@ -198,12 +204,12 @@ const createButtonShare = (recipientId, score, grade) => {
                   image_url: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg",
                   default_action: {
                     type: "web_url",
-                    url: "https://quizchatbot-ce222.firebaseapp.com/"
+                    url: "https://quizchatbot-ce222.firebaseapp.com/play"
                   },
                   buttons: [
                     {
                       type: "web_url",
-                      url: "https://quizchatbot-ce222.firebaseapp.com/",
+                      url: "https://quizchatbot-ce222.firebaseapp.com/play",
                       title: "Take Quiz"
                     }
                   ]
