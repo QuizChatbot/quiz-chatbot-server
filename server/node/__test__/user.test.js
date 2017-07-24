@@ -78,7 +78,7 @@ describe('User', () => {
         expect(user.state.welcomed).toBeTruthy()
         expect(user.state.done).toBe(0)
         expect(user.state.userScore).toBe(0)
-        expect(api.setState).toBeCalledWith('123', { state: 'finish', welcomed: true, done: 0, userScore: 0 })
+        expect(api.setState).toBeCalledWith('123', { state: 'finish', welcomed: true, done: 0, userScore: 0, "keysLeftForThatUser": null })
     })
 
     //next round
