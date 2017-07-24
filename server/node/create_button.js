@@ -178,7 +178,15 @@ const createButtonShare = (recipientId) => {
     message: {
       attachment: {
         type: "template",
-        share_contents: {
+        payload: {
+          template_type: "generic",
+          elements: [{
+            title: "Share",
+            subtitle: "subtitle",
+            image_url: "gs://quizchatbot-ce222.appspot.com/19197430_10206845610977801_1649716001_o.jpg",
+            buttons: [{
+              type: "element_share",
+                      share_contents: {
           attachment: {
             type: "template",
             payload: {
@@ -206,18 +214,10 @@ const createButtonShare = (recipientId) => {
 
 
         }
-        // payload: {
-        //   template_type: "generic",
-        //   elements: [{
-        //     title: "Share",
-        //     subtitle: "subtitle",
-        //     image_url: "gs://quizchatbot-ce222.appspot.com/19197430_10206845610977801_1649716001_o.jpg",
-        //     buttons: [{
-        //       type: "element_share"
-        //     }
-        //     ]
-        //   }]
-        // }
+            }
+            ]
+          }]
+        }
       }
     }
   };
