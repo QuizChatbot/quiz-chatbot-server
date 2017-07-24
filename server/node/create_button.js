@@ -202,11 +202,11 @@ const createButtonShare2 = (recipientId) => {
     recipient: {
       id: recipientId
     },
-    message: {
-      buttons: [
+    buttons: [
       {
         type: "element_share",
         share_contents: { 
+          message: {
           attachment: {
             type: "template",
             payload: {
@@ -231,10 +231,10 @@ const createButtonShare2 = (recipientId) => {
               ]
             }
           }
+          }
         }
       }
     ]
-    }
   };
   console.log("__Buttons__ = ", messageData)
   return messageData
