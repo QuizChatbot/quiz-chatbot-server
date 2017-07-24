@@ -202,6 +202,7 @@ const createButtonShare2 = (recipientId) => {
     recipient: {
       id: recipientId
     },
+    message: {
       buttons: [
       {
         type: "element_share",
@@ -233,6 +234,7 @@ const createButtonShare2 = (recipientId) => {
         }
       }
     ]
+    }
   };
   console.log("__Buttons__ = ", messageData)
   return messageData
