@@ -21,8 +21,23 @@ const admin = connectToFirebase()
  * @async
  */
 const getNumberOfQuestions = async (category) => {
-    let keys = await getAllQuestionKeys(category)
-    let numberOfQuestions = keys.length
+    // let keys = await getQuestionKeysFromCategoty(category)
+    // let numberOfQuestions = keys.length
+    let numberOfQuestions
+    switch (category) {
+        case "12 factors app": {
+            numberOfQuestions = 10
+            break
+        }
+        case "design patterns": {
+            numberOfQuestions = 20
+            break
+        }
+        case "rules of thumb": {
+            numberOfQuestions = 30
+            break
+        }
+    }
     return numberOfQuestions
 }
 
@@ -121,7 +136,7 @@ const getQuestionFromId = async (id) => {
  * @return {[String]}
  * @async
  */
-const getAllQuestionKeys = (category) => new Promise(async (resolve, reject) => {
+const getQuestionKeysFromCategory = (category) => new Promise(async (resolve, reject) => {
     const db = admin.database()
     const ref = db.ref("/Quests")
     if (!category) {
@@ -135,17 +150,53 @@ const getAllQuestionKeys = (category) => new Promise(async (resolve, reject) => 
         })
     }
     else {
+        ref.orderByChild("category").equalTo(category).once("value", (snapshot) => {
+            // let keys = []
+            // let questionSnapshots = snapshot.val()
+            // for (let property in questionSnapshots) {
+            //     if (questionSnapshots.hasOwnProperty(property)) {
+            //         if (questionSnapshots[property].category === category) {
+            //             keys.push(property)
+            //         }
+            //     }
+            // } 
+            let keys = Object.keys(snapshot.val())
+            let newArrayDataOfOjbect = Object.values(keys)
+            console.log("_____", newArrayDataOfOjbect)
+            resolve(newArrayDataOfOjbect)
+        }, (errorObject) => {
+            reject(errorObject)
+        })
+    }
+})
+
+/**
+ * 
+ * @param {string} category 
+ * @param {number} numberOfQuestionbyCategory
+ * @async
+ */
+const getRandomQuestionKeysFromCategory = (category, numberOfQuestionbyCategory) => new Promise(async (resolve, reject) => {
+    const db = admin.database()
+    const ref = db.ref("/Quests")
+    const randomIndex = Math.floor(Math.random() * numberOfQuestionbyCategory)
+
+    if (!category && !numberOfQuestionbyCategory) {
         ref.orderByKey().once("value", (snapshot) => {
-            let keys = []
-            let questionSnapshots = snapshot.val()
-            for (let property in questionSnapshots) {
-                if (questionSnapshots.hasOwnProperty(property)) {
-                    if (questionSnapshots[property].category === category) {
-                        keys.push(property)
-                    }
-                }
-            }
+            let keys = Object.keys(snapshot.val())
+            console.log("keys in getAllQuestionKeys =  " + keys)
             resolve(keys)
+        }, (errorObject) => {
+            console.log("Cannot get all question keys = " + errorObject.code)
+            reject(errorObject)
+        })
+    }
+    else {
+        ref.orderByChild("category").equalTo(category).limitToFirst(5).limitToLast(1).once("value", (snapshot) => {
+            let keys = Object.keys(snapshot.val())
+            let newArrayDataOfOjbect = Object.values(keys)
+            console.log("_____", newArrayDataOfOjbect)
+            resolve(newArrayDataOfOjbect)
         }, (errorObject) => {
             reject(errorObject)
         })
@@ -336,12 +387,12 @@ const saveSummaryToFirebase = (senderID, summary) => {
 
 module.exports = {
     connectToFirebase, getQuestionsFromFirebase, getAllAnswersFromQuestion, getQuestionFromId,
-    getAllQuestionKeys, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone,
+    getQuestionKeysFromCategory, getRandomQuestionKeysFromCategory, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone,
     getGrade
 }
 
 // exports.testEvent = functions.analytics.event('SELECT_CONTENT').onLog(event => {
- 
+
 //     return "testttt"
 // })
 

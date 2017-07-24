@@ -114,8 +114,12 @@ class User {
         this.setState({ answersForEachQuestion: answers })
     }
 
-    setStartRoundTime(startTime) { 
+    setStartRoundTime(startTime) {
         this.setState({ timeStartRound: startTime })
+    }
+
+    hasNumberOfQuestion(numberOfQuestions) {
+        this.setState({ numberOfQuestions: numberOfQuestions })
     }
 
 }
