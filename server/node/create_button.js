@@ -181,7 +181,7 @@ const createButtonShare = (recipientId) => {
         payload: {
           template_type: "generic",
           elements: [{
-            title: "Title",
+            title: "Share",
             subtitle: "subtitle",
             image_url: "https://thechangreport.com/img/lightning.png",
             buttons: [{
@@ -197,5 +197,46 @@ const createButtonShare = (recipientId) => {
   return messageData
 }
 
+const createButtonShare2 = (recipientId) => {
+  let messageData = {
+    recipient: {
+      id: recipientId
+    },
+      buttons: [
+      {
+        type: "element_share",
+        share_contents: { 
+          attachment: {
+            type: "template",
+            payload: {
+              template_type: "generic",
+              elements: [
+                {
+                  title: "I took Peter's 'Which Hat Are You?' Quiz",
+                  subtitle: "My result: Fez",
+                  image_url: "https://bot.peters-hats.com/img/hats/fez.jpg",
+                  default_action: {
+                    type: "web_url",
+                    url: "https://m.me/petershats?ref=invited_by_24601"
+                  },
+                  buttons: [
+                    {
+                      type: "web_url",
+                      url: "https://m.me/petershats?ref=invited_by_24601", 
+                      title: "Take Quiz"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  };
 
-module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext, createButtonCategory, createButtonShare }
+  return messageData
+}
+
+
+module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext, createButtonCategory, createButtonShare, createButtonShare2 }

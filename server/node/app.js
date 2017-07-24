@@ -221,7 +221,7 @@ const app = async () => {
     if (messageText) {
       handleReceivedMessage(user, messageText)
     } else if (messageAttachments) {
-      messenger.sendTextMessage(senderID, 'Message with attachment received')
+      messenger.sendTextMessage(senderID, ':D')
     }
   }
 
@@ -311,7 +311,7 @@ const handleReceivedMessage = async (user, messageText) => {
       //     '\n' +
       //     `say 'OK' if you want to play`
       // )
-      const shareButton = await createButton.createButtonShare(user.senderID)
+      const shareButton = await createButton.createButtonShare2(user.senderID)
       messenger.callSendAPI(shareButton)
     } else if (user.state.state === 'playing' || user.state.state === 'pause') {
       // //already quiz with chatbot or user come back after pause
