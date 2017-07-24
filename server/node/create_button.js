@@ -205,7 +205,8 @@ const createButtonShare2 = (recipientId) => {
     buttons: [
       {
         type: "element_share",
-        share_contents: { 
+        share_contents: {
+          message: JSON.stringify({ 
           attachment: {
             type: "template",
             payload: {
@@ -230,6 +231,8 @@ const createButtonShare2 = (recipientId) => {
               ]
             }
           }
+        })
+
         }
       }
     ]
