@@ -208,7 +208,7 @@ describe('check answer', () => {
 
 
 //getKeys()
-describe('get keys of all questions', () => {
+describe.skip('get keys of all questions', () => {
     beforeEach(async () => {
         jest.resetAllMocks()
     })
@@ -275,7 +275,7 @@ describe('start next round and start ask questions', () => {
         api = { getState, setState }
     })
 
-    it('start next round, answerForEachQuestion not null ', async () => {
+    it.skip('start next round, answerForEachQuestion not null ', async () => {
         const user = new User('123', { state: 'finish', welcomed: true, round: 2 }, api)
         let answers = ['a1', 'a2', 'a3']
         firebase.getAllQuestionKeys.mockImplementation(() => Promise.resolve(['k1', 'k2', 'k3']))
@@ -299,7 +299,7 @@ describe('start next round and start ask questions', () => {
         expect(messenger.callSendAPI).toHaveBeenCalled()
     })
 
-    it('start next round, answerForEachQuestion not null ', async () => {
+    it.skip('start next round, answerForEachQuestion is null ', async () => {
         const user = new User('123', { state: 'finish', welcomed: true, round: 2 }, api)
         let answers = ['a1', 'a2', 'a3']
         firebase.getAllQuestionKeys.mockImplementation(() => Promise.resolve(['k1', 'k2', 'k3']))
@@ -340,7 +340,7 @@ describe('check next question', () => {
         api = { getState, setState }
     })
 
-    it('still have questions not answered => answersForEachQuestion is not null', async () => {
+    it.skip('still have questions not answered => answersForEachQuestion is not null', async () => {
         const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
 
         firebase.getNumberOfQuestions.mockImplementation(() => Promise.resolve(10))
@@ -362,7 +362,7 @@ describe('check next question', () => {
         expect(messenger.callSendAPI).toHaveBeenCalled()
     })
 
-    it('still have questions not answered => answersForEachQuestion is null', async () => {
+    it.skip('still have questions not answered => answersForEachQuestion is null', async () => {
         const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
 
         firebase.getNumberOfQuestions.mockImplementation(() => Promise.resolve(10))
@@ -385,7 +385,7 @@ describe('check next question', () => {
         expect(messenger.callSendAPI).not.toHaveBeenCalled()
     })
 
-    it('no question left', async () => {
+    it.skip('no question left', async () => {
         const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
 
         firebase.getNumberOfQuestions.mockImplementation(() => Promise.resolve(10))
