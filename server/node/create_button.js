@@ -181,8 +181,8 @@ const createButtonShare = (recipientId, score, grade) => {
         payload: {
           template_type: "generic",
           elements: [{
-            title: "Quiz Chatbot Leaderboard",
-            subtitle: `You've got ${score} grade ${grade}!`,
+            title: `You've got ${score} grade ${grade}!`,
+            subtitle: `Quiz Chatbot`,
             image_url: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg",
             buttons: [{
               type: "element_share",
@@ -194,7 +194,7 @@ const createButtonShare = (recipientId, score, grade) => {
               elements: [
                 {
                   title: "I played Quiz Chatbot!",
-                  subtitle: `I've got ${score} grade ${grade}! Wanna play?`,
+                  subtitle: `I've got ${score} grade ${grade}! See if you can do better ;)`,
                   image_url: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg",
                   default_action: {
                     type: "web_url",
