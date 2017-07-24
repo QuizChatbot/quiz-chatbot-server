@@ -253,6 +253,11 @@ const createButtonShare2 = (recipientId) => {
                       type: "web_url",
                       url: "https://m.me/petershats?ref=invited_by_24601",
                       title: "Take Quiz"
+                    },
+                       {
+                      type: "web_url",
+                      url: "https://m.me/petershats?ref=invited_by_24601",
+                      title: "Take Quiz2"
                     }
                   ]
                 }
@@ -271,3 +276,4 @@ const createButtonShare2 = (recipientId) => {
 
 
 module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext, createButtonCategory, createButtonShare, createButtonShare2 }
+
