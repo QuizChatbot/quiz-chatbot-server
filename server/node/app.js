@@ -575,11 +575,12 @@ async function nextQuestion(user) {
     messenger.sendTextMessage(user.senderID,
       `Your score is ${user.state.userScore} ,  ${grade} You can see the ranking here https://quizchatbot-ce222.firebaseapp.com/`
     )
-    user.finish()
-
     //create share button
     const shareButton = await createButton.createButtonShare(user.senderID, user.state.userScore, grade)
     messenger.callSendAPI(shareButton)
+    
+    user.finish()
+
 
     // for analytics
     let timeFinishedRound = Date.now()
