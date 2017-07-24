@@ -53,7 +53,7 @@ describe('Handle recieved message', () => {
         expect(firebase.saveUserToFirebase).toHaveBeenCalledWith(user.senderID, userDetail)
     })
 
-    it('send welcome to QuizBot when talk with bot 1st time', async () => {
+    it.skip('send welcome to QuizBot when talk with bot 1st time', async () => {
         const user = new User('123', { state: 'initial', welcomed: false }, api)
         let userDetail = {
             first_name: 'Clark',

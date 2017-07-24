@@ -78,7 +78,7 @@ describe('create Button asked for category', () => {
     beforeEach(async () => {
         jest.resetAllMocks()
     })
-    it('create next round button', () => {
+    it('create categories button ', () => {
         let buttonMessage = createButton.createButtonCategory('123')
         let messageData = {
             recipient: {
@@ -98,6 +98,10 @@ describe('create Button asked for category', () => {
                             type: "postback",
                             title: "Design Patterns",
                             payload: JSON.stringify({ "category": "design patterns" })
+                        }, {
+                            type: "postback",
+                            title: "Rules of Thumb",
+                            payload: JSON.stringify({ "category": "rules of thumb" })
                         }]
                     }
                 }
