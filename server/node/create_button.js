@@ -178,22 +178,50 @@ const createButtonShare = (recipientId) => {
     message: {
       attachment: {
         type: "template",
-        payload: {
-          template_type: "generic",
-          elements: [{
-            title: "Share",
-            subtitle: "subtitle",
-            image_url: "gs://quizchatbot-ce222.appspot.com/19197430_10206845610977801_1649716001_o.jpg",
-            buttons: [{
-              type: "element_share"
-              }
-            ]
-          }]
+        share_contents: {
+          attachment: {
+            type: "template",
+            payload: {
+              template_type: "generic",
+              elements: [
+                {
+                  title: "I took Peter's 'Which Hat Are You?' Quiz",
+                  subtitle: "My result: Fez",
+                  image_url: "https://bot.peters-hats.com/img/hats/fez.jpg",
+                  default_action: {
+                    type: "web_url",
+                    url: "https://m.me/petershats?ref=invited_by_24601"
+                  },
+                  buttons: [
+                    {
+                      type: "web_url",
+                      url: "https://m.me/petershats?ref=invited_by_24601",
+                      title: "Take Quiz"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+
+
         }
+        // payload: {
+        //   template_type: "generic",
+        //   elements: [{
+        //     title: "Share",
+        //     subtitle: "subtitle",
+        //     image_url: "gs://quizchatbot-ce222.appspot.com/19197430_10206845610977801_1649716001_o.jpg",
+        //     buttons: [{
+        //       type: "element_share"
+        //     }
+        //     ]
+        //   }]
+        // }
       }
     }
   };
-
+  console.log("__Button 1 = ", messageData)
   return messageData
 }
 
@@ -202,6 +230,7 @@ const createButtonShare2 = (recipientId) => {
     recipient: {
       id: recipientId
     },
+    message: {},
     buttons: [
       {
         type: "element_share",
@@ -222,7 +251,7 @@ const createButtonShare2 = (recipientId) => {
                   buttons: [
                     {
                       type: "web_url",
-                      url: "https://m.me/petershats?ref=invited_by_24601", 
+                      url: "https://m.me/petershats?ref=invited_by_24601",
                       title: "Take Quiz"
                     }
                   ]
@@ -230,7 +259,7 @@ const createButtonShare2 = (recipientId) => {
               ]
             }
           }
-        
+
 
         }
       }

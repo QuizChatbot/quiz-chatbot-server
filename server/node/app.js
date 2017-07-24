@@ -311,7 +311,7 @@ const handleReceivedMessage = async (user, messageText) => {
       //     '\n' +
       //     `say 'OK' if you want to play`
       // )
-      const shareButton = await createButton.createButtonShare2(user.senderID)
+      const shareButton = await createButton.createButtonShare(user.senderID)
       console.log("Share button = ", shareButton)
       messenger.callSendAPI(shareButton)
     } else if (user.state.state === 'playing' || user.state.state === 'pause') {
