@@ -389,9 +389,7 @@ const handleReceivedMessage = async (user, messageText) => {
  * @param {string} timeOfPostback - timestamp
  */
 async function handleReceivedPostback (user, payloadObj, timeOfPostback) {
-  let numberOfQuestions = await firebase.getNumberOfQuestions(
-    user.state.category
-  )
+  let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
 
   // check for button nextRound payload
   if (payloadObj.nextRound === true) {
@@ -565,9 +563,7 @@ function checkAnswer (payload, answersForEachQuestion) {
  * @param {object} user
  */
 async function nextQuestion (user) {
-  let numberOfQuestions = await firebase.getNumberOfQuestions(
-    user.state.category
-  )
+  let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
   let done = user.state.done
 
   let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(

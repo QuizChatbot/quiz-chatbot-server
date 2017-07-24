@@ -181,9 +181,9 @@ const createButtonShare = (recipientId) => {
         payload: {
           template_type: "generic",
           elements: [{
-            title: "Share",
+            title: "Quiz Chatbot Leaderboard",
             subtitle: "subtitle",
-            image_url: "http://www.rd.com/wp-content/uploads/sites/2/2016/04/01-cat-wants-to-tell-you-laptop.jpg",
+            image_url: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg",
             buttons: [{
               type: "element_share",
                       share_contents: {
@@ -193,17 +193,17 @@ const createButtonShare = (recipientId) => {
               template_type: "generic",
               elements: [
                 {
-                  title: "I took Peter's 'Which Hat Are You?' Quiz",
-                  subtitle: "My result: Fez",
-                  image_url: "http://www.rd.com/wp-content/uploads/sites/2/2016/02/06-train-cat-shake-hands.jpg",
+                  title: "I played Quiz Chatbot!",
+                  subtitle: "My score: Fez",
+                  image_url: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg",
                   default_action: {
                     type: "web_url",
-                    url: "https://m.me/petershats?ref=invited_by_24601"
+                    url: "https://quizchatbot-ce222.firebaseapp.com/"
                   },
                   buttons: [
                     {
                       type: "web_url",
-                      url: "https://m.me/petershats?ref=invited_by_24601",
+                      url: "https://quizchatbot-ce222.firebaseapp.com/",
                       title: "Take Quiz"
                     }
                   ]
@@ -221,59 +221,10 @@ const createButtonShare = (recipientId) => {
       }
     }
   };
-  console.log("__Button 1 = ", messageData)
-  return messageData
-}
-
-const createButtonShare2 = (recipientId) => {
-  let messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {},
-    buttons: [
-      {
-        type: "element_share",
-        share_contents: {
-          attachment: {
-            type: "template",
-            payload: {
-              template_type: "generic",
-              elements: [
-                {
-                  title: "I took Peter's 'Which Hat Are You?' Quiz",
-                  subtitle: "My result: Fez",
-                  image_url: "https://bot.peters-hats.com/img/hats/fez.jpg",
-                  default_action: {
-                    type: "web_url",
-                    url: "https://m.me/petershats?ref=invited_by_24601"
-                  },
-                  buttons: [
-                    {
-                      type: "web_url",
-                      url: "https://m.me/petershats?ref=invited_by_24601",
-                      title: "Take Quiz"
-                    },
-                       {
-                      type: "web_url",
-                      url: "https://m.me/petershats?ref=invited_by_24601",
-                      title: "Take Quiz2"
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-
-
-        }
-      }
-    ]
-  };
-  console.log("__Buttons__ = ", messageData)
+ 
   return messageData
 }
 
 
-module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext, createButtonCategory, createButtonShare, createButtonShare2 }
+module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext, createButtonCategory, createButtonShare }
 
