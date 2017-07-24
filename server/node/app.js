@@ -305,12 +305,14 @@ const handleReceivedMessage = async (user, messageText) => {
       emitter.emit('welcome', user)
       user.welcome()
       user.choosing()
-      messenger.sendTextMessage(
-        user.senderID,
-        `Welcome to QuizBot! ${firstName}` +
-          '\n' +
-          `say 'OK' if you want to play`
-      )
+      // messenger.sendTextMessage(
+      //   user.senderID,
+      //   `Welcome to QuizBot! ${firstName}` +
+      //     '\n' +
+      //     `say 'OK' if you want to play`
+      // )
+      const shareButton = await createButton.createButtonShare(user.senderID)
+      messenger.callSendAPI(shareButton)
     } else if (user.state.state === 'playing' || user.state.state === 'pause') {
       // //already quiz with chatbot or user come back after pause
       let keysLeftForThatUser = await firebase.getAllQuestionKeys(
@@ -437,7 +439,18 @@ async function handleReceivedPostback (user, payloadObj, timeOfPostback) {
       user.senderID,
       `Alright, say 'OK' if you are ready to play`
     )
-  } else {
+  } 
+  else if (payloadObj.category === 'rules of thumb') {
+    let cat = 'rules of thumb'
+    emitter.emit('category', { user, cat })
+
+    user.playing()
+    user.chooseCategory(payloadObj.category)
+    messenger.sendTextMessage(
+      user.senderID,
+      `Alright, say 'OK' if you are ready to play`
+    )
+  }else {
     // Postback for normal questions
     // if in playing question state when receive postback
     // number of questions that user already done increase
@@ -566,7 +579,7 @@ async function nextQuestion (user) {
     messenger.sendTextMessage(user.senderID, 'Finish!')
     messenger.sendTextMessage(
       user.senderID,
-      `ได้คะแนน ${user.state.userScore} เกรด ${grade} ถ้าอยากรู้ลำดับก็ไปที่ https://quizchatbot-ce222.firebaseapp.com/ เลยย`
+      `Your score is ${user.state.userScore} ,  ${grade} You can see the ranking here https://quizchatbot-ce222.firebaseapp.com/`
     )
     user.finish()
 

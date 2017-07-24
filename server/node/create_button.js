@@ -17,22 +17,22 @@ const createButtonFromQuestionId = async (id) => {
   //but we will delete the 'subject' and 'question' key later'
   let buttons = []
 
-    choices.forEach((element) => {
-      buttons.push({
-        type: "postback",
-        title: element,
-        payload: JSON.stringify({ "answer": element, "question": id, "point": question.point })
-      })
-    }, this)
+  choices.forEach((element) => {
+    buttons.push({
+      type: "postback",
+      title: element,
+      payload: JSON.stringify({ "answer": element, "question": id, "point": question.point })
+    })
+  }, this)
 
-    console.log("buttons =", buttons)
+  console.log("buttons =", buttons)
 
-    return {
-      buttons: buttons,
-      subject: question.subject,
-      question: question.question
-    }
+  return {
+    buttons: buttons,
+    subject: question.subject,
+    question: question.question
   }
+}
 
 /**
  * Create buttons ready to send
@@ -40,130 +40,184 @@ const createButtonFromQuestionId = async (id) => {
  * @param {object} buttons 
  * @return {object}
  */
-  const createButtonMessageWithButtons = (recipientId, buttons) => {
-    //delete 'subject' and 'question' key that comes with buttons
-    let subject = buttons.subject
-    let question = buttons.question
-    delete buttons.subject
-    delete buttons.question
+const createButtonMessageWithButtons = (recipientId, buttons) => {
+  //delete 'subject' and 'question' key that comes with buttons
+  let subject = buttons.subject
+  let question = buttons.question
+  delete buttons.subject
+  delete buttons.question
 
-    let messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: subject + "\n" + question,
-            buttons: buttons.buttons
-          }
+  let messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "button",
+          text: subject + "\n" + question,
+          buttons: buttons.buttons
         }
       }
-    };
-    console.log("mssgdata buttons= ", buttons)
-    return messageData
-  }
+    }
+  };
+  console.log("mssgdata buttons= ", buttons)
+  return messageData
+}
 
 /**
  * Create button asked for next round
  * @param {string} recipientId 
  * @return {object}
  */
-  const createButtonNextRound = (recipientId) => {
-    let messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: "Do you want to play the next round?",
-            buttons: [{
-              type: "postback",
-              title: "Yes",
-              payload: JSON.stringify({ "nextRound": true })
-            }, {
-              type: "postback",
-              title: "No",
-              payload: JSON.stringify({ "nextRound": false })
-            }]
-          }
+const createButtonNextRound = (recipientId) => {
+  let messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "button",
+          text: "Do you want to play the next round?",
+          buttons: [{
+            type: "postback",
+            title: "Yes",
+            payload: JSON.stringify({ "nextRound": true })
+          }, {
+            type: "postback",
+            title: "No",
+            payload: JSON.stringify({ "nextRound": false })
+          }]
         }
       }
-    };
+    }
+  };
 
-    return messageData
-  }
+  return messageData
+}
 
 /**
  * Create button asked for next question 
  * @param {string} recipientId
  * @return {object} 
  */
-  const createButtonNext = (recipientId) => {
-    let messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: "Wanna play next question?",
-            buttons: [{
-              type: "postback",
-              title: "Yes",
-              payload: JSON.stringify({ "nextQuestion": true })
-            }, {
-              type: "postback",
-              title: "No",
-              payload: JSON.stringify({ "nextQuestion": false })
-            }]
-          }
+const createButtonNext = (recipientId) => {
+  let messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "button",
+          text: "Wanna play next question?",
+          buttons: [{
+            type: "postback",
+            title: "Yes",
+            payload: JSON.stringify({ "nextQuestion": true })
+          }, {
+            type: "postback",
+            title: "No",
+            payload: JSON.stringify({ "nextQuestion": false })
+          }]
         }
       }
-    };
+    }
+  };
 
-    return messageData
-  }
+  return messageData
+}
 
 /**
  * Create button asked which category to play
  * @param {string} recipientId 
  * @return {object}
  */
-  const createButtonCategory = (recipientId) => {
-    let messageData = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: "Choose category, please.",
-            buttons: [{
-              type: "postback",
-              title: "12 Factors App",
-              payload: JSON.stringify({ "category": "12 factors app" })
-            }, {
-              type: "postback",
-              title: "Design Patterns",
-              payload: JSON.stringify({ "category": "design patterns" })
-            }]
-          }
+const createButtonCategory = (recipientId) => {
+  let messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "button",
+          text: "Choose category, please.",
+          buttons: [{
+            type: "postback",
+            title: "12 Factors App",
+            payload: JSON.stringify({ "category": "12 factors app" })
+          }, {
+            type: "postback",
+            title: "Design Patterns",
+            payload: JSON.stringify({ "category": "design patterns" })
+          },
+          {
+            type: "postback",
+            title: "Rules of Thumb",
+            payload: JSON.stringify({ "category": "rules of thumb" })
+          }]
         }
       }
-    };
+    }
+  };
 
-    return messageData
-  }
+  return messageData
+}
+
+const createButtonShare = (recipientId) => {
+  let messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "generic",
+          buttons: [
+            {
+              type: "element_share",
+              share_contents: {
+                attachment: {
+                  type: "template",
+                  payload: {
+                    template_type: "generic",
+                    elements: [
+                      {
+                        title: "I took Peter's 'Which Hat Are You?' Quiz",
+                        subtitle: "My result: Fez",
+                        image_url: "https://bot.peters-hats.com/img/hats/fez.jpg",
+                        default_action: {
+                          type: "web_url",
+                          url: "https://m.me/petershats?ref=invited_by_24601"
+                        },
+                        buttons: [
+                          {
+                            type: "web_url",
+                            url: "https://m.me/petershats?ref=invited_by_24601",
+                            title: "Take Quiz"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return messageData
+}
 
 
-  module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext, createButtonCategory }
+module.exports = { createButtonFromQuestionId, createButtonMessageWithButtons, createButtonNextRound, createButtonNext, createButtonCategory, createButtonShare }
