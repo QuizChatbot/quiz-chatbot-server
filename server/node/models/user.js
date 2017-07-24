@@ -86,7 +86,7 @@ class User {
     }
 
     finish() {
-        this.setState({ state: 'finish', welcomed: true, done: 0, userScore: 0 })
+        this.setState({ state: 'finish', welcomed: true, done: 0, userScore: 0, keysLeftForThatUser: null })
     }
 
     nextRound(keysLeftForThatUser) {

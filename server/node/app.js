@@ -553,12 +553,10 @@ async function nextQuestion(user) {
   // let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
   let done = user.state.done
 
-  let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(
-    user.state.keysLeftForThatUser
-  )
+  let keyOfNextQuestion = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
   // no question left
   // finish that round
-  if (keyOfNextQuestion == null) {
+  if (user.state.done === user.state.numberOfQuestions) {
     let grade = await firebase.getGrade(user.senderID, user.state.round)
     messenger.sendTextMessage(user.senderID, 'Finish!')
     messenger.sendTextMessage(user.senderID,
@@ -582,9 +580,7 @@ async function nextQuestion(user) {
     nextRound(user, user.state.numberOfQuestions, done)
   } else {
     // still has questions not answered
-    let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(
-      keyOfNextQuestion
-    )
+    let answersForEachQuestion = await firebase.getAllAnswersFromQuestion(keyOfNextQuestion)
     // no key that matched question
     if (answersForEachQuestion == null) {
       console.log("Doesn't have this id in questions json")
@@ -592,13 +588,8 @@ async function nextQuestion(user) {
     }
     user.hasAnswers(answersForEachQuestion)
 
-    let buttonsCreated = await createButton.createButtonFromQuestionId(
-      keyOfNextQuestion
-    )
-    let buttonMessage = await createButton.createButtonMessageWithButtons(
-      user.senderID,
-      buttonsCreated
-    )
+    let buttonsCreated = await createButton.createButtonFromQuestionId(keyOfNextQuestion)
+    let buttonMessage = await createButton.createButtonMessageWithButtons(user.senderID, buttonsCreated)
 
     timeOfStart = Date.now()
 
