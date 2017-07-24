@@ -180,37 +180,15 @@ const createButtonShare = (recipientId) => {
         type: "template",
         payload: {
           template_type: "generic",
-          buttons: [
-            {
-              type: "element_share",
-              share_contents: {
-                attachment: {
-                  type: "template",
-                  payload: {
-                    template_type: "generic",
-                    elements: [
-                      {
-                        title: "I took Peter's 'Which Hat Are You?' Quiz",
-                        subtitle: "My result: Fez",
-                        image_url: "https://bot.peters-hats.com/img/hats/fez.jpg",
-                        default_action: {
-                          type: "web_url",
-                          url: "https://m.me/petershats?ref=invited_by_24601"
-                        },
-                        buttons: [
-                          {
-                            type: "web_url",
-                            url: "https://m.me/petershats?ref=invited_by_24601",
-                            title: "Take Quiz"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                }
+          elements: [{
+            title: "Title",
+            subtitle: "subtitle",
+            image_url: "https://thechangreport.com/img/lightning.png",
+            buttons: [{
+              type: "element_share"
               }
-            }
-          ]
+            ]
+          }]
         }
       }
     }
