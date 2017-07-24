@@ -499,7 +499,11 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
       user.state.category
     )
     user.removeKeysDone(keysDone)
+
     // prepare summary object to save in firebase
+    // if(user.state.numberOfQuestions === user.state.done){
+    //   user.state.keyOfNextQuestion = 0
+    // }
     let preparedSummary = summary.prepareSummary(
       user.state.done,
       user.state.numberOfQuestions,
@@ -567,6 +571,7 @@ async function nextQuestion(user) {
     messenger.callSendAPI(shareButton)
 
     user.finish()
+    user.hasKeysLeft(0)
 
 
     // for analytics
