@@ -170,7 +170,7 @@ const createButtonCategory = (recipientId) => {
   return messageData
 }
 
-const createButtonShare = (recipientId) => {
+const createButtonShare = (recipientId, score, grade) => {
   let messageData = {
     recipient: {
       id: recipientId
@@ -182,7 +182,7 @@ const createButtonShare = (recipientId) => {
           template_type: "generic",
           elements: [{
             title: "Quiz Chatbot Leaderboard",
-            subtitle: "subtitle",
+            subtitle: `You've got ${score} grade ${grade}!`,
             image_url: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg",
             buttons: [{
               type: "element_share",
@@ -194,7 +194,7 @@ const createButtonShare = (recipientId) => {
               elements: [
                 {
                   title: "I played Quiz Chatbot!",
-                  subtitle: "My score: Fez",
+                  subtitle: `I've got ${score} grade ${grade}! Wanna play?`,
                   image_url: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg",
                   default_action: {
                     type: "web_url",

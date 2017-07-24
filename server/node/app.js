@@ -79,10 +79,10 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  * Main messenger application
  */
 const app = async () => {
-  let  startISO = utillArray.getFormattedDate(1499167085389)
+  let startISO = utillArray.getFormattedDate(1499167085389)
   let stopMoment = utillArray.getMoment()
-  console.log("ISO = ",startISO)
-  console.log("moment = ",stopMoment)
+  console.log("ISO = ", startISO)
+  console.log("moment = ", stopMoment)
   console.log("DOG")
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
@@ -193,7 +193,7 @@ const app = async () => {
    * @param {*} event
    * @param {*} user
    */
-  async function receivedMessage (event, user) {
+  async function receivedMessage(event, user) {
 
     let senderID = event.sender.id
     let recipientID = event.recipient.id
@@ -238,7 +238,7 @@ const app = async () => {
    * @param {*} event
    * @param {*} user
    */
-  async function receivedPostback (event, user) {
+  async function receivedPostback(event, user) {
     let senderID = event.sender.id
     let recipientID = event.recipient.id
     let timeOfPostback = event.timestamp
@@ -249,7 +249,7 @@ const app = async () => {
     console.log(
       "Received postback for user %d and page %d with payload '%s' " + 'at %d',
       senderID,
-      recipientID, 
+      recipientID,
       payload,
       timeOfPostback
     )
@@ -274,7 +274,7 @@ let timeOfStart
  * @param {String} category - category of question
  * @return {[String]}
  */
-async function getKeys (category) {
+async function getKeys(category) {
   let keys
   if (!category) keys = await firebase.getAllQuestionKeys()
   else keys = await firebase.getAllQuestionKeys(category)
@@ -305,15 +305,13 @@ const handleReceivedMessage = async (user, messageText) => {
       emitter.emit('welcome', user)
       user.welcome()
       user.choosing()
-      // messenger.sendTextMessage(
-      //   user.senderID,
-      //   `Welcome to QuizBot! ${firstName}` +
-      //     '\n' +
-      //     `say 'OK' if you want to play`
-      // )
-      const shareButton = await createButton.createButtonShare(user.senderID)
-      console.log("Share button = ", shareButton)
-      messenger.callSendAPI(shareButton)
+      messenger.sendTextMessage(
+        user.senderID,
+        `Welcome to QuizBot! ${firstName}` +
+        '\n' +
+        `say 'OK' if you want to play`
+      )
+
     } else if (user.state.state === 'playing' || user.state.state === 'pause') {
       // //already quiz with chatbot or user come back after pause
       let keysLeftForThatUser = await firebase.getAllQuestionKeys(
@@ -367,7 +365,7 @@ const handleReceivedMessage = async (user, messageText) => {
       // startedAt = utillArray.getMoment()
       timeOfStart = Date.now()
       messenger.callSendAPI(buttonMessage)
-      
+
     } else if (user.state.state === 'finish') {
       // get start time of new round
       let timeStartRound = utillArray.getMoment()
@@ -388,7 +386,7 @@ const handleReceivedMessage = async (user, messageText) => {
  * @param {object} payloadObj
  * @param {string} timeOfPostback - timestamp
  */
-async function handleReceivedPostback (user, payloadObj, timeOfPostback) {
+async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
 
   // check for button nextRound payload
@@ -438,7 +436,7 @@ async function handleReceivedPostback (user, payloadObj, timeOfPostback) {
       user.senderID,
       `Alright, say 'OK' if you are ready to play`
     )
-  } 
+  }
   else if (payloadObj.category === 'rules of thumb') {
     let cat = 'rules of thumb'
     emitter.emit('category', { user, cat })
@@ -449,7 +447,7 @@ async function handleReceivedPostback (user, payloadObj, timeOfPostback) {
       user.senderID,
       `Alright, say 'OK' if you are ready to play`
     )
-  }else {
+  } else {
     // Postback for normal questions
     // if in playing question state when receive postback
     // number of questions that user already done increase
@@ -551,7 +549,7 @@ async function handleReceivedPostback (user, payloadObj, timeOfPostback) {
  * @param {[String]} answersForEachQuestion
  * @return {Boolean}
  */
-function checkAnswer (payload, answersForEachQuestion) {
+function checkAnswer(payload, answersForEachQuestion) {
   // the correct answer is always in first element of answers in json file
   if (payload.answer == answersForEachQuestion[0]) return true
   else return false
@@ -562,7 +560,7 @@ function checkAnswer (payload, answersForEachQuestion) {
  * @async
  * @param {object} user
  */
-async function nextQuestion (user) {
+async function nextQuestion(user) {
   let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
   let done = user.state.done
 
@@ -574,11 +572,14 @@ async function nextQuestion (user) {
   if (keyOfNextQuestion == null) {
     let grade = await firebase.getGrade(user.senderID, user.state.round)
     messenger.sendTextMessage(user.senderID, 'Finish!')
-    messenger.sendTextMessage(
-      user.senderID,
+    messenger.sendTextMessage(user.senderID,
       `Your score is ${user.state.userScore} ,  ${grade} You can see the ranking here https://quizchatbot-ce222.firebaseapp.com/`
     )
     user.finish()
+
+    //create share button
+    const shareButton = await createButton.createButtonShare(user.senderID, user.state.userScore, grade)
+    messenger.callSendAPI(shareButton)
 
     // for analytics
     let timeFinishedRound = Date.now()
@@ -587,7 +588,7 @@ async function nextQuestion (user) {
       timeFinishedRound
     )
     emitter.emit('finish', { user, roundDuration })
-
+    //ask to play next round
     nextRound(user, numberOfQuestions, done)
   } else {
     // still has questions not answered
@@ -608,7 +609,7 @@ async function nextQuestion (user) {
       user.senderID,
       buttonsCreated
     )
- 
+
     timeOfStart = Date.now()
 
     messenger.callSendAPI(buttonMessage)
