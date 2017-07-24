@@ -4,7 +4,7 @@ describe('connect to firebase', () => {
   test('connect to firebase', () => {})
 })
 
-describe('number of questions', () => {
+describe.skip('number of questions', () => {
   test('get number of questions', () => {
     expect.assertions(1)
     return expect(firebase.getNumberOfQuestions()).resolves.toBeDefined()
