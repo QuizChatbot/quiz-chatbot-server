@@ -312,6 +312,7 @@ const handleReceivedMessage = async (user, messageText) => {
       //     `say 'OK' if you want to play`
       // )
       const shareButton = await createButton.createButtonShare2(user.senderID)
+      console.log("Share button = ", shareButton)
       messenger.callSendAPI(shareButton)
     } else if (user.state.state === 'playing' || user.state.state === 'pause') {
       // //already quiz with chatbot or user come back after pause
