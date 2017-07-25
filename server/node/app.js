@@ -502,7 +502,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
     // prepare summary object to save in firebase
     if(user.state.numberOfQuestions === user.state.done){
-      user.state.keyOfNextQuestion = 0
+      user.hasKeysLeft(null)
     }
     let preparedSummary = summary.prepareSummary(
       user.state.done,
@@ -523,10 +523,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
     // ask whether user ready to play next question
     // if there are still questions left that have not done => create next button
-    if (
-      typeof keysLeftForThatUser !== 'undefined' &&
-      keysLeftForThatUser.length > 0
-    ) {
+    if (typeof keysLeftForThatUser !== 'undefined' && keysLeftForThatUser.length > 0) {
       let buttonNext = await createButton.createButtonNext(user.senderID)
       messenger.callSendAPI(buttonNext)
     } else {
