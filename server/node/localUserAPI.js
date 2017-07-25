@@ -13,14 +13,6 @@ async function setState(senderID, state) {
     }
 }
 
-// async function setRound(senderID, round) {
-//     if (usersData.hasOwnProperty(senderID) === false) {
-//         usersData[senderID] = { round }
-//     } else {
-//         usersData[senderID].round = round
-//     }
-// }
-
 /**
  * Get state of user in usersData
  * @param {string} senderID 
