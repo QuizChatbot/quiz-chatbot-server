@@ -501,9 +501,9 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     user.removeKeysDone(keysDone)
 
     // prepare summary object to save in firebase
-    // if(user.state.numberOfQuestions === user.state.done){
-    //   user.state.keyOfNextQuestion = 0
-    // }
+    if(user.state.numberOfQuestions === user.state.done){
+      user.state.keyOfNextQuestion = 0
+    }
     let preparedSummary = summary.prepareSummary(
       user.state.done,
       user.state.numberOfQuestions,

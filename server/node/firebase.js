@@ -24,20 +24,7 @@ const getNumberOfQuestions = async (category) => {
     // let keys = await getQuestionKeysFromCategoty(category)
     // let numberOfQuestions = keys.length
     let numberOfQuestions
-    switch (category) {
-        case "12 factors app": {
-            numberOfQuestions = 10
-            break
-        }
-        case "design patterns": {
-            numberOfQuestions = 20
-            break
-        }
-        case "rules of thumb": {
-            numberOfQuestions = 30
-            break
-        }
-    }
+    if(category)    numberOfQuestions = 10
     return numberOfQuestions
 }
 
