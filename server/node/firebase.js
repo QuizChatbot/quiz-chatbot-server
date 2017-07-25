@@ -24,7 +24,7 @@ const getNumberOfQuestions = async (category) => {
     // let keys = await getQuestionKeysFromCategoty(category)
     // let numberOfQuestions = keys.length
     let numberOfQuestions
-    if(category)    numberOfQuestions = 10
+    if(category)    numberOfQuestions = 2
     return numberOfQuestions
 }
 
@@ -156,40 +156,6 @@ const getQuestionKeysFromCategory = (category) => new Promise(async (resolve, re
         })
     }
 })
-
-/**
- * 
- * @param {string} category 
- * @param {number} numberOfQuestionbyCategory
- * @async
- */
-const getRandomQuestionKeysFromCategory = (category, numberOfQuestionbyCategory) => new Promise(async (resolve, reject) => {
-    const db = admin.database()
-    const ref = db.ref("/Quests")
-    const randomIndex = Math.floor(Math.random() * numberOfQuestionbyCategory)
-
-    if (!category && !numberOfQuestionbyCategory) {
-        ref.orderByKey().once("value", (snapshot) => {
-            let keys = Object.keys(snapshot.val())
-            console.log("keys in getAllQuestionKeys =  " + keys)
-            resolve(keys)
-        }, (errorObject) => {
-            console.log("Cannot get all question keys = " + errorObject.code)
-            reject(errorObject)
-        })
-    }
-    else {
-        ref.orderByChild("category").equalTo(category).limitToFirst(5).limitToLast(1).once("value", (snapshot) => {
-            let keys = Object.keys(snapshot.val())
-            let newArrayDataOfOjbect = Object.values(keys)
-            console.log("_____", newArrayDataOfOjbect)
-            resolve(newArrayDataOfOjbect)
-        }, (errorObject) => {
-            reject(errorObject)
-        })
-    }
-})
-
 
 /**
  * Get key of questions already done by that user.
@@ -370,16 +336,18 @@ const saveSummaryToFirebase = (senderID, summary) => {
         "score": summary.score,
         "totalScore": summary.totalScore
     })
+
+    if(summary.isDone){
+        ref = db.ref("/Developer_cheat/" + senderID)
+        ref.child("summary").child(summary.round).child("keysQuestionLeft").remove()
+    }
 }
 
 module.exports = {
     connectToFirebase, getQuestionsFromFirebase, getAllAnswersFromQuestion, getQuestionFromId,
-    getQuestionKeysFromCategory, getRandomQuestionKeysFromCategory, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone,
+    getQuestionKeysFromCategory, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone,
     getGrade
 }
 
-// exports.testEvent = functions.analytics.event('SELECT_CONTENT').onLog(event => {
 
-//     return "testttt"
-// })
 
