@@ -464,7 +464,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
     // // answer Correct
     if (result) {
-      messenger.sendTextMessage(user.senderID, 'Good dog!')
+      messenger.sendTextMessage(user.senderID, 'Orung!')
       let preparedResult = await resultFirebase.prepareResultForFirebase(
         payloadObj,
         user.state.round,
