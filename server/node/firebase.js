@@ -340,7 +340,9 @@ const saveSummaryToFirebase = (senderID, summary) => {
     if(summary.isDone){
         console.log("remove1")
         ref = db.ref("/Developer_cheat/" + senderID)
-        ref.child("summary").child(summary.round).child("keysQuestionLeft").remove()
+        ref.child("summary").child(summary.round).equalTo("keysQuestionLeft").on('child_added', (snapshot) => {
+            snapshot.ref.remove()
+        })
         console.log("remove2")
     }
 }
