@@ -53,7 +53,7 @@ describe('Handle recieved message', () => {
         expect(firebase.saveUserToFirebase).toHaveBeenCalledWith(user.senderID, userDetail)
     })
 
-    it.skip('send welcome to QuizBot when talk with bot 1st time', async () => {
+    it('send welcome to QuizBot when talk with bot 1st time', async () => {
         const user = new User('123', { state: 'initial', welcomed: false }, api)
         let userDetail = {
             first_name: 'Clark',
@@ -61,7 +61,7 @@ describe('Handle recieved message', () => {
         }
         messenger.getUserDetail.mockImplementation(() => Promise.resolve(userDetail))
         await app.handleReceivedMessage(user, "Hello")
-        // expect.assertions(4)
+        expect.assertions(4)
         expect(messenger.getUserDetail).toHaveBeenCalledWith(user.senderID)
         expect(user.welcome()).resolves.toHaveBeenCalled()
         expect(user.choosing()).resolves.toHaveBeenCalled()
@@ -208,21 +208,29 @@ describe('check answer', () => {
 
 
 //getKeys()
-describe.skip('get keys of all questions', () => {
+describe('get keys of all questions', () => {
     beforeEach(async () => {
         jest.resetAllMocks()
     })
-    it('get keys success', async () => {
+    it('have category, get keys success', async () => {
         let keys = ['k1', 'k2', 'k3']
-        firebase.getAllQuestionKeys.mockImplementation(() => Promise.resolve(keys))
+        firebase.getQuestionKeysFromCategory.mockImplementation((category) => Promise.resolve(keys))
+        let test = await app.getKeys("category")
+        expect(firebase.getQuestionKeysFromCategory).toHaveBeenCalled()
+        expect(test).toEqual(['k1', 'k2', 'k3'])
+    })
+
+    it('Dont have category, get keys success', async () => {
+        let keys = ['k1', 'k2', 'k3']
+        firebase.getQuestionKeysFromCategory.mockImplementation(() => Promise.resolve(keys))
         let test = await app.getKeys()
-        expect(firebase.getAllQuestionKeys).toHaveBeenCalled()
+        expect(firebase.getQuestionKeysFromCategory).toHaveBeenCalled()
         expect(test).toEqual(['k1', 'k2', 'k3'])
     })
 
     it('get keys failed', async () => {
         let err = 'failed'
-        firebase.getAllQuestionKeys.mockImplementation(() => Promise.reject(err))
+        firebase.getQuestionKeysFromCategory.mockImplementation(() => Promise.reject(err))
         await expect(app.getKeys()).rejects.toBeDefined()
 
     })
@@ -275,10 +283,10 @@ describe('start next round and start ask questions', () => {
         api = { getState, setState }
     })
 
-    it.skip('start next round, answerForEachQuestion not null ', async () => {
+    it('start next round, answerForEachQuestion not null ', async () => {
         const user = new User('123', { state: 'finish', welcomed: true, round: 2 }, api)
         let answers = ['a1', 'a2', 'a3']
-        firebase.getAllQuestionKeys.mockImplementation(() => Promise.resolve(['k1', 'k2', 'k3']))
+        firebase.getQuestionKeysFromCategory.mockImplementation(() => Promise.resolve(['k1', 'k2', 'k3']))
         firebase.getAllAnswersFromQuestion.mockImplementation((id) => Promise.resolve(['a1', 'a2', 'a3']))
         utillArray.shuffleKeyFromQuestions.mockImplementation((keys) => keys[0])
 
@@ -299,10 +307,10 @@ describe('start next round and start ask questions', () => {
         expect(messenger.callSendAPI).toHaveBeenCalled()
     })
 
-    it.skip('start next round, answerForEachQuestion is null ', async () => {
+    it('start next round, answerForEachQuestion is null ', async () => {
         const user = new User('123', { state: 'finish', welcomed: true, round: 2 }, api)
         let answers = ['a1', 'a2', 'a3']
-        firebase.getAllQuestionKeys.mockImplementation(() => Promise.resolve(['k1', 'k2', 'k3']))
+        firebase.getQuestionKeysFromCategory.mockImplementation(() => Promise.resolve(['k1', 'k2', 'k3']))
         firebase.getAllAnswersFromQuestion.mockImplementation((id) => null)
         utillArray.shuffleKeyFromQuestions.mockImplementation((keys) => keys[0])
 
@@ -340,16 +348,14 @@ describe('check next question', () => {
         api = { getState, setState }
     })
 
-    it.skip('still have questions not answered => answersForEachQuestion is not null', async () => {
-        const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
+    it('still have questions not answered => answersForEachQuestion is not null', async () => {
+        const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, numberOfQuestions: 10, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
 
-        firebase.getNumberOfQuestions.mockImplementation(() => Promise.resolve(10))
         firebase.getAllAnswersFromQuestion.mockImplementation((id) => Promise.resolve(['a1', 'a2', 'a3']))
         utillArray.shuffleKeyFromQuestions.mockImplementation((keys) => keys[0])
 
         await app.nextQuestion(user)
 
-        expect(firebase.getNumberOfQuestions).toHaveBeenCalled()
         expect(utillArray.shuffleKeyFromQuestions).toHaveBeenCalledWith(user.state.keysLeftForThatUser)
         let shuffled = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
 
@@ -362,16 +368,14 @@ describe('check next question', () => {
         expect(messenger.callSendAPI).toHaveBeenCalled()
     })
 
-    it.skip('still have questions not answered => answersForEachQuestion is null', async () => {
-        const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
+    it('still have questions not answered => answersForEachQuestion is null', async () => {
+        const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, numberOfQuestions: 10, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
 
-        firebase.getNumberOfQuestions.mockImplementation(() => Promise.resolve(10))
         firebase.getAllAnswersFromQuestion.mockImplementation((id) => null)
         utillArray.shuffleKeyFromQuestions.mockImplementation((keys) => keys[0])
 
         await app.nextQuestion(user)
 
-        expect(firebase.getNumberOfQuestions).toHaveBeenCalled()
         expect(utillArray.shuffleKeyFromQuestions).toHaveBeenCalledWith(user.state.keysLeftForThatUser)
         let shuffled = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
 
@@ -385,28 +389,26 @@ describe('check next question', () => {
         expect(messenger.callSendAPI).not.toHaveBeenCalled()
     })
 
-    it.skip('no question left', async () => {
-        const user = new User('123', { state: 'playing', welcomed: true, round: 2, done: 4, keysLeftForThatUser: ['kq1', 'kq2'] }, api)
+    it('no question left', async () => {
+        const user = new User('123', { state: 'playing', welcomed: true, round: 3, done: 10, numberOfQuestions: 10, keysLeftForThatUser: 0 }, api)
 
-        firebase.getNumberOfQuestions.mockImplementation(() => Promise.resolve(10))
         firebase.getAllAnswersFromQuestion.mockImplementation((id) => null)
         firebase.getGrade.mockImplementation((id, round) => Promise.resolve('A+'))
         utillArray.shuffleKeyFromQuestions.mockImplementation(() => null)
 
         await app.nextQuestion(user)
 
-        expect(firebase.getNumberOfQuestions).toHaveBeenCalled()
         expect(utillArray.shuffleKeyFromQuestions).toHaveBeenCalledWith(user.state.keysLeftForThatUser)
         let shuffled = utillArray.shuffleKeyFromQuestions(user.state.keysLeftForThatUser)
-        expect(firebase.getGrade).toHaveBeenCalledWith(user.senderID, user.state.round)
+        expect(firebase.getGrade).toHaveBeenCalledWith(user.senderID, user.state.round - 1)
         expect(messenger.sendTextMessage).toHaveBeenCalledTimes(2)
         expect(messenger.sendTextMessage).toHaveBeenCalledWith(user.senderID, "Finish!")
+        expect(createButton.createButtonShare).toHaveBeenCalled()
+        expect(messenger.callSendAPI).toHaveBeenCalled()
         expect(user.finish()).resolves.toHaveBeenCalled()
-
-
+  
         expect(createButton.createButtonFromQuestionId).not.toHaveBeenCalled()
         expect(createButton.createButtonMessageWithButtons).not.toHaveBeenCalled()
-        expect(utillArray.getMoment).not.toHaveBeenCalled()
 
     })
 

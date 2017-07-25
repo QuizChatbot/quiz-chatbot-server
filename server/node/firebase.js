@@ -20,10 +20,12 @@ const admin = connectToFirebase()
  * @return {Number} 
  * @async
  */
-const getNumberOfQuestions = async (category) => {
+const getNumberOfQuestions = (category) => {
+    //if you want to ask all questions in the category. And change to async function
     // let keys = await getQuestionKeysFromCategoty(category)
     // let numberOfQuestions = keys.length
-    let numberOfQuestions
+
+    let numberOfQuestions = 0
     if(category)    numberOfQuestions = 10
     return numberOfQuestions
 }

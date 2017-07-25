@@ -1,13 +1,17 @@
 const firebase = require('../firebase')
 
 describe('connect to firebase', () => {
-  test('connect to firebase', () => {})
+  test('connect to firebase', () => { })
 })
 
 describe('number of questions', () => {
-  test('get number of questions', () => {
-    expect.assertions(1)
-    return expect(firebase.getNumberOfQuestions()).resolves.toBe(10)
+  test('category is null', () => {
+    let number = firebase.getNumberOfQuestions()
+    return expect(number).toBe(0)
+  })
+  test('category not null', () => {
+    let number = firebase.getNumberOfQuestions("category")
+    return expect(number).toBe(10)
   })
 })
 

@@ -79,8 +79,7 @@ UNIVERSAL_ANALYTICS = config.UNIVERSAL_ANALYTICS
  * Main messenger application
  */
 const app = async () => {
-  let a = await firebase.getNumberOfQuestions("rules of thumb")
-  console.log("_______", a)
+
   // let mitt1 = emitter
   // mitt1.emit('foo', { a: 'b' })
   // const emitter = require('./analytics/emitter2')
@@ -383,7 +382,7 @@ const handleReceivedMessage = async (user, messageText) => {
  */
 async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
   // let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
-  let numberOfQuestions = await firebase.getNumberOfQuestions(user.state.category)
+  let numberOfQuestions = firebase.getNumberOfQuestions(user.state.category)
   user.hasNumberOfQuestion(numberOfQuestions)
 
   // check for button nextRound payload
@@ -569,7 +568,6 @@ async function nextQuestion(user) {
 
     user.finish()
     user.hasKeysLeft(0)
-
 
     // for analytics
     let timeFinishedRound = Date.now()
