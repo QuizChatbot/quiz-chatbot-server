@@ -338,8 +338,10 @@ const saveSummaryToFirebase = (senderID, summary) => {
     })
 
     if(summary.isDone){
+        console.log("remove1")
         ref = db.ref("/Developer_cheat/" + senderID)
         ref.child("summary").child(summary.round).child("keysQuestionLeft").remove()
+        console.log("remove2")
     }
 }
 
