@@ -85,5 +85,6 @@ describe('prepareSummary to save to firebase', () => {
     test('summary expect isDone = true', () => {
         let prepareSummary = summary.prepareSummary(2, 2, [], 0, 'es6', 'D', 25, 45)
         expect(prepareSummary.isDone).toBeTruthy()
+        expect(prepareSummary.keysQuestionLeft).toBe(0)
     })
 })

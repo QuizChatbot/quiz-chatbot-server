@@ -24,7 +24,7 @@ const getNumberOfQuestions = async (category) => {
     // let keys = await getQuestionKeysFromCategoty(category)
     // let numberOfQuestions = keys.length
     let numberOfQuestions
-    if(category)    numberOfQuestions = 2
+    if(category)    numberOfQuestions = 10
     return numberOfQuestions
 }
 
