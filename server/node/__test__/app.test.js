@@ -35,7 +35,7 @@ describe('Handle recieved message', () => {
     it('receive message that is not OK after receive welcome message', async () => {
         const user = new User('123', { state: 'playing', welcomed: true }, api)
         app.handleReceivedMessage(user, "Hello")
-        expect(messenger.sendTextMessage).toHaveBeenCalledWith(user.senderID, "บอกให้พิมพ์ OK ไง เมี๊ยว")
+        expect(messenger.sendTextMessage).toHaveBeenCalledWith(user.senderID, "Please say OK to continue.")
 
     })
 
@@ -448,7 +448,7 @@ describe('handle when received postback', () => {
         await expect(firebase.getNumberOfQuestions).toHaveBeenCalled()
         expect(user.finish()).resolves.toHaveBeenCalled()
         expect(user.state.state).toBe("finish")
-        expect(messenger.sendTextMessage).toHaveBeenCalledTimes(2)
+        expect(messenger.sendTextMessage).toHaveBeenCalledTimes(2) 
     })
 
     it('user play next question', async () => {

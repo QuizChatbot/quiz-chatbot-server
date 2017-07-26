@@ -290,7 +290,7 @@ const handleReceivedMessage = async (user, messageText) => {
     user.state.state !== 'pause' &&
     user.state.state !== 'finish'
   ) {
-    messenger.sendTextMessage(user.senderID, 'Please say OK to continue.")
+    messenger.sendTextMessage(user.senderID, "Please say OK to continue.")
   } else {
     // //other users except the first user will add their profile to firebase
     let userDetail = await messenger.getUserDetail(user.senderID)
