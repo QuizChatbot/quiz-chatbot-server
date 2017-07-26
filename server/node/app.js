@@ -287,7 +287,7 @@ const handleReceivedMessage = async (user, messageText) => {
   if (
     messageText !== 'OK' &&
     user.state.welcomed === true &&
-    user.state.state !== 'pause' &&
+    user.state.state !== 'pause' && 
     user.state.state !== 'finish'
   ) {
     messenger.sendTextMessage(user.senderID, "Please say OK to continue.")
