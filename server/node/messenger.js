@@ -139,12 +139,15 @@ function setGreetingText() {
   createGreetingApi(greetingData)
 }
 
-function getStartedButton(messageData) {
+function getStartedButton() {
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token=PAGE_ACCESS_TOKEN',
     qs: { access_token: PAGE_ACCESS_TOKEN },
     method: 'POST',
-    json: messageData
+    json: "message",
+    get_started: {
+      payload: "get_started"
+    }
 
   },
     (error, response, body) => {
@@ -165,4 +168,4 @@ function getStartedButton(messageData) {
     });
 }
 
-module.exports = {sendTextMessage, callSendAPI, getUserDetail, sendLetsQuiz, createGreetingApi, setGreetingText}
+module.exports = {sendTextMessage, callSendAPI, getUserDetail, sendLetsQuiz, createGreetingApi, setGreetingText, getStartedButton}
