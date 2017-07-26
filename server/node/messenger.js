@@ -148,7 +148,6 @@ function getStartedButton() {
     get_started: {
       payload: "get_started"
     }
-
   },
     (error, response, body) => {
       if (!error && response.statusCode == 200) {
@@ -156,14 +155,14 @@ function getStartedButton() {
         let messageId = body.message_id
 
         if (messageId) {
-          console.log("Successfully sent message with id %s to recipient %s",
+          console.log("getStarted button success",
             messageId, recipientId)
         } else {
-          console.log("Successfully called Send API for recipient %s",
+          console.log("getStarted button failed",
             recipientId)
         }
       } else {
-        console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+        console.error("Failed calling getStarted button", response.statusCode, response.statusMessage, body.error);
       }
     });
 }
