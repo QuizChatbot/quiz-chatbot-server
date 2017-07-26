@@ -290,7 +290,7 @@ const handleReceivedMessage = async (user, messageText) => {
     user.state.state !== 'pause' &&
     user.state.state !== 'finish'
   ) {
-    messenger.sendTextMessage(user.senderID, 'บอกให้พิมพ์ OK ไง เมี๊ยว')
+    messenger.sendTextMessage(user.senderID, 'Please say OK to continue.")
   } else {
     // //other users except the first user will add their profile to firebase
     let userDetail = await messenger.getUserDetail(user.senderID)
@@ -409,7 +409,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
     emitter.emit('pause', user)
     // pause
     user.pause()
-    messenger.sendTextMessage(user.senderID, 'Hell <3')
+    messenger.sendTextMessage(user.senderID, 'Pause <3')
     messenger.sendTextMessage(user.senderID, "Come back when you're ready~")
   }
   // choose category of questions 
@@ -464,7 +464,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
     // // answer Correct
     if (result) {
-      messenger.sendTextMessage(user.senderID, 'Orung!')
+      messenger.sendTextMessage(user.senderID, 'Correct!')
       let preparedResult = await resultFirebase.prepareResultForFirebase(
         payloadObj,
         user.state.round,
@@ -478,7 +478,7 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
       firebase.saveResultToFirebase(user.senderID, preparedResult)
     } else {
       // answer Wrong
-      messenger.sendTextMessage(user.senderID, 'Bad dog!')
+      messenger.sendTextMessage(user.senderID, 'Wrong!')
       let preparedResult = await resultFirebase.prepareResultForFirebase(
         payloadObj,
         user.state.round,
