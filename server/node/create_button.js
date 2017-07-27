@@ -176,7 +176,7 @@ const createButtonCategory = (recipientId) => {
  * @param {number} score 
  * @param {string} grade 
  */
-const createButtonShare = (recipientId, score, grade) => {
+const createButtonShare = (recipientId, score, grade, totalScore) => {
   let messageData = {
     recipient: {
       id: recipientId
@@ -187,7 +187,7 @@ const createButtonShare = (recipientId, score, grade) => {
         payload: {
           template_type: "generic",
           elements: [{
-            title: `You've got ${score} grade ${grade}!`,
+            title: `You've got ${score}/${totalScore} grade ${grade}!`,
             subtitle: `Quiz Chatbot`,
             image_url: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg",
             buttons: [{
