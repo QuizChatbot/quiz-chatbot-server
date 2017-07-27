@@ -286,7 +286,7 @@ async function getKeys(category) {
  */
 const handleReceivedMessage = async (user, messageText) => {
   if (
-    messageText !== 'OK' && messageText !== 'ok' && messageText !== 'Ok' && messageText !== 'oK'
+    messageText !== 'OK' && messageText !== 'ok' && messageText !== 'Ok' && messageText !== 'oK' &&
     user.state.welcomed === true &&
     user.state.state !== 'pause' && 
     user.state.state !== 'finish'
