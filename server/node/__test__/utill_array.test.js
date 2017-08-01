@@ -1,5 +1,23 @@
 const utillArray = require('../utill_array')
 
+
+// sumArray (array)
+describe('sum all values in array', () => {
+  test('sum all value', () => {
+    let arr = [1,2,3]
+    expect(utillArray.sumArray(arr)).toBe(6)
+  })
+})
+
+// changeMillisToMoment (ms)
+describe('change ms to moment', () => {
+  test('change ms to minute, second', () => {
+    let mm = utillArray.changeMillisToMoment(128066)
+    expect(mm.minutes()).toBe(2)
+    expect(mm.seconds()).toBe(8)
+  })
+})
+
 // shuffleKeyFromQuestions (keys)
 describe('shuffle keys and send back first element of shuffled keys', () => {
   function containsAny (source, target) {

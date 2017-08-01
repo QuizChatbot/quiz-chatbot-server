@@ -187,7 +187,7 @@ const createButtonShare = (recipientId, score, grade, totalScore, moment) => {
         payload: {
           template_type: "generic",
           elements: [{
-            title: `You've got ${score}/${totalScore} grade ${grade}!` + '/n' + `Time taken is ${moment.minutes()} Minutes ${moment.seconds()} Seconds`,
+            title: `You've got ${score}/${totalScore} grade ${grade}!` + '\n' + `Time taken is ${moment.minutes()} Minutes ${moment.seconds()} Seconds`,
             subtitle: `Quiz Chatbot`,
             image_url: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg",
             buttons: [{
