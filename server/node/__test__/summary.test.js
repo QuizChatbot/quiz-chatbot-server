@@ -69,7 +69,7 @@ describe('calculateGrade from totalScore and userScore', () => {
 
 describe('prepareSummary to save to firebase', () => {
     test('summary for: 2 done, 4 questions, 2 keys left, 0 round, ES6, grade D', () => {
-        let prepareSummary = summary.prepareSummary(2, 4, ['key1', 'key2'], 0, 'design patterns', 'D', 25, 45)
+        let prepareSummary = summary.prepareSummary(2, 4, ['key1', 'key2'], 0, 'design patterns', 'D', 25, 45, 50000)
         expect(prepareSummary).toEqual({
             done: 2,
             round: 0,
@@ -78,6 +78,7 @@ describe('prepareSummary to save to firebase', () => {
             grade: 'D',
             score: 25,
             totalScore: 45,
+            duration: 50000,
             isDone: false
         })
     })

@@ -8,9 +8,10 @@
  * @param {string} grade - grade that user get
  * @param {number} score - score that user get
  * @param {number} totalScore - total score of all questions in that round
+ * @param {number} sumDurations
  * @return {object}
  */
-const prepareSummary = (done, numberOfQuestions, keys, round, category, grade, score, totalScore) => {
+const prepareSummary = (done, numberOfQuestions, keys, round, category, grade, score, totalScore, sumDurations) => {
     let summaryObj = {}
 
     summaryObj.done = done
@@ -20,6 +21,7 @@ const prepareSummary = (done, numberOfQuestions, keys, round, category, grade, s
     summaryObj.grade = grade
     summaryObj.score = score
     summaryObj.totalScore = totalScore
+    summaryObj.duration = sumDurations
     if (done == numberOfQuestions) summaryObj.isDone = true
     else summaryObj.isDone = false
 

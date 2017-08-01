@@ -450,6 +450,8 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
 
     // send to calculate grade and score for summary
     let duration = utillArray.calculateDuration(timeOfStart, timeOfPostback)
+    let durations = await firebase.getDurationFromResults(user.senderID, user.state.round)
+    let sumDuration = utillArray.sumArray(durations)
     let totalScore = summary.calculateTotalScore(user.state.numberOfQuestions)
     let scoreOfThatQuestion = summary.calculateScoreForThatQuestion(
       payloadObj.point,
@@ -512,7 +514,8 @@ async function handleReceivedPostback(user, payloadObj, timeOfPostback) {
       user.state.category,
       grade,
       user.state.userScore,
-      totalScore
+      totalScore,
+      sumDuration
     )
     firebase.saveSummaryToFirebase(user.senderID, preparedSummary)
     console.log(

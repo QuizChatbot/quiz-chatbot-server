@@ -348,7 +348,8 @@ const saveSummaryToFirebase = (senderID, summary) => {
         "category": summary.category,
         "grade": summary.grade,
         "score": summary.score,
-        "totalScore": summary.totalScore
+        "totalScore": summary.totalScore,
+        "duration": summary.duration
     })
 
     //Cheat protected
@@ -361,7 +362,8 @@ const saveSummaryToFirebase = (senderID, summary) => {
         "category": summary.category,
         "grade": summary.grade,
         "score": summary.score,
-        "totalScore": summary.totalScore
+        "totalScore": summary.totalScore,
+        "duration": summary.duration
     })
 
     if (summary.isDone) {
