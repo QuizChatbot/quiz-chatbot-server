@@ -2,6 +2,16 @@ const _ = require('lodash')
 const moment = require('moment')
 
 /**
+ * sum all values in array
+ * @param {number} array 
+ * @return {number}
+ */
+const sumArray = (array) => {
+    let sum = _.sum(array)
+    return sum
+}
+
+/**
  * Shuffle question to ask from questions keys, and return first element of shuffled keys
  * @param {[string]} keys 
  * @return {string}
@@ -75,4 +85,9 @@ const calculateDuration = (timeOfStart, timeOfPostback) => {
     return duration.asMilliseconds()
 }
 
-module.exports = { shuffleKeyFromQuestions, _, getMoment, calculateDuration, shuffleChoices, getFormattedDate}
+const changeMillisToMoment = (ms) => {
+    let mm = moment.duration(ms)
+    return mm
+}
+
+module.exports = { shuffleKeyFromQuestions, _, getMoment, calculateDuration, shuffleChoices, getFormattedDate, sumArray, changeMillisToMoment}

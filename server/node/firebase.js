@@ -26,7 +26,7 @@ const getNumberOfQuestions = (category) => {
     // let numberOfQuestions = keys.length
 
     let numberOfQuestions = 0
-    if(category)    numberOfQuestions = 10
+    if (category) numberOfQuestions = 10
     return numberOfQuestions
 }
 
@@ -185,10 +185,36 @@ const getQuestionDone = async (senderID, round, category) => new Promise(async (
         resolve(keysDone)
     }, (errorObject) => {
         console.log("Cannot get keys of questions that user already done  = " + errorObject.code)
-
     })
 
 })
+
+/**
+ * get duration user take from results of that round
+ * @param {string} senderID 
+ * @param {number} round
+ * @return {[number]}
+ */
+const getDurationFromResults = async (senderID, round) => new Promise(async (resolve) => {
+    const db = admin.database()
+    const ref = db.ref("/Developer/" + senderID)
+    let durations = []
+    ref.child("results").on("value", (snapshot) => {
+        let resultSnapshot = snapshot.val()
+        for (let property in resultSnapshot) {
+            if (resultSnapshot.hasOwnProperty(property)) {
+                if (resultSnapshot[property].round === round) {
+                    durations.push(resultSnapshot[property].duration)
+                }
+            }
+        }
+        resolve(durations)
+
+    }, (errorObject) => {
+        console.log("Cannot get durations of user  = " + errorObject.code)
+    })
+})
+
 
 /**
  * Get grade of user after finish that round
@@ -215,7 +241,6 @@ const getGrade = async (senderID, round) => new Promise(async (resolve) => {
     }, (errorObject) => {
         console.log("Cannot get grade of user  = " + errorObject.code)
     })
-
 })
 
 
@@ -339,7 +364,7 @@ const saveSummaryToFirebase = (senderID, summary) => {
         "totalScore": summary.totalScore
     })
 
-    if(summary.isDone){
+    if (summary.isDone) {
         console.log("remove1")
         ref = db.ref("/Developer_cheat/" + senderID)
         ref.child("summary").child(summary.round).equalTo("keysQuestionLeft").on('child_added', (snapshot) => {
@@ -352,7 +377,7 @@ const saveSummaryToFirebase = (senderID, summary) => {
 module.exports = {
     connectToFirebase, getQuestionsFromFirebase, getAllAnswersFromQuestion, getQuestionFromId,
     getQuestionKeysFromCategory, saveResultToFirebase, saveUserToFirebase, saveSummaryToFirebase, getNumberOfQuestions, getQuestionDone,
-    getGrade
+    getGrade, getDurationFromResults
 }
 
 

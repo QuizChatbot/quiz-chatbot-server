@@ -564,8 +564,11 @@ async function nextQuestion(user) {
       `You can see the ranking here https://quizchatbot-ce222.firebaseapp.com/`
     )
     //create share button
+    let durations = await firebase.getDurationFromResults(user.senderID, user.state.round)
+    let sumDurations = utillArray.sumArray(durations)
+    let mm = utillArray.changeMillisToMoment(sumDurations)
     let totalScore = summary.calculateTotalScore(user.state.numberOfQuestions)
-    const shareButton = await createButton.createButtonShare(user.senderID, user.state.userScore, grade, totalScore)
+    const shareButton = await createButton.createButtonShare(user.senderID, user.state.userScore, grade, totalScore, mm)
     messenger.callSendAPI(shareButton)
 
     user.finish()
